@@ -17,9 +17,10 @@ public class Requirement
 	private boolean _matchResult;
 	private String _word = "";
 	
-	public Requirement(boolean expectedMatchResult)
+	public Requirement(boolean expectedMatchResult, String word)
 	{
 		_expectedMatchResult = expectedMatchResult;
+		setWord(word);
 	}
 	
 	@Requires("word != null")
@@ -40,9 +41,9 @@ public class Requirement
 		return _expectedMatchResult;
 	}
 	
-	public boolean getMatchResult()
+	public boolean isComplied()
 	{
-		return _matchResult;
+		return _matchResult == _expectedMatchResult;
 	}
 	
 	public void applySolution(Solution solution)

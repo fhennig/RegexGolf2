@@ -69,10 +69,11 @@ public class ChallengeRepository
 
 	public Challenge addNew()
 	{
-		//TODO Object creation einfach so hier?
-		Challenge newChallenge = new Challenge(new Solution(), new Solution());
-		putChallenge(newChallenge, true, true);
-		return newChallenge;
+		//TODO refactor object creation
+//		Challenge newChallenge = new Challenge(new Solution(), new Solution());
+//		putChallenge(newChallenge, true, true);
+//		return newChallenge;
+		return null;
 	}
 	
 	public void delete(Challenge challenge)

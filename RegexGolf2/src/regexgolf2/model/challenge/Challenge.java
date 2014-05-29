@@ -70,6 +70,19 @@ public class Challenge extends TrackableObject
 		return new ArrayList<Requirement>(_requirements);
 	}
 	
+	public List<Requirement> getRequirements(boolean expectedMatchResult)
+	{
+		List<Requirement> result = new ArrayList<>();
+		
+		for (Requirement r : _requirements)
+		{
+			if (r.getExpectedMatchResult() == expectedMatchResult)
+				result.add(r);
+		}
+		
+		return result;
+	}
+	
 	private void registerWordChangedListener(Requirement requirement)
 	{
 		requirement.addWordChangedListener(new WordChangedListener()

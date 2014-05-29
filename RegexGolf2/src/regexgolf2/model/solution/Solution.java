@@ -15,6 +15,15 @@ public class Solution
 	private Pattern _regex = Pattern.compile("");
 	
 	
+	
+	@Requires("regex != null")
+	public Solution(String regex)
+	{
+		setSolution(regex);
+	}
+	
+	
+	
 	@Requires("regex != null")
 	public void setSolution(String regex)
 	{
