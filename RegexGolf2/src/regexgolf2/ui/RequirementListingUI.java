@@ -27,8 +27,9 @@ public class RequirementListingUI
 	
 	
 	
-	public RequirementListingUI()
+	public RequirementListingUI(TableView<Requirement> table)
 	{
+		_table = table;
 		init();
 	}
 	
@@ -36,7 +37,6 @@ public class RequirementListingUI
 	
 	private void init()
 	{
-		_table = new TableView<>();
 		initWordColumn();
 		initIsCompliedColumn();
 		_table.getColumns().add(_wordColumn);

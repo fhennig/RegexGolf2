@@ -22,7 +22,15 @@ public class Challenge extends TrackableObject
 	
 	
 	
-	@Requires("solution != null")
+	public Challenge()
+	{
+		this(new Solution(), new Solution());
+	}
+	
+	@Requires({
+		"userSolution != null",
+		"sampleSolution != null"
+	})
 	public Challenge(Solution userSolution, Solution sampleSolution)
 	{
 		_userSolution = userSolution;
@@ -57,7 +65,10 @@ public class Challenge extends TrackableObject
 	@Requires("requirement != null")
 	public void removeRequirement(Requirement requirement)
 	{
-		_requirements.remove(requirement);
+		//TODO unregister listeners!
+		boolean wasRemoved = _requirements.remove(requirement);
+		if (!wasRemoved)
+			return;
 		fireRequirementsChangedEvent();
 		fireObjectChangedEvent();
 	}
@@ -65,6 +76,7 @@ public class Challenge extends TrackableObject
 	/**
 	 * Returns an editable Copy of the List of Requirements
 	 */
+	@Ensures("result != null")
 	public List<Requirement> getRequirements()
 	{
 		return new ArrayList<Requirement>(_requirements);
@@ -83,6 +95,7 @@ public class Challenge extends TrackableObject
 		return result;
 	}
 	
+	@Requires("requirement != null")
 	private void registerWordChangedListener(Requirement requirement)
 	{
 		requirement.addWordChangedListener(new WordChangedListener()

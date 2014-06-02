@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.EventObject;
 import java.util.List;
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 import com.google.java.contract.Ensures;
 import com.google.java.contract.Requires;
@@ -16,19 +17,29 @@ public class Solution
 	
 	
 	
+	public Solution() { }
+	
 	@Requires("regex != null")
 	public Solution(String regex)
 	{
-		setSolution(regex);
+		trySetSolution(regex);
 	}
 	
 	
 	
 	@Requires("regex != null")
-	public void setSolution(String regex)
+	public boolean trySetSolution(String regex)
 	{
-		_regex = Pattern.compile(regex);
-		fireSolutionChangedEvent();
+		try
+		{
+			_regex = Pattern.compile(regex);
+			fireSolutionChangedEvent();
+			return true;
+		}
+		catch (PatternSyntaxException pse)
+		{
+			return false;
+		}
 	}
 	
 	@Ensures("result != null")

@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import regexgolf2.model.challenge.Challenge;
-import regexgolf2.model.solution.Solution;
 import regexgolf2.services.persistence.PersistenceService;
 
 public class ChallengeRepository
