@@ -1,5 +1,6 @@
 package regexgolf2.model.challenge;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.EventObject;
 import java.util.List;
 
@@ -74,25 +75,12 @@ public class Challenge extends TrackableObject
 	}
 
 	/**
-	 * Returns an editable Copy of the List of Requirements
+	 * Returns an unmodifiable View of the internal List
 	 */
 	@Ensures("result != null")
 	public List<Requirement> getRequirements()
 	{
-		return new ArrayList<Requirement>(_requirements);
-	}
-	
-	public List<Requirement> getRequirements(boolean expectedMatchResult)
-	{
-		List<Requirement> result = new ArrayList<>();
-		
-		for (Requirement r : _requirements)
-		{
-			if (r.getExpectedMatchResult() == expectedMatchResult)
-				result.add(r);
-		}
-		
-		return result;
+		return Collections.unmodifiableList(_requirements);
 	}
 	
 	@Requires("requirement != null")

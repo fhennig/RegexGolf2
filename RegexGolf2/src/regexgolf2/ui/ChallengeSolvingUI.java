@@ -8,44 +8,67 @@ import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import regexgolf2.model.challenge.Challenge;
-import regexgolf2.model.requirement.Requirement;
+import regexgolf2.ui.requirementlisting.RequirementItem;
+import regexgolf2.ui.requirementlisting.RequirementListingUI;
 
 public class ChallengeSolvingUI
 {
 
     @FXML
     private Label _scoreLabel;
+    private ScoreDisplayUI _scoreDisplayUI;
 
     @FXML
     private TextField _solutionTextField;
 
     @FXML
-    private TableView<Requirement> _dontMatchTableView;
+    private TableView<RequirementItem> _dontMatchTableView;
+    private RequirementListingUI _nonMatchRequirementsUI;
 
     @FXML
-    private TableView<Requirement> _doMatchTableView;
-    
+    private TableView<RequirementItem> _doMatchTableView;
+    private RequirementListingUI _matchRequirementsUI;
     
     private Parent _rootNode;
     
     
     
-    public ChallengeSolvingUI(Challenge challenge) throws IOException
+    public ChallengeSolvingUI() throws IOException
     {
     	FXMLLoader loader = new FXMLLoader(getClass().getResource("ChallengeSolvingUI.fxml")); 
     	loader.setController(this);
     	
     	_rootNode = loader.load();
     	
-    	new RequirementListingUI(_doMatchTableView).setContent(challenge.getRequirements(true));
-    	new RequirementListingUI(_dontMatchTableView).setContent(challenge.getRequirements(false));
-    	new SolutionUI(_solutionTextField).setSolution(challenge.getUserSolution());
+    	_matchRequirementsUI = new RequirementListingUI(_doMatchTableView);
+    	_nonMatchRequirementsUI = new RequirementListingUI(_dontMatchTableView);
+    	_scoreDisplayUI = new ScoreDisplayUI(_scoreLabel);
+    }
+
+    
+    
+    public RequirementListingUI getNonMatchRequirementListingUI()
+    {
+    	return _nonMatchRequirementsUI;
     }
     
-    public Parent getUI()
+    public RequirementListingUI getMatchRequirementListingUI()
+    {
+    	return _matchRequirementsUI;
+    }
+    
+    public ScoreDisplayUI getScoreDisplayUI()
+    {
+    	return _scoreDisplayUI;
+    }
+    
+    public TextField getSolutionTextField()
+    {
+    	return _solutionTextField;
+    }
+    
+    public Parent getUINode()
     {
     	return _rootNode;
     }
-
 }

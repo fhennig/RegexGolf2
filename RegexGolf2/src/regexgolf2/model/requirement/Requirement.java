@@ -12,9 +12,7 @@ import com.google.java.contract.Requires;
 public class Requirement
 {
 	private final List<WordChangedListener> _wordChangedListeners = new ArrayList<>();
-	private final List<MatchResultChangedListener> _matchResultChangedListeners = new ArrayList<>();
 	private final boolean _expectedMatchResult;
-	private boolean _matchResult;
 	private String _word = "";
 	
 	public Requirement(boolean expectedMatchResult, String word)
@@ -41,16 +39,10 @@ public class Requirement
 		return _expectedMatchResult;
 	}
 	
-	public boolean isComplied()
+	public boolean applySolution(Solution solution)
 	{
-		return _matchResult == _expectedMatchResult;
-	}
-	
-	public void applySolution(Solution solution)
-	{
-		boolean newMatchResult = solution.getPattern().matcher(getWord()).matches();
-		_matchResult = newMatchResult;
-		fireMatchResultChangedEvent();
+		boolean matchResult = solution.getPattern().matcher(getWord()).matches();
+		return _expectedMatchResult == matchResult;
 	}
 	
 	private void fireWordChangedEvent()
@@ -63,25 +55,9 @@ public class Requirement
 		}
 	}
 	
-	private void fireMatchResultChangedEvent()
-	{
-		EventObject event = new EventObject(this);
-		
-		for (MatchResultChangedListener listener : _matchResultChangedListeners)
-		{
-			listener.matchResultChanged(event);
-		}
-	}
-	
 	@Requires("listener != null")
 	public void addWordChangedListener(WordChangedListener listener)
 	{
 		_wordChangedListeners.add(listener);
-	}
-	
-	@Requires("listener != null")
-	public void addMatchResultChangedListener(MatchResultChangedListener listener)
-	{
-		_matchResultChangedListeners.add(listener);
 	}
 }

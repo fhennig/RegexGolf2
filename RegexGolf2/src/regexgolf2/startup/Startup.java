@@ -1,12 +1,12 @@
 package regexgolf2.startup;
 
-import java.io.IOException;
-
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import regexgolf2.controllers.ChallengeSolvingController;
 import regexgolf2.model.challenge.Challenge;
-import regexgolf2.ui.ChallengeSolvingUI;
+import regexgolf2.services.challengesolvingservice.ChallengeSolvingService;
+import regexgolf2.services.challengesolvingservice.ChallengeSolvingServiceImpl;
 
 public class Startup extends Application
 {	
@@ -19,17 +19,10 @@ public class Startup extends Application
 	public void start(Stage stage)
 	{
 		Challenge testChallenge = ChallengeFactory.getIPChallenge();
-		ChallengeSolvingUI ui = null;
-		try
-		{
-			ui = new ChallengeSolvingUI(testChallenge);
-		} catch (IOException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		ChallengeSolvingService service = new ChallengeSolvingServiceImpl(testChallenge, testChallenge.getUserSolution());
+		ChallengeSolvingController controller = new ChallengeSolvingController(service);
 		
-		Scene scene = new Scene(ui.getUI());
+		Scene scene = new Scene(controller.getUINode());
 		stage.setTitle("Test");
 		stage.setWidth(400);
 		stage.setHeight(300);

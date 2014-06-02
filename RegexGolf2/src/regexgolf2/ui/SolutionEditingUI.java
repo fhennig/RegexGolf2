@@ -5,7 +5,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.TextField;
 
-public class SolutionUI
+public class SolutionEditingUI
 {
 	private final TextField _textField;
 	private Solution _solution;
@@ -13,7 +13,7 @@ public class SolutionUI
 	
 	
 	
-	public SolutionUI(TextField textField)
+	public SolutionEditingUI(TextField textField)
 	{
 		_textField = textField;
 		init();

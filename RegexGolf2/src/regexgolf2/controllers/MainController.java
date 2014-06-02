@@ -12,6 +12,7 @@ public class MainController
 	public MainController(ChallengeRepository challenges)
 	{
 		_challenges = challenges;
+		_challenges.getAll();
 	}
 	
 	//TODO ChallengeRepository.ChallengesChangedEvent

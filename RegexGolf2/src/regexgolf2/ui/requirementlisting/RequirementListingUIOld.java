@@ -1,4 +1,4 @@
-package regexgolf2.ui;
+package regexgolf2.ui.requirementlisting;
 
 import java.util.EventObject;
 import java.util.List;
@@ -19,7 +19,7 @@ import regexgolf2.model.requirement.WordChangedListener;
 
 import com.sun.javafx.collections.ObservableListWrapper;
 
-public class RequirementListingUI
+public class RequirementListingUIOld
 {
 	private TableView<Requirement> _table;
 	private TableColumn<Requirement, String> _wordColumn;
@@ -27,7 +27,7 @@ public class RequirementListingUI
 	
 	
 	
-	public RequirementListingUI(TableView<Requirement> table)
+	public RequirementListingUIOld(TableView<Requirement> table)
 	{
 		_table = table;
 		init();
@@ -114,20 +114,20 @@ public class RequirementListingUI
 	
 	private static class IsCompliedColumnProperty extends SimpleStringProperty implements MatchResultChangedListener
 	{
-		private final Requirement _requirement;
+//		private final Requirement _requirement;
 		
 		
 		public IsCompliedColumnProperty(Requirement requirement)
 		{
-			_requirement = requirement;
-			_requirement.addMatchResultChangedListener(this);
-			refresh();
+//			_requirement = requirement;
+//			_requirement.addMatchResultChangedListener(this);
+//			refresh();
 		}
 		
 		private void refresh()
 		{
-			String s = new Boolean(_requirement.isComplied()).toString();
-			this.setValue(s);
+//			String s = new Boolean(_requirement.isComplied()).toString();
+//			this.setValue(s);
 		}
 
 		@Override
