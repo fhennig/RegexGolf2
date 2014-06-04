@@ -8,7 +8,6 @@ import javafx.scene.control.Control;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
-import javafx.scene.layout.Pane;
 import javafx.util.Callback;
 
 import com.sun.javafx.collections.ObservableListWrapper;
@@ -35,21 +34,7 @@ public class RequirementListingUI
 		initIsCompliedColumn();
 		_table.getColumns().add(_wordColumn);
 		_table.getColumns().add(_isCompliedColumn);
-		disableHeaderRow();
 		
-	}
-	
-	private void disableHeaderRow()
-	{
-
-        Pane header = (Pane)_table.lookup("TableHeaderRow");
-        if(header!=null && header.isVisible()) {
-          header.setMaxHeight(0);
-          header.setMinHeight(0);
-          header.setPrefHeight(0);
-          header.setVisible(false);
-          header.setManaged(false);
-        }
 	}
 	
 	private void initWordColumn()

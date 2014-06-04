@@ -110,4 +110,9 @@ public class Challenge extends ObservableObject
 	{
 		return Collections.unmodifiableSet(_requirements);
 	}
+	
+	public int getAmountRequirements()
+	{
+		return _requirements.size();
+	}
 }

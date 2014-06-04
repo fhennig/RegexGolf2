@@ -131,7 +131,7 @@ public class ChallengeSolvingService extends ObservableService
 
 	public int getAmountRequirements()
 	{
-		return _challenge.getRequirements().size();
+		return _challenge.getAmountRequirements();
 	}
 
 	public int getAmountCompliedRequirements()
