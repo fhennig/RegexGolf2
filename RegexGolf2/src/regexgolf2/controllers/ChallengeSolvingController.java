@@ -76,6 +76,12 @@ public class ChallengeSolvingController
 		refreshRequirementUIs();
 		refreshScoreDisplay();
 		refreshSolutionTextBox();
+		refreshChallengeNameLabel();
+	}
+	
+	private void refreshChallengeNameLabel()
+	{
+		_ui.getChallengeNameLabel().setText(_service.getChallenge().getName());
 	}
 	
 	private void refreshRequirementUIs()

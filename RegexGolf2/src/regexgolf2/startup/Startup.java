@@ -7,7 +7,6 @@ import regexgolf2.controllers.ChallengeSolvingController;
 import regexgolf2.model.challenge.Challenge;
 import regexgolf2.model.solution.Solution;
 import regexgolf2.services.challengesolvingservice.ChallengeSolvingService;
-import regexgolf2.services.challengesolvingservice.ChallengeSolvingService;
 
 public class Startup extends Application
 {	
@@ -19,7 +18,7 @@ public class Startup extends Application
 	@Override
 	public void start(Stage stage)
 	{
-		Challenge testChallenge = ChallengeFactory.getTestChallenge2();
+		Challenge testChallenge = ChallengeFactory.getTestChallenge();
 		Solution userSolution = new Solution();
 		ChallengeSolvingService service = new ChallengeSolvingService(testChallenge, userSolution);
 		ChallengeSolvingController controller = new ChallengeSolvingController(service);

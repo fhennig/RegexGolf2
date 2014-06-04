@@ -15,6 +15,8 @@ import regexgolf2.ui.subcomponents.solutionediting.SolutionEditingUI;
 
 public class ChallengeSolvingUI
 {
+    @FXML
+    private Label _challengeNameLabel;
 
     @FXML
     private Label _scoreLabel;
@@ -69,6 +71,11 @@ public class ChallengeSolvingUI
     public SolutionEditingUI getSolutionEditingUI()
     {
     	return _solutionEditingUI;
+    }
+    
+    public Label getChallengeNameLabel()
+    {
+    	return _challengeNameLabel;
     }
     
     public Parent getUINode()
