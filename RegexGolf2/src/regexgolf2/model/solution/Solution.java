@@ -1,18 +1,16 @@
 package regexgolf2.model.solution;
 
-import java.util.ArrayList;
-import java.util.EventObject;
-import java.util.List;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
+
+import regexgolf2.model.ObservableObject;
 
 import com.google.java.contract.Ensures;
 import com.google.java.contract.Requires;
 
 
-public class Solution
+public class Solution extends ObservableObject
 {
-	private final List<SolutionChangedListener> _listeners = new ArrayList<>();
 	private Pattern _regex = Pattern.compile("");
 	
 	
@@ -33,7 +31,7 @@ public class Solution
 		try
 		{
 			_regex = Pattern.compile(regex);
-			fireSolutionChangedEvent();
+			fireObjectChangedEvent();
 			return true;
 		}
 		catch (PatternSyntaxException pse)
@@ -52,21 +50,5 @@ public class Solution
 	public Pattern getPattern()
 	{
 		return _regex;
-	}
-	
-	private void fireSolutionChangedEvent()
-	{
-		EventObject event = new EventObject(this);
-		
-		for (SolutionChangedListener listener : _listeners)
-		{
-			listener.solutionChanged(event);
-		}
-	}
-	
-	@Requires("listener != null")
-	public void addSolutionChangedListener(SolutionChangedListener listener)
-	{
-		_listeners.add(listener);
 	}
 }

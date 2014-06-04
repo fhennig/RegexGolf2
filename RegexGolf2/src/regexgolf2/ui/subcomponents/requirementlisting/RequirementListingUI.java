@@ -1,4 +1,4 @@
-package regexgolf2.ui.requirementlisting;
+package regexgolf2.ui.subcomponents.requirementlisting;
 
 import java.util.List;
 

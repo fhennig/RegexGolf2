@@ -1,51 +1,81 @@
 package regexgolf2.model.challenge;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EventObject;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
+import regexgolf2.model.ObjectChangedListener;
+import regexgolf2.model.ObservableObject;
 import regexgolf2.model.requirement.Requirement;
-import regexgolf2.model.requirement.WordChangedListener;
 import regexgolf2.model.solution.Solution;
-import regexgolf2.model.solution.SolutionChangedListener;
-import regexgolf2.services.challengerepository.TrackableObject;
 
 import com.google.java.contract.Ensures;
 import com.google.java.contract.Requires;
 
 
-public class Challenge extends TrackableObject
+public class Challenge extends ObservableObject
 {
-	private final List<RequirementsChangedListener> _requirementsChangedListeners = new ArrayList<>();
-	private final List<Requirement> _requirements = new ArrayList<>();
-	private Solution _userSolution;
+	private final Set<Requirement> _requirements = new HashSet<>();
 	private Solution _sampleSolution;
+	private String _name = "";
+	
+	private ObjectChangedListener _requirementListener;
 	
 	
 	
 	public Challenge()
 	{
-		this(new Solution(), new Solution());
+		_sampleSolution = new Solution();
+		initRequirementListener();
+		initSampleSolutionListener();
 	}
 	
-	@Requires({
-		"userSolution != null",
-		"sampleSolution != null"
-	})
-	public Challenge(Solution userSolution, Solution sampleSolution)
+	
+	
+	private void initRequirementListener()
 	{
-		_userSolution = userSolution;
-		_sampleSolution = sampleSolution;
-		registerUserSolutionChangedListener();
-		registerSampleSolutionListener();
+		_requirementListener = new ObjectChangedListener()
+		{
+			@Override
+			public void objectChanged(EventObject event)
+			{
+				Object source = event.getSource();
+				
+				if (!_requirements.contains(source))
+					throw new IllegalStateException(
+							"The eventsource is not a Requirement that is owned " +
+							"by this challenge, this listener should not be called!");
+				
+				fireObjectChangedEvent();
+			}
+		};
 	}
 	
-	
+	private void initSampleSolutionListener()
+	{
+		_sampleSolution.addObjectChangedListener(new ObjectChangedListener()
+		{
+			@Override
+			public void objectChanged(EventObject event)
+			{
+				fireObjectChangedEvent();
+			}
+		});
+	}
 	
 	@Ensures("result != null")
-	public Solution getUserSolution()
+	public String getName()
 	{
-		return _userSolution;
+		return _name;
+	}
+	
+	@Requires("name != null")
+	public void setName(String name)
+	{
+		if (_name.equals(name))
+			return;
+		_name = name;
+		fireObjectChangedEvent();
 	}
 	
 	@Ensures("result != null")
@@ -57,126 +87,27 @@ public class Challenge extends TrackableObject
 	@Requires("requirement != null")
 	public void addRequirement(Requirement requirement)
 	{
-		_requirements.add(requirement);
-		registerWordChangedListener(requirement);
-		fireRequirementsChangedEvent();
+		boolean elementWasAdded = _requirements.add(requirement);
+		if (!elementWasAdded)
+			return;
 		fireObjectChangedEvent();
+		requirement.addObjectChangedListener(_requirementListener);
 	}
 	
 	@Requires("requirement != null")
 	public void removeRequirement(Requirement requirement)
 	{
-		//TODO unregister listeners!
 		boolean wasRemoved = _requirements.remove(requirement);
-		if (!wasRemoved)
-			return;
-		fireRequirementsChangedEvent();
-		fireObjectChangedEvent();
+		if (wasRemoved)
+			requirement.removeObjectChangedListener(_requirementListener);
 	}
 
 	/**
-	 * Returns an unmodifiable View of the internal List
+	 * Returns an unmodifiable View of the internal Set
 	 */
 	@Ensures("result != null")
-	public List<Requirement> getRequirements()
+	public Set<Requirement> getRequirements()
 	{
-		return Collections.unmodifiableList(_requirements);
-	}
-	
-	@Requires("requirement != null")
-	private void registerWordChangedListener(Requirement requirement)
-	{
-		requirement.addWordChangedListener(new WordChangedListener()
-		{
-			@Override
-			public void wordChanged(EventObject event)
-			{
-				Requirement requirement = getRequirement(event.getSource());
-				if (requirement == null)
-					throw new IllegalArgumentException();
-				
-				requirement.applySolution(getUserSolution());
-				fireObjectChangedEvent();
-			}
-		});
-	}
-	
-	private void registerUserSolutionChangedListener()
-	{
-		_userSolution.addSolutionChangedListener(new SolutionChangedListener()
-		{
-			@Override
-			public void solutionChanged(EventObject event)
-			{
-				if (event.getSource() != _userSolution)
-					throw new IllegalArgumentException(
-							"SolutionChangedEvent Source was not the object that was subscribed to!");
-				
-				refreshRequirementMatchResults();
-				fireObjectChangedEvent();
-			}
-		});
-	}
-	
-	private void registerSampleSolutionListener()
-	{
-		_sampleSolution.addSolutionChangedListener(new SolutionChangedListener()
-		{
-			@Override
-			public void solutionChanged(EventObject event)
-			{
-				if (event.getSource() != _sampleSolution)
-					throw new IllegalArgumentException();
-				
-				fireObjectChangedEvent();
-			}
-		});
-	}
-	
-	private void refreshRequirementMatchResults()
-	{
-		for (Requirement r : _requirements)
-		{
-			r.applySolution(getUserSolution());
-		}
-	}
-	
-	/**
-	 * Tries to find the requirement matching the given Object
-	 * @param other The Object that should be matched
-	 * @return the Requirement matching the given Object,
-	 * 		   or null if matching Requirement was not found.
-	 */
-	@Requires("other != null")
-	private Requirement getRequirement(Object other)
-	{
-		for (Requirement r : _requirements)
-		{
-			if (other == r)
-			{
-				return r;
-			}
-		}
-		return null;
-	}
-	
-	private void fireRequirementsChangedEvent()
-	{
-		EventObject event = new EventObject(this);
-		
-		for (RequirementsChangedListener listener : _requirementsChangedListeners)
-		{
-			listener.requirementsChanged(event);
-		}
-	}
-	
-	/**
-	 * Gets called if Requirements are added or removed.
-	 * @param listener The listener that wants to be notified
-	 */
-	@Requires("listener != null")
-	public void addRequirementsChangedListener(RequirementsChangedListener listener)
-	{
-		_requirementsChangedListeners.add(listener);
+		return Collections.unmodifiableSet(_requirements);
 	}
 }

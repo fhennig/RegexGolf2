@@ -30,7 +30,8 @@ public class ChallengeRepository
 	
 	private void putChallenge(Challenge challenge, boolean isChanged, boolean isNew)
 	{
-		_changeTrackers.put(challenge, new ChangeTracker(challenge, isChanged, isNew));
+		//FIXME 
+		//_changeTrackers.put(challenge, new ChangeTracker(challenge, isChanged, isNew));
 	}
 	
 	public List<Challenge> getAll()
@@ -80,7 +81,8 @@ public class ChallengeRepository
 		if (!_changeTrackers.containsKey(challenge))
 			throw new IllegalArgumentException();
 		
-		_persistenceService.delete(challenge.getId());
+		//FIXME
+		//_persistenceService.delete(challenge.getId());
 	}
 	
 	//can return null!

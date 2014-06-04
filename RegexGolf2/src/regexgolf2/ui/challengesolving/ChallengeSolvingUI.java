@@ -1,4 +1,4 @@
-package regexgolf2.ui;
+package regexgolf2.ui.challengesolving;
 
 import java.io.IOException;
 
@@ -8,8 +8,10 @@ import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import regexgolf2.ui.requirementlisting.RequirementItem;
-import regexgolf2.ui.requirementlisting.RequirementListingUI;
+import regexgolf2.ui.subcomponents.requirementlisting.RequirementItem;
+import regexgolf2.ui.subcomponents.requirementlisting.RequirementListingUI;
+import regexgolf2.ui.subcomponents.scoredisplay.ScoreDisplayUI;
+import regexgolf2.ui.subcomponents.solutionediting.SolutionEditingUI;
 
 public class ChallengeSolvingUI
 {
@@ -20,6 +22,7 @@ public class ChallengeSolvingUI
 
     @FXML
     private TextField _solutionTextField;
+    private SolutionEditingUI _solutionEditingUI;
 
     @FXML
     private TableView<RequirementItem> _dontMatchTableView;
@@ -43,6 +46,7 @@ public class ChallengeSolvingUI
     	_matchRequirementsUI = new RequirementListingUI(_doMatchTableView);
     	_nonMatchRequirementsUI = new RequirementListingUI(_dontMatchTableView);
     	_scoreDisplayUI = new ScoreDisplayUI(_scoreLabel);
+    	_solutionEditingUI = new SolutionEditingUI(_solutionTextField);
     }
 
     
@@ -62,9 +66,9 @@ public class ChallengeSolvingUI
     	return _scoreDisplayUI;
     }
     
-    public TextField getSolutionTextField()
+    public SolutionEditingUI getSolutionEditingUI()
     {
-    	return _solutionTextField;
+    	return _solutionEditingUI;
     }
     
     public Parent getUINode()

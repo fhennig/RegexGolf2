@@ -5,8 +5,9 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import regexgolf2.controllers.ChallengeSolvingController;
 import regexgolf2.model.challenge.Challenge;
+import regexgolf2.model.solution.Solution;
 import regexgolf2.services.challengesolvingservice.ChallengeSolvingService;
-import regexgolf2.services.challengesolvingservice.ChallengeSolvingServiceImpl;
+import regexgolf2.services.challengesolvingservice.ChallengeSolvingService;
 
 public class Startup extends Application
 {	
@@ -18,8 +19,9 @@ public class Startup extends Application
 	@Override
 	public void start(Stage stage)
 	{
-		Challenge testChallenge = ChallengeFactory.getIPChallenge();
-		ChallengeSolvingService service = new ChallengeSolvingServiceImpl(testChallenge, testChallenge.getUserSolution());
+		Challenge testChallenge = ChallengeFactory.getTestChallenge2();
+		Solution userSolution = new Solution();
+		ChallengeSolvingService service = new ChallengeSolvingService(testChallenge, userSolution);
 		ChallengeSolvingController controller = new ChallengeSolvingController(service);
 		
 		Scene scene = new Scene(controller.getUINode());

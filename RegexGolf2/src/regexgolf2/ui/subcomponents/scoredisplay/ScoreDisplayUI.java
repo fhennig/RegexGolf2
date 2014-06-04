@@ -1,4 +1,4 @@
-package regexgolf2.ui;
+package regexgolf2.ui.subcomponents.scoredisplay;
 
 import com.google.java.contract.Requires;
 

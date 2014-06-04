@@ -7,7 +7,11 @@
 <?import javafx.scene.text.*?>
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
-<children>
+<children><VBox prefHeight="400.0" prefWidth="600.0" spacing="8.0" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="14.0">
+<children><Label text="Challenge Name" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="14.0">
+<font>
+<Font size="18.0" />
+</font></Label>
 <HBox layoutX="14.0" layoutY="14.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="14.0">
 <children><TextField fx:id="_solutionTextField" layoutX="14.0" layoutY="14.0" prefHeight="25.0" prefWidth="524.0" promptText="REGEX" HBox.hgrow="ALWAYS" /><Label fx:id="_scoreLabel" alignment="CENTER_RIGHT" layoutX="561.0" layoutY="14.0" minWidth="50.0" text="22/22" textAlignment="RIGHT" HBox.hgrow="SOMETIMES">
 <font>
@@ -17,7 +21,7 @@
 <Insets />
 </HBox.margin></Label>
 </children>
-</HBox><GridPane layoutX="12.0" layoutY="185.0" prefHeight="199.0" prefWidth="389.0" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="51.0">
+</HBox><GridPane layoutX="12.0" layoutY="185.0" prefHeight="199.0" prefWidth="389.0" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="51.0" VBox.vgrow="ALWAYS">
   <columnConstraints>
     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
     <ColumnConstraints fillWidth="false" hgrow="NEVER" maxWidth="14.0" minWidth="14.0" prefWidth="14.0" />
@@ -26,16 +30,27 @@
   <rowConstraints>
     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
   </rowConstraints>
-<children><TableView fx:id="_doMatchTableView" layoutX="14.0" layoutY="186.0" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+<children><VBox prefHeight="200.0" prefWidth="100.0">
+<children><Label text="Do Match">
+<font>
+<Font size="16.0" />
+</font></Label><TableView fx:id="_doMatchTableView" layoutX="14.0" layoutY="186.0" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
 <columnResizePolicy>
 <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
 </columnResizePolicy>
 </TableView>
+</children></VBox><VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="2">
+<children><Label text="Don't Match">
+<font>
+<Font size="16.0" />
+</font></Label>
 <TableView fx:id="_dontMatchTableView" layoutX="14.0" layoutY="186.0" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" VBox.vgrow="ALWAYS">
 <columnResizePolicy>
 <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
 </columnResizePolicy>
 </TableView>
+</children></VBox>
 </children>
 </GridPane>
+</children></VBox>
 </children></AnchorPane>

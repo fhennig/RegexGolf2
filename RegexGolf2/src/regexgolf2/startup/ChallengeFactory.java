@@ -9,6 +9,8 @@ public class ChallengeFactory
 	{
 		Challenge challenge = new Challenge();
 		
+		challenge.setName("Test-Challenge 1");
+		
 		challenge.addRequirement(new Requirement(true, "Haus"));
 		challenge.addRequirement(new Requirement(true, "Baum"));
 		challenge.addRequirement(new Requirement(false, "Auto"));
@@ -21,6 +23,8 @@ public class ChallengeFactory
 	{
 		Challenge challenge = new Challenge();
 		
+		challenge.setName("IP-Challenge");
+		
 		challenge.addRequirement(new Requirement(true, "1.2.3.4"));
 		challenge.addRequirement(new Requirement(true, "192.168.1.1"));
 		challenge.addRequirement(new Requirement(true, "81.80.79.78"));
@@ -28,6 +32,20 @@ public class ChallengeFactory
 		challenge.addRequirement(new Requirement(false, "256.0.0.256"));
 		challenge.addRequirement(new Requirement(false, "12.13.14.15.16"));
 		challenge.addRequirement(new Requirement(false, "12.13.14.1545"));
+		
+		return challenge;
+	}
+	
+	public static Challenge getTestChallenge2()
+	{
+		Challenge challenge = new Challenge();
+		
+		challenge.setName("Test-Challenge 2");
+		
+		challenge.addRequirement(new Requirement(true, "Fenster"));
+		challenge.addRequirement(new Requirement(true, "Dach"));
+		challenge.addRequirement(new Requirement(false, "Tisch"));
+		challenge.addRequirement(new Requirement(false, "Giesskanne"));
 		
 		return challenge;
 	}
