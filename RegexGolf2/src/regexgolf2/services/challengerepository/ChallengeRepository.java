@@ -6,14 +6,14 @@ import java.util.List;
 import java.util.Map;
 
 import regexgolf2.model.challenge.Challenge;
-import regexgolf2.services.persistence.PersistenceService;
+import regexgolf2.services.persistence.PersistenceServiceOld;
 
 public class ChallengeRepository
 {
-	private final PersistenceService _persistenceService;
+	private final PersistenceServiceOld _persistenceService;
 	private final Map<Challenge, ChangeTracker> _changeTrackers = new HashMap<>();
 	
-	public ChallengeRepository(PersistenceService persistenceService)
+	public ChallengeRepository(PersistenceServiceOld persistenceService)
 	{
 		_persistenceService = persistenceService;
 		init();

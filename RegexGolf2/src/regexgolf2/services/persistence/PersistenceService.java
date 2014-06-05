@@ -1,16 +1,16 @@
 package regexgolf2.services.persistence;
 
-import java.util.List;
+import com.google.java.contract.Requires;
 
-import regexgolf2.model.challenge.Challenge;
-
-public interface PersistenceService
+public class PersistenceService
 {
-	List<Challenge> getAll();
+	private final Database _db;
 	
-	public void insert(Challenge challenge);
 	
-	public void update(Challenge challenge);
 	
-	public void delete(int id);
+	@Requires("db != null")
+	public PersistenceService(Database db)
+	{
+		_db = db;
+	}
 }
