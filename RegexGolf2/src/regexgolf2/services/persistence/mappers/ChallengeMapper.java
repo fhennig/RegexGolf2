@@ -7,8 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import regexgolf2.model.challenge.Challenge;
-import regexgolf2.model.requirement.Requirement;
+import regexgolf2.model.Challenge;
+import regexgolf2.model.Requirement;
 import regexgolf2.services.persistence.Database;
 import regexgolf2.services.persistence.DatabaseException;
 

@@ -2,7 +2,7 @@ package regexgolf2.services.persistence;
 
 import java.util.List;
 
-import regexgolf2.model.challenge.Challenge;
+import regexgolf2.model.Challenge;
 
 public interface PersistenceServiceOld
 {

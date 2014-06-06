@@ -6,7 +6,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import regexgolf2.model.solution.Solution;
+import regexgolf2.model.Solution;
 import regexgolf2.services.persistence.Database;
 
 import com.google.java.contract.Ensures;

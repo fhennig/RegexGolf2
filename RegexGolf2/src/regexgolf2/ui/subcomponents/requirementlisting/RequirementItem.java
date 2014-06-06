@@ -1,6 +1,6 @@
 package regexgolf2.ui.subcomponents.requirementlisting;
 
-import regexgolf2.model.requirement.Requirement;
+import regexgolf2.model.Requirement;
 
 public class RequirementItem
 {

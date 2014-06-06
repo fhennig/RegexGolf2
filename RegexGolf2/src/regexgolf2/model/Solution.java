@@ -1,9 +1,7 @@
-package regexgolf2.model.solution;
+package regexgolf2.model;
 
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
-
-import regexgolf2.model.ObservableObject;
 
 import com.google.java.contract.Ensures;
 import com.google.java.contract.Requires;

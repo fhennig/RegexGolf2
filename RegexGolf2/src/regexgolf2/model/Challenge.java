@@ -1,15 +1,10 @@
-package regexgolf2.model.challenge;
+package regexgolf2.model;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EventObject;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import regexgolf2.model.ObjectChangedListener;
-import regexgolf2.model.ObservableObject;
-import regexgolf2.model.requirement.Requirement;
-import regexgolf2.model.solution.Solution;
 
 import com.google.java.contract.Ensures;
 import com.google.java.contract.Requires;

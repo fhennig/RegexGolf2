@@ -10,9 +10,9 @@ import javafx.stage.Stage;
 import javax.swing.JOptionPane;
 
 import regexgolf2.controllers.ChallengeSolvingController;
-import regexgolf2.model.challenge.Challenge;
-import regexgolf2.model.solution.Solution;
-import regexgolf2.services.challengesolvingservice.ChallengeSolvingService;
+import regexgolf2.model.Challenge;
+import regexgolf2.model.Solution;
+import regexgolf2.model.SolvableChallenge;
 import regexgolf2.services.persistence.Database;
 import regexgolf2.services.persistence.PersistenceService;
 import regexgolf2.services.settingsservice.Settings;
@@ -42,8 +42,8 @@ public class Startup extends Application
 	{
 		Challenge testChallenge = ChallengeFactory.getTestChallenge();
 		Solution userSolution = new Solution();
-		ChallengeSolvingService service = new ChallengeSolvingService(testChallenge, userSolution);
-		ChallengeSolvingController controller = new ChallengeSolvingController(service);
+		SolvableChallenge sChallenge = new SolvableChallenge(userSolution, testChallenge);
+		ChallengeSolvingController controller = new ChallengeSolvingController(sChallenge);
 		
 		Scene scene = new Scene(controller.getUINode());
 		stage.setTitle("Test");
