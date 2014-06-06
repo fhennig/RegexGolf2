@@ -6,6 +6,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import com.google.java.contract.Ensures;
 import com.google.java.contract.Requires;
 
 public class Database
@@ -47,20 +48,19 @@ public class Database
 	{
 		String createChallengesTableSQL = "create table if not exists challenges" +
 				"(id integer primary key autoincrement," +
-				" solution integer not null references solution on delete no action on update cascade," +
+				" regex text not null," +
 				" name text not null); ";
 		
 		String createSolutionsTableSQL = "create table if not exists solutions" +
 				"(id integer primary key autoincrement," + 
 				" challenge integer not null references challenge on delete cascade on update cascade," +
-				" user integer," +
-				"regex text not null); ";
+				" regex text not null); ";
 		
-		String createRequirementsTableSQL = "create table if not exists solutions" +
+		String createRequirementsTableSQL = "create table if not exists requirements" +
 				"(id integer primary key autoincrement," + 
 				" challenge integer not null references challenge on delete cascade on update cascade," +
-				" user integer," +
-				"regex text not null); "; 
+				" expectedmatchresult boolean, " +
+				"word text not null); "; 
 		
 		Statement stmt;
 		try
@@ -77,6 +77,10 @@ public class Database
 		}
 	}
 	
+	/**
+	 * Connection should not be closed!
+	 */
+	@Ensures("result != null")
 	public Connection getConnection()
 	{
 		return _connection;

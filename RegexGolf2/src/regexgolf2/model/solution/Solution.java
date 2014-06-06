@@ -12,6 +12,7 @@ import com.google.java.contract.Requires;
 public class Solution extends ObservableObject
 {
 	private Pattern _regex = Pattern.compile("");
+	private int _id;
 	
 	
 	
@@ -25,9 +26,24 @@ public class Solution extends ObservableObject
 	
 	
 	
+	public int getId()
+	{
+		return _id;
+	}
+	
+	public void setId(int id)
+	{
+		if (_id == id)
+			return;
+		_id = id;
+		fireObjectChangedEvent();
+	}
+	
 	@Requires("regex != null")
 	public boolean trySetSolution(String regex)
 	{
+		if (getSolution().equals(regex))
+			return true;
 		try
 		{
 			_regex = Pattern.compile(regex);

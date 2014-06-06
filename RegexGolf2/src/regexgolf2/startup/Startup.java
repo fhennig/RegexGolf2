@@ -31,13 +31,8 @@ public class Startup extends Application
 		initDB();
 		
 		launch(args);
-		
-		//Test code for database
-//		Database db = new Database(new File("C:\\Users\\Felix\\Desktop\\regexgolf.db"));
-//		ChallengeMapper mapper = new ChallengeMapper(db);
-//		List<IdWrapper<Challenge>> list = mapper.getAll();
-//		
-//		System.out.println(list.size());
+
+		//TODO add some general catch for databaseexceptions somewhere
 		
 		
 	}
@@ -91,7 +86,15 @@ public class Startup extends Application
 				System.exit(0);
 			};
 		PersistenceService ps = new PersistenceService(new Database(dbFile));
-		//TEST CODE FOR INSERT //THROWS EXCEPTION
-		//ps.getChallengeMapper().insert(ChallengeFactory.getIPChallenge());
+		testDB(ps);
+	}
+	
+	private static void testDB(PersistenceService ps)
+	{
+		Challenge c = ChallengeFactory.getIPChallenge();
+		ps.getChallengeMapper().getAll();
+		ps.getChallengeMapper().insert(c);
+		ps.getChallengeMapper().update(c);
+		ps.getChallengeMapper().delete(c.getId());
 	}
 }

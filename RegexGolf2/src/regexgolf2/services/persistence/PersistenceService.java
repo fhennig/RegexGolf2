@@ -1,5 +1,7 @@
 package regexgolf2.services.persistence;
 
+import regexgolf2.services.persistence.mappers.ChallengeMapper;
+
 import com.google.java.contract.Ensures;
 import com.google.java.contract.Requires;
 

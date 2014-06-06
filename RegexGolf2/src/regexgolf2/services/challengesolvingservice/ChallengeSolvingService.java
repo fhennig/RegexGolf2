@@ -1,6 +1,5 @@
 package regexgolf2.services.challengesolvingservice;
 
-import java.util.ArrayList;
 import java.util.EventObject;
 import java.util.HashMap;
 import java.util.List;
@@ -118,15 +117,7 @@ public class ChallengeSolvingService extends ObservableService
 	@Ensures("result != null")
 	public List<Requirement> getRequirements(boolean expectedMatchresult)
 	{
-		List<Requirement> result = new ArrayList<>();
-		
-		for (Requirement r : _challenge.getRequirements())
-		{
-			if (r.getExpectedMatchResult() == expectedMatchresult)
-				result.add(r);
-		}
-		
-		return result;
+		return _challenge.getRequirements(expectedMatchresult);
 	}
 
 	public int getAmountRequirements()
