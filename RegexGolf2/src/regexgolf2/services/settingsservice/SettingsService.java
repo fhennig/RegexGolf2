@@ -17,6 +17,8 @@ import com.google.java.contract.Requires;
  */
 public class SettingsService
 {
+	public static final String COMMENT = "Settings File to configure RegexGolf\n" +
+			"If file syntax is invalid, the file will be replaced with the default settings file";
 	public static final File DEFAULT_FILE = new File("settings.properties");
 	private final File _file;
 	private SettingsImpl _settings;
@@ -90,6 +92,6 @@ public class SettingsService
 	public void save() throws IOException
 	{
 		OutputStream outStream = new FileOutputStream(_file);
-		_settings.getProperties().store(outStream, "comment");
+		_settings.getProperties().store(outStream, COMMENT);
 	}
 }

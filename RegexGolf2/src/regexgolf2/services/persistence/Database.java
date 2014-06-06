@@ -4,6 +4,7 @@ import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 import com.google.java.contract.Requires;
 
@@ -20,6 +21,7 @@ public class Database
 	public Database(File file)
 	{
 		init(file.getPath());
+		createTablesIfNotExist();
 	}
 	
 	
@@ -33,13 +35,43 @@ public class Database
 		}
 		catch (SQLException ex)
 		{
-			//TODO exception handling
-			System.out.println(ex);
+			throw new DatabaseException(ex);
 		}
 		catch (ClassNotFoundException e)
 		{
-			// throw as RuntimeEx
-			System.out.println(e);
+			throw new IllegalStateException("SQLite JDBC driver not found!");
+		}
+	}
+	
+	private void createTablesIfNotExist()
+	{
+		Statement stmt;
+		String sql;
+		try
+		{
+			stmt = getConnection().createStatement();
+			sql = 	"create table if not exists challenges" +
+					"(id integer primary key autoincrement," +
+					" solution integer not null references solution on delete no action on update cascade," +
+					" name text not null); " +
+					
+					"create table if not exists solutions" +
+					"(id integer primary key autoincrement," + 
+					" challenge integer not null references challenge on delete cascade on update cascade," +
+					" user integer," +
+					"regex text not null); " +
+					
+					"create table if not exists requirements" +
+					"(id integer primary key autoincrement," +
+					" challenge integer not null references challenge on delete cascade on update cascade," +
+					" expectedmatchresult boolean not null," +
+					" word text not null); ";
+			stmt.execute(sql);
+			stmt.close();
+		}
+		catch (SQLException e)
+		{
+			throw new DatabaseException(e);
 		}
 	}
 	

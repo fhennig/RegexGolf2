@@ -6,7 +6,7 @@ class DefaultSettingsBuilder
 	public SettingsImpl getDefaultSettings()
 	{
 		return new SettingsImpl(
-				"defaultDBPath"
+				"regexgolf.db" //default db path
 				);
 	}
 }

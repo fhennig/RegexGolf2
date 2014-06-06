@@ -1,2 +1,4 @@
 /bin
 /.apt_generated
+/settings.properties
+/regexgolf.db
