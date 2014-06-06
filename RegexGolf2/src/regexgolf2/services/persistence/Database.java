@@ -45,28 +45,30 @@ public class Database
 	
 	private void createTablesIfNotExist()
 	{
+		String createChallengesTableSQL = "create table if not exists challenges" +
+				"(id integer primary key autoincrement," +
+				" solution integer not null references solution on delete no action on update cascade," +
+				" name text not null); ";
+		
+		String createSolutionsTableSQL = "create table if not exists solutions" +
+				"(id integer primary key autoincrement," + 
+				" challenge integer not null references challenge on delete cascade on update cascade," +
+				" user integer," +
+				"regex text not null); ";
+		
+		String createRequirementsTableSQL = "create table if not exists solutions" +
+				"(id integer primary key autoincrement," + 
+				" challenge integer not null references challenge on delete cascade on update cascade," +
+				" user integer," +
+				"regex text not null); "; 
+		
 		Statement stmt;
-		String sql;
 		try
 		{
 			stmt = getConnection().createStatement();
-			sql = 	"create table if not exists challenges" +
-					"(id integer primary key autoincrement," +
-					" solution integer not null references solution on delete no action on update cascade," +
-					" name text not null); " +
-					
-					"create table if not exists solutions" +
-					"(id integer primary key autoincrement," + 
-					" challenge integer not null references challenge on delete cascade on update cascade," +
-					" user integer," +
-					"regex text not null); " +
-					
-					"create table if not exists requirements" +
-					"(id integer primary key autoincrement," +
-					" challenge integer not null references challenge on delete cascade on update cascade," +
-					" expectedmatchresult boolean not null," +
-					" word text not null); ";
-			stmt.execute(sql);
+			stmt.execute(createChallengesTableSQL);
+			stmt.execute(createSolutionsTableSQL);
+			stmt.execute(createRequirementsTableSQL);
 			stmt.close();
 		}
 		catch (SQLException e)
