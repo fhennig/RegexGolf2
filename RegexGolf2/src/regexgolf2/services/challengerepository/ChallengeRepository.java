@@ -1,93 +1,38 @@
 package regexgolf2.services.challengerepository;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import regexgolf2.model.Challenge;
-import regexgolf2.services.persistence.PersistenceServiceOld;
+import regexgolf2.model.SolvableChallenge;
+import regexgolf2.services.persistence.PersistenceService;
+import regexgolf2.services.persistence.mappers.ChallengeMapper;
+
+import com.google.java.contract.Requires;
 
 public class ChallengeRepository
 {
-	private final PersistenceServiceOld _persistenceService;
-	private final Map<Challenge, ChangeTracker> _changeTrackers = new HashMap<>();
+	private final PersistenceService _persistence;
+	private final List<SolvableChallenge> _solvableChallenges = new ArrayList<>();
+	private final Map<SolvableChallenge, PersistenceState> _persistenceStates = new HashMap<>();
 	
-	public ChallengeRepository(PersistenceServiceOld persistenceService)
+	
+	
+	@Requires("persistenceService != null")
+	public ChallengeRepository(PersistenceService persistenceService)
 	{
-		_persistenceService = persistenceService;
-		init();
+		_persistence = persistenceService;
 	}
 	
-	private void init()
-	{
-		List<Challenge> challenges = _persistenceService.getAll();
-		for (Challenge challenge : challenges)
-		{
-			putChallenge(challenge, false, false);
-		}
-	}
 	
-	private void putChallenge(Challenge challenge, boolean isChanged, boolean isNew)
-	{
-		//FIXME 
-		//_changeTrackers.put(challenge, new ChangeTracker(challenge, isChanged, isNew));
-	}
 	
-	public List<Challenge> getAll()
+	private void reloadAll() throws SQLException
 	{
-		return new ArrayList<>(_changeTrackers.keySet());
-	}
-	
-	public void save(Challenge challenge)
-	{
-		boolean successfull = trySave(challenge);
-		if (!successfull)
-			throw new IllegalArgumentException();
-	}
+		_solvableChallenges.clear();
 
-	private boolean trySave(Challenge challenge)
-	{
-		ChangeTracker ct = _changeTrackers.get(challenge);
-		if (ct == null)
-			return false;
 		
-		if (ct.objectIsNew())
-		{
-			_persistenceService.insert(challenge);
-		}
-		else
-		{
-			if (ct.objectIsChanged())
-			{
-				_persistenceService.update(challenge);
-			}
-		}	
-		ct.changesSaved();
-		return true;
-	}
-
-	public Challenge addNew()
-	{
-		//TODO refactor object creation
-//		Challenge newChallenge = new Challenge(new Solution(), new Solution());
-//		putChallenge(newChallenge, true, true);
-//		return newChallenge;
-		return null;
-	}
-	
-	public void delete(Challenge challenge)
-	{
-		if (!_changeTrackers.containsKey(challenge))
-			throw new IllegalArgumentException();
-		
-		//FIXME
-		//_persistenceService.delete(challenge.getId());
-	}
-	
-	//can return null!
-	public ChangeTracker getChangeTracker(Challenge challenge)
-	{
-		return _changeTrackers.get(challenge);
 	}
 }

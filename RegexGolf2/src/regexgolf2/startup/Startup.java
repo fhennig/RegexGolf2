@@ -2,6 +2,7 @@ package regexgolf2.startup;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -92,9 +93,16 @@ public class Startup extends Application
 	private static void testDB(PersistenceService ps)
 	{
 		Challenge c = ChallengeFactory.getIPChallenge();
-		ps.getChallengeMapper().getAll();
-		ps.getChallengeMapper().insert(c);
-		ps.getChallengeMapper().update(c);
-		ps.getChallengeMapper().delete(c.getId());
+		try
+		{
+			ps.getChallengeMapper().getAll();
+			ps.getChallengeMapper().insert(c);
+			ps.getChallengeMapper().update(c);
+			ps.getChallengeMapper().delete(c.getId());
+		} catch (SQLException e)
+		{
+			JOptionPane.showMessageDialog(null, "Accessing the Database failed!");
+			System.exit(0);
+		}
 	}
 }

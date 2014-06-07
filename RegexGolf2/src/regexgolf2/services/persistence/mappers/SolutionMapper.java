@@ -27,9 +27,9 @@ public class SolutionMapper
 	
 	
 	@Ensures("result != null")
-	public List<Solution> getAll() throws SQLException
+	public List<SolutionDTO> getAll() throws SQLException
 	{
-		List<Solution> solutions = new ArrayList<>();
+		List<SolutionDTO> solutions = new ArrayList<>();
 		
 		String sql = "SELECT id, challenge, regex FROM solutions";
 		
@@ -38,14 +38,27 @@ public class SolutionMapper
 		
 		while(rs.next())
 		{
-			Solution solution = new Solution();
-			solution.setId(rs.getInt(1));
-			//TODO handle challengeId
-			solution.trySetSolution(rs.getString(3));
-			
+			SolutionDTO solution = new SolutionDTO();
+			Solution solutionObj = new Solution();
+			solution.solution = solutionObj;
+			solutionObj.setId(rs.getInt(1));
+			solution.challengeId = rs.getInt(2);
+			solutionObj.trySetSolution(rs.getString(3));
+			solutions.add(solution);
 		}
 		ps.close();
 		
 		return solutions;
+	}
+
+	public void insert(Solution solution, int challengeId)
+	{
+		
+	}
+	
+	public class SolutionDTO
+	{
+		public int challengeId;
+		public Solution solution;
 	}
 }

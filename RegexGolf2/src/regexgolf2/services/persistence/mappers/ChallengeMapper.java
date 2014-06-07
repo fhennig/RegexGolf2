@@ -30,122 +30,96 @@ public class ChallengeMapper
 	
 	/**
 	 * Returns a list of all the Challenges stored in the Database.
+	 * @throws SQLException If initializing failed
 	 */
 	@Ensures("result != null")
-	public List<Challenge> getAll()
+	public List<Challenge> getAll() throws SQLException
 	{
 		List<Challenge> challenges = new ArrayList<>();
 		
 		String challengeSQL = "SELECT id, regex, name FROM challenges";
 		String requirementSQL = "SELECT challenge, expectedMatchResult, word FROM requirements";
 		
-		try
+		PreparedStatement challengePS = _db.getConnection().prepareStatement(challengeSQL);
+		ResultSet challengeRS = challengePS.executeQuery();
+		
+		while(challengeRS.next())
 		{
-			PreparedStatement challengePS = _db.getConnection().prepareStatement(challengeSQL);
-			ResultSet challengeRS = challengePS.executeQuery();
+			Challenge challenge = new Challenge();
+			challenge.setId(challengeRS.getInt(1));
+			challenge.setName(challengeRS.getString(3));
+			challenge.getSampleSolution().trySetSolution(challengeRS.getString(2));
+			challenges.add(challenge);
+		}
+		challengePS.close();
+		
+		PreparedStatement requirementPS = _db.getConnection().prepareStatement(requirementSQL);
+		ResultSet requirementRS = requirementPS.executeQuery();
+		
+		while(requirementRS.next())
+		{
+			Requirement requirement = new Requirement(
+					requirementRS.getBoolean(2), requirementRS.getString(3));
+			int challengeId = requirementRS.getInt(1);
 			
-			while(challengeRS.next())
+			for (Challenge c : challenges)
 			{
-				Challenge challenge = new Challenge();
-				challenge.setId(challengeRS.getInt(1));
-				challenge.setName(challengeRS.getString(3));
-				challenge.getSampleSolution().trySetSolution(challengeRS.getString(2));
-				challenges.add(challenge);
-			}
-			challengePS.close();
-			
-			PreparedStatement requirementPS = _db.getConnection().prepareStatement(requirementSQL);
-			ResultSet requirementRS = requirementPS.executeQuery();
-			
-			while(requirementRS.next())
-			{
-				Requirement requirement = new Requirement(
-						requirementRS.getBoolean(2), requirementRS.getString(3));
-				int challengeId = requirementRS.getInt(1);
-				
-				for (Challenge c : challenges)
+				if (c.getId() == challengeId)
 				{
-					if (c.getId() == challengeId)
-					{
-						c.addRequirement(requirement);
-					}
+					c.addRequirement(requirement);
 				}
 			}
-			requirementPS.close();
 		}
-		catch (SQLException e)
-		{
-			throw new DatabaseException(e);
-		}
+		requirementPS.close();
 		return challenges;
 	}	
 	
 	/**
 	 * Inserts a Challenge into the database.
 	 * The Challenge gets an ID that is written into the given object.
+	 * @throws SQLException If initializing failed
 	 */
 	@Requires("challenge != null")
-	public void insert(Challenge challenge)
+	public void insert(Challenge challenge) throws SQLException
 	{
 		challenge.setId(getNextChallengeId());
 		
 		String challengeSQL = "INSERT INTO challenges (id, regex, name) VALUES (?, ?, ?);";
 		
-		try
-		{
-			
-			PreparedStatement challengePS = _db.getConnection().prepareStatement(challengeSQL);
-			challengePS.setInt(1, challenge.getId());
-			challengePS.setString(2, challenge.getSampleSolution().getSolution());
-			challengePS.setString(3, challenge.getName());
-			challengePS.execute();
-			challengePS.close();
-			
-			insertRequirements(challenge.getRequirements(), challenge.getId());
-		}
-		catch (SQLException e)
-		{
-			throw new DatabaseException(e);
-		}
+		PreparedStatement challengePS = _db.getConnection().prepareStatement(challengeSQL);
+		challengePS.setInt(1, challenge.getId());
+		challengePS.setString(2, challenge.getSampleSolution().getSolution());
+		challengePS.setString(3, challenge.getName());
+		challengePS.execute();
+		challengePS.close();
+		
+		insertRequirements(challenge.getRequirements(), challenge.getId());
 	}
 	
-	private int getNextChallengeId()
+	private int getNextChallengeId() throws SQLException
 	{
 		String sql = "SELECT CASE WHEN count(*) = 0 THEN 1 ELSE max(id) + 1 END FROM challenges";
-		try
-		{
-			PreparedStatement nextIdPS = _db.getConnection().prepareStatement(sql);
-			ResultSet rs = nextIdPS.executeQuery();
-			int nextId = rs.getInt(1);
-			rs.close();
-			return nextId;
-		}
-		catch (SQLException e)
-		{
-			throw new DatabaseException(e);
-		}
+
+		PreparedStatement nextIdPS = _db.getConnection().prepareStatement(sql);
+		ResultSet rs = nextIdPS.executeQuery();
+		int nextId = rs.getInt(1);
+		rs.close();
+		return nextId;
 	}
 	
 	@Requires("challenge != null")
-	public void update(Challenge challenge)
+	public void update(Challenge challenge) throws SQLException
 	{
 		String challengeSQL = "UPDATE challenges SET regex=?, name=? WHERE id=?";
 		
-		try
-		{
-			PreparedStatement ps = _db.getConnection().prepareStatement(challengeSQL);
-			ps.setString(1, challenge.getSampleSolution().getSolution());
-			ps.setString(2, challenge.getName());
-			ps.setInt(3, challenge.getId());
-			ps.execute();
-			ps.close();
-			removeRequirements(challenge.getId());
-			insertRequirements(challenge.getRequirements(), challenge.getId());
-		}
-		catch (SQLException e)
-		{
-			throw new DatabaseException(e);
-		}
+		PreparedStatement ps = _db.getConnection().prepareStatement(challengeSQL);
+		ps.setString(1, challenge.getSampleSolution().getSolution());
+		ps.setString(2, challenge.getName());
+		ps.setInt(3, challenge.getId());
+		ps.execute();
+		ps.close();
+		removeRequirements(challenge.getId());
+		insertRequirements(challenge.getRequirements(), challenge.getId());
 	}
 	
 	public void delete(int challengeId)
