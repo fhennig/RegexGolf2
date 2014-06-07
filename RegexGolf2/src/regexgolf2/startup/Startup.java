@@ -86,8 +86,23 @@ public class Startup extends Application
 						_settings.getSQLiteDBPath());
 				System.exit(0);
 			};
-		PersistenceService ps = new PersistenceService(new Database(dbFile));
-		testDB(ps);
+		PersistenceService ps = null;
+			try
+			{
+				ps = new PersistenceService(new Database(dbFile));
+			}
+			catch (ClassNotFoundException e)
+			{
+				JOptionPane.showMessageDialog(null, "Could not load the Database driver!");
+				System.exit(0);
+			}
+			catch (SQLException e)
+			{
+				JOptionPane.showMessageDialog(null, "Could not initialized the Database!");
+				System.exit(0);
+			}
+		if (ps != null)
+			testDB(ps);
 	}
 	
 	private static void testDB(PersistenceService ps)
@@ -96,12 +111,13 @@ public class Startup extends Application
 		try
 		{
 			ps.getChallengeMapper().getAll();
-			ps.getChallengeMapper().insert(c);
-			ps.getChallengeMapper().update(c);
-			ps.getChallengeMapper().delete(c.getId());
+			int challengeID = ps.getChallengeMapper().insert(c);
+			ps.getChallengeMapper().update(c, challengeID);
+			ps.getChallengeMapper().delete(challengeID);
 		} catch (SQLException e)
 		{
-			JOptionPane.showMessageDialog(null, "Accessing the Database failed!");
+			JOptionPane.showMessageDialog(null, "Accessing the Database failed!\n" + 
+							"Maybe the Database is outdated?");
 			System.exit(0);
 		}
 	}
