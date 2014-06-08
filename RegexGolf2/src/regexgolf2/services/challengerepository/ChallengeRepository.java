@@ -1,93 +1,118 @@
 package regexgolf2.services.challengerepository;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import regexgolf2.model.Challenge;
-import regexgolf2.services.persistence.PersistenceServiceOld;
+import regexgolf2.model.Solution;
+import regexgolf2.model.SolvableChallenge;
+import regexgolf2.services.ObservableService;
+import regexgolf2.services.persistence.mappers.SolvableChallengeMapper;
+import regexgolf2.services.persistence.mappers.SolvableChallengeMapper.SolvableChallengeDTO;
 
-public class ChallengeRepository
+import com.google.java.contract.Ensures;
+import com.google.java.contract.Requires;
+
+/**
+ * Fires the serviceChangedEvent if a challenge is added or removed.
+ */
+public class ChallengeRepository extends ObservableService
 {
-	private final PersistenceServiceOld _persistenceService;
-	private final Map<Challenge, ChangeTracker> _changeTrackers = new HashMap<>();
+	private final SolvableChallengeMapper _mapper;
+	private final Map<SolvableChallenge, Integer> _idMap = new HashMap<>();
+	private final Map<SolvableChallenge, PersistenceStateImpl> _persistenceStates = new HashMap<>();
 	
-	public ChallengeRepository(PersistenceServiceOld persistenceService)
+	
+	
+	@Requires("mapper != null")
+	public ChallengeRepository(SolvableChallengeMapper mapper) throws SQLException
 	{
-		_persistenceService = persistenceService;
-		init();
+		_mapper = mapper;
+		reloadAll();
 	}
 	
-	private void init()
+	
+	
+	private void reloadAll() throws SQLException
 	{
-		List<Challenge> challenges = _persistenceService.getAll();
-		for (Challenge challenge : challenges)
+		_idMap.clear();
+		_persistenceStates.clear();
+		
+		List<SolvableChallengeDTO> dtos = new ArrayList<>();
+		
+		for (SolvableChallengeDTO dto : dtos)
 		{
-			putChallenge(challenge, false, false);
+			_idMap.put(dto.challenge, dto.challengeId);
+			_persistenceStates.put(dto.challenge, new PersistenceStateImpl(dto.challenge, false));
 		}
+		fireServiceChangedEvent();
 	}
 	
-	private void putChallenge(Challenge challenge, boolean isChanged, boolean isNew)
+	@Ensures("result != null")
+	public Set<SolvableChallenge> getAll()
 	{
-		//FIXME 
-		//_changeTrackers.put(challenge, new ChangeTracker(challenge, isChanged, isNew));
-	}
-	
-	public List<Challenge> getAll()
-	{
-		return new ArrayList<>(_changeTrackers.keySet());
-	}
-	
-	public void save(Challenge challenge)
-	{
-		boolean successfull = trySave(challenge);
-		if (!successfull)
-			throw new IllegalArgumentException();
+		return Collections.unmodifiableSet(_idMap.keySet());
 	}
 
-	private boolean trySave(Challenge challenge)
+	@Requires({
+		"c != null",
+		"contains(c)"
+	})
+	public PersistenceState getPersistenceState(SolvableChallenge c)
 	{
-		ChangeTracker ct = _changeTrackers.get(challenge);
-		if (ct == null)
-			return false;
+		return _persistenceStates.get(c);
+	}
+	
+	@Ensures("result != null")
+	public SolvableChallenge createNew()
+	{
+		SolvableChallenge c = new SolvableChallenge(new Solution(), new Challenge());
+		_idMap.put(c, 0);
+		_persistenceStates.put(c, new PersistenceStateImpl(c, true));
+		fireServiceChangedEvent();
+		return c;
+	}
+
+	
+	@Requires({
+		"c != null",
+		"contains(c)"
+	})
+	public void save(SolvableChallenge c) throws SQLException
+	{
+		boolean isNew = _persistenceStates.get(c).isNew();
 		
-		if (ct.objectIsNew())
+		if (isNew)
 		{
-			_persistenceService.insert(challenge);
+			int id = _mapper.insert(c);
+			_idMap.put(c, id);
 		}
 		else
 		{
-			if (ct.objectIsChanged())
-			{
-				_persistenceService.update(challenge);
-			}
-		}	
-		ct.changesSaved();
-		return true;
-	}
-
-	public Challenge addNew()
-	{
-		//TODO refactor object creation
-//		Challenge newChallenge = new Challenge(new Solution(), new Solution());
-//		putChallenge(newChallenge, true, true);
-//		return newChallenge;
-		return null;
+			_mapper.update(c, _idMap.get(c));
+		}
+		_persistenceStates.get(c).objectWasPersisted();
 	}
 	
-	public void delete(Challenge challenge)
+	@Requires({
+		"c != null",
+		"contains(c)"
+	})
+	public void delete(SolvableChallenge c) throws SQLException
 	{
-		if (!_changeTrackers.containsKey(challenge))
-			throw new IllegalArgumentException();
-		
-		//FIXME
-		//_persistenceService.delete(challenge.getId());
+		_mapper.delete(_idMap.get(c));
+		_idMap.remove(c);
+		_persistenceStates.remove(c);
+		fireServiceChangedEvent();
 	}
 	
-	//can return null!
-	public ChangeTracker getChangeTracker(Challenge challenge)
+	public boolean contains(SolvableChallenge c)
 	{
-		return _changeTrackers.get(challenge);
+		return _idMap.keySet().contains(c);
 	}
 }

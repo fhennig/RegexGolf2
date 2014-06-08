@@ -15,7 +15,6 @@ public class Challenge extends ObservableObject
 	private final Set<Requirement> _requirements = new HashSet<>();
 	private Solution _sampleSolution;
 	private String _name = "";
-	private int _id;
 	
 	private ObjectChangedListener _requirementListener;
 	
@@ -59,19 +58,6 @@ public class Challenge extends ObservableObject
 				fireObjectChangedEvent();
 			}
 		});
-	}
-	
-	public int getId()
-	{
-		return _id;
-	}
-	
-	public void setId(int id)
-	{
-		if (_id == id)
-			return;
-		_id = id;
-		fireObjectChangedEvent();
 	}
 	
 	@Ensures("result != null")

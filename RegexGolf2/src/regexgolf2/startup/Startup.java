@@ -2,6 +2,7 @@ package regexgolf2.startup;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -85,16 +86,39 @@ public class Startup extends Application
 						_settings.getSQLiteDBPath());
 				System.exit(0);
 			};
-		PersistenceService ps = new PersistenceService(new Database(dbFile));
-		testDB(ps);
+		PersistenceService ps = null;
+			try
+			{
+				ps = new PersistenceService(new Database(dbFile));
+			}
+			catch (ClassNotFoundException e)
+			{
+				JOptionPane.showMessageDialog(null, "Could not load the Database driver!");
+				System.exit(0);
+			}
+			catch (SQLException e)
+			{
+				JOptionPane.showMessageDialog(null, "Could not initialized the Database!");
+				System.exit(0);
+			}
+		if (ps != null)
+			testDB(ps);
 	}
 	
 	private static void testDB(PersistenceService ps)
 	{
 		Challenge c = ChallengeFactory.getIPChallenge();
-		ps.getChallengeMapper().getAll();
-		ps.getChallengeMapper().insert(c);
-		ps.getChallengeMapper().update(c);
-		ps.getChallengeMapper().delete(c.getId());
+		try
+		{
+			ps.getChallengeMapper().getAll();
+			int challengeID = ps.getChallengeMapper().insert(c);
+			ps.getChallengeMapper().update(c, challengeID);
+			ps.getChallengeMapper().delete(challengeID);
+		} catch (SQLException e)
+		{
+			JOptionPane.showMessageDialog(null, "Accessing the Database failed!\n" + 
+							"Maybe the Database is outdated?");
+			System.exit(0);
+		}
 	}
 }
