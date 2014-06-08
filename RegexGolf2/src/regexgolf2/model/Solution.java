@@ -1,9 +1,7 @@
-package regexgolf2.model.solution;
+package regexgolf2.model;
 
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
-
-import regexgolf2.model.ObservableObject;
 
 import com.google.java.contract.Ensures;
 import com.google.java.contract.Requires;
@@ -12,6 +10,7 @@ import com.google.java.contract.Requires;
 public class Solution extends ObservableObject
 {
 	private Pattern _regex = Pattern.compile("");
+	private int _id;
 	
 	
 	
@@ -25,9 +24,24 @@ public class Solution extends ObservableObject
 	
 	
 	
+	public int getId()
+	{
+		return _id;
+	}
+	
+	public void setId(int id)
+	{
+		if (_id == id)
+			return;
+		_id = id;
+		fireObjectChangedEvent();
+	}
+	
 	@Requires("regex != null")
 	public boolean trySetSolution(String regex)
 	{
+		if (getSolution().equals(regex))
+			return true;
 		try
 		{
 			_regex = Pattern.compile(regex);

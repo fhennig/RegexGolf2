@@ -1,16 +1,30 @@
 package regexgolf2.services.persistence;
 
-import java.util.List;
+import regexgolf2.services.persistence.mappers.ChallengeMapper;
+import regexgolf2.services.persistence.mappers.RequirementMapper;
 
-import regexgolf2.model.challenge.Challenge;
+import com.google.java.contract.Ensures;
+import com.google.java.contract.Requires;
 
-public interface PersistenceService
+public class PersistenceService
 {
-	List<Challenge> getAll();
+	private final RequirementMapper _requirementMapper;
+	private final ChallengeMapper _challengeMapper;
 	
-	public void insert(Challenge challenge);
 	
-	public void update(Challenge challenge);
 	
-	public void delete(int id);
+	@Requires("db != null")
+	public PersistenceService(Database db)
+	{
+		_requirementMapper = new RequirementMapper(db);
+		_challengeMapper = new ChallengeMapper(db, _requirementMapper);
+	}
+	
+	
+	
+	@Ensures("result != null")
+	public ChallengeMapper getChallengeMapper()
+	{
+		return _challengeMapper;
+	}
 }

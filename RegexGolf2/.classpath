@@ -10,5 +10,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="lib/cofoja.jar"/>
+	<classpathentry kind="lib" path="lib/sqlite-jdbc.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

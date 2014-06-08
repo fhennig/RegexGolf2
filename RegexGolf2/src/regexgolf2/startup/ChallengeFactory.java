@@ -1,7 +1,7 @@
 package regexgolf2.startup;
 
-import regexgolf2.model.challenge.Challenge;
-import regexgolf2.model.requirement.Requirement;
+import regexgolf2.model.Challenge;
+import regexgolf2.model.Requirement;
 
 public class ChallengeFactory
 {

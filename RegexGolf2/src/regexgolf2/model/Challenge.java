@@ -1,13 +1,10 @@
-package regexgolf2.model.challenge;
+package regexgolf2.model;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EventObject;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
-
-import regexgolf2.model.ObjectChangedListener;
-import regexgolf2.model.ObservableObject;
-import regexgolf2.model.requirement.Requirement;
-import regexgolf2.model.solution.Solution;
 
 import com.google.java.contract.Ensures;
 import com.google.java.contract.Requires;
@@ -109,5 +106,31 @@ public class Challenge extends ObservableObject
 	public Set<Requirement> getRequirements()
 	{
 		return Collections.unmodifiableSet(_requirements);
+	}
+
+	
+	/**
+	 * Helper method to get filtered requirements
+	 * @param expectedMatchresult The value that should be filtered with
+	 */
+	@Ensures("result != null")
+	public List<Requirement> getRequirements(boolean expectedMatchResult)
+	{
+		List<Requirement> requirements = new ArrayList<>();
+		
+		for (Requirement r : getRequirements())
+		{
+			if (r.getExpectedMatchResult() == expectedMatchResult)
+			{
+				requirements.add(r);
+			}
+		}
+		
+		return requirements;
+	}
+	
+	public int getAmountRequirements()
+	{
+		return _requirements.size();
 	}
 }

@@ -1,7 +1,4 @@
-package regexgolf2.model.requirement;
-
-import regexgolf2.model.ObservableObject;
-import regexgolf2.model.solution.Solution;
+package regexgolf2.model;
 
 import com.google.java.contract.Ensures;
 import com.google.java.contract.Requires;
