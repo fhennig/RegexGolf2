@@ -39,7 +39,7 @@ public class SolvableChallenge extends ObservableObject
 			@Override
 			public void objectChanged(EventObject event)
 			{
-				if (!_solution.equals(event.getSource()))
+				if (!_challenge.equals(event.getSource()))
 						throw new IllegalStateException();
 				
 				reactToSubobjectChange();

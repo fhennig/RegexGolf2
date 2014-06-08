@@ -4,12 +4,12 @@ import java.io.IOException;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
-import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import regexgolf2.ui.subcomponents.requirementlisting.RequirementItem;
-import regexgolf2.ui.subcomponents.requirementlisting.RequirementListingUI;
+import javafx.scene.layout.AnchorPane;
+import regexgolf2.ui.JavafxUtil;
 import regexgolf2.ui.subcomponents.scoredisplay.ScoreDisplayUI;
 import regexgolf2.ui.subcomponents.solutionediting.SolutionEditingUI;
 
@@ -26,41 +26,39 @@ public class ChallengeSolvingUI
     private TextField _solutionTextField;
     private SolutionEditingUI _solutionEditingUI;
 
-    @FXML
-    private TableView<RequirementItem> _dontMatchTableView;
-    private RequirementListingUI _nonMatchRequirementsUI;
 
     @FXML
-    private TableView<RequirementItem> _doMatchTableView;
-    private RequirementListingUI _matchRequirementsUI;
+    private AnchorPane _doMatchPane;
+    private Node _doMatchUI;
+
+    @FXML
+    private AnchorPane _dontMatchPane;
+    private Node _dontMatchUI;
     
     private Parent _rootNode;
     
     
     
-    public ChallengeSolvingUI() throws IOException
+    public ChallengeSolvingUI(Node doMatchUI, Node dontMatchUI) throws IOException
     {
+    	_doMatchUI = doMatchUI;
+    	_dontMatchUI = dontMatchUI;
+    	
     	FXMLLoader loader = new FXMLLoader(getClass().getResource("ChallengeSolvingUI.fxml")); 
     	loader.setController(this);
-    	
     	_rootNode = loader.load();
     	
-    	_matchRequirementsUI = new RequirementListingUI(_doMatchTableView);
-    	_nonMatchRequirementsUI = new RequirementListingUI(_dontMatchTableView);
+    	assert _challengeNameLabel != null;
+    	assert _scoreLabel != null;
+    	assert _solutionTextField != null;
+    	assert _doMatchPane != null;
+    	assert _dontMatchPane != null;
+
+    	JavafxUtil.setAsContent(_doMatchUI, _doMatchPane);
+    	JavafxUtil.setAsContent(_dontMatchUI, _dontMatchPane);
+    	
     	_scoreDisplayUI = new ScoreDisplayUI(_scoreLabel);
     	_solutionEditingUI = new SolutionEditingUI(_solutionTextField);
-    }
-
-    
-    
-    public RequirementListingUI getNonMatchRequirementListingUI()
-    {
-    	return _nonMatchRequirementsUI;
-    }
-    
-    public RequirementListingUI getMatchRequirementListingUI()
-    {
-    	return _matchRequirementsUI;
     }
     
     public ScoreDisplayUI getScoreDisplayUI()
