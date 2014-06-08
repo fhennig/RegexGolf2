@@ -7,6 +7,7 @@ import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.util.Callback;
 import regexgolf2.model.Requirement;
+import regexgolf2.ui.subcomponents.requirementlisting.requirementcell.RequirementCellFactory;
 
 import com.google.java.contract.Ensures;
 import com.google.java.contract.Requires;

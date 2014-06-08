@@ -7,8 +7,8 @@ import javafx.scene.control.ListCell;
 import regexgolf2.model.ObjectChangedListener;
 import regexgolf2.model.Requirement;
 import regexgolf2.model.SolvableChallenge;
-import regexgolf2.ui.subcomponents.requirementlisting.RequirementCellListener;
-import regexgolf2.ui.subcomponents.requirementlisting.RequirementCellUI;
+import regexgolf2.ui.subcomponents.requirementlisting.requirementcell.RequirementCellListener;
+import regexgolf2.ui.subcomponents.requirementlisting.requirementcell.RequirementCellUI;
 
 import com.google.java.contract.Requires;
 

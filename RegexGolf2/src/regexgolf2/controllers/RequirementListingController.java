@@ -9,8 +9,8 @@ import javafx.scene.control.ListCell;
 import regexgolf2.model.ObjectChangedListener;
 import regexgolf2.model.Requirement;
 import regexgolf2.model.SolvableChallenge;
-import regexgolf2.ui.subcomponents.requirementlisting.RequirementCellFactory;
 import regexgolf2.ui.subcomponents.requirementlisting.RequirementListUI;
+import regexgolf2.ui.subcomponents.requirementlisting.requirementcell.RequirementCellFactory;
 
 public class RequirementListingController
 {

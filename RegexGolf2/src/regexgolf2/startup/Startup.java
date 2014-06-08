@@ -47,7 +47,7 @@ public class Startup extends Application
 		
 		Scene scene = new Scene(controller.getUINode());
 		stage.setTitle("Test");
-		stage.setWidth(400);
+		stage.setWidth(458);
 		stage.setHeight(300);
 		
 		stage.setScene(scene);

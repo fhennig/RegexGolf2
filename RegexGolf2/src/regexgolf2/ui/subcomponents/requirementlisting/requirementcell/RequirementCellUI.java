@@ -1,4 +1,4 @@
-package regexgolf2.ui.subcomponents.requirementlisting;
+package regexgolf2.ui.subcomponents.requirementlisting.requirementcell;
 
 import java.io.IOException;
 
@@ -73,7 +73,18 @@ public class RequirementCellUI extends ListCell<Requirement>
 			@Override
 			public void handle(ActionEvent arg0)
 			{
-				reactToTextFieldCommit();
+				setEditMode(false);
+			}
+		});
+    	
+    	_textField.textProperty().addListener(new ChangeListener<String>()
+		{
+			@Override
+			public void changed(ObservableValue<? extends String> arg0,
+					String arg1, String arg2)
+			{
+				_listener.requirementEdited(_textField.getText());
+				
 			}
 		});
     	
@@ -94,12 +105,6 @@ public class RequirementCellUI extends ListCell<Requirement>
     {
     	if (_editable)
     		setEditMode(true);
-    }
-    
-    private void reactToTextFieldCommit()
-    {
-    	setEditMode(false);
-    	_listener.requirementEdited(_textField.getText());
     }
     
     private void reactToTextFieldFocusLost()
