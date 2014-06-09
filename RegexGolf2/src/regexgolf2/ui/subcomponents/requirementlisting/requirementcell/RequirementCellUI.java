@@ -51,7 +51,12 @@ public class RequirementCellUI extends ListCell<Requirement>
     	loader.setController(this);
     	_rootNode = loader.load();
     	_textField.setVisible(false);
-    	    	
+    	
+    	//Setup correct scaling
+    	this.setPrefWidth(0);
+    	_rootNode.prefWidthProperty().bind(this.widthProperty().subtract(14));
+    	_rootNode.maxWidthProperty().bind(this.widthProperty().subtract(14));
+    	
     	initImages();
     	initListeners();
     }
