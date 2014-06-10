@@ -1,6 +1,6 @@
 package regexgolf2.controllers;
 
-import java.io.IOException;
+import java.util.ArrayList;
 import java.util.EventObject;
 import java.util.List;
 
@@ -18,10 +18,16 @@ public class RequirementListingController
 	private final boolean _editable;
 	private ObjectChangedListener _challengeListener;
 	
+	
 	private final boolean _expectedMatchResult;
 	private SolvableChallenge _challenge;
 	
 	
+	
+	public RequirementListingController(boolean expectedMatchResult, boolean editable)
+	{
+		this(null, expectedMatchResult, editable);
+	}
 	
 	/**
 	 * Lists the Requirements with the given expectedMatchResult
@@ -29,35 +35,35 @@ public class RequirementListingController
 	public RequirementListingController(SolvableChallenge challenge, boolean expectedMatchResult, boolean editable)
 	{
 		_editable = editable;
-		initUI();
 		_expectedMatchResult = expectedMatchResult;
+		initUI();
 		initChallengeListener();
 		setChallenge(challenge);
 	}
 	
-	
+	//TODO somehow challenge update has to propagate through to the cells
 	
 	private void initUI()
 	{
-		_ui = new RequirementListUI(new RequirementCellFactory()
+		_ui = new RequirementListUI(createRequirementCellFactory(), _editable);
+	}
+	
+	/**
+	 * Creates a new RequirementCellHandler that provides interaction logic
+	 * for a RequirementCell.
+	 */
+	private RequirementCellFactory createRequirementCellFactory()
+	{
+		return new RequirementCellFactory()
 		{
 			@Override
 			public ListCell<Requirement> createCell()
 			{
-				try
-				{
-					return new RequirementCellController(_challenge, _editable).getCellUI();
-				}
-				catch (IOException e)
-				{
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-					return null;
-				}
+				return new RequirementCellController(_challenge, _editable).getCellUI();
 			}
-		});
+		};
 	}
-	
+
 	private void initChallengeListener()
 	{
 		_challengeListener = new ObjectChangedListener()
@@ -68,26 +74,20 @@ public class RequirementListingController
 				if (!(_challenge != null && _challenge.equals(event.getSource())))
 					throw new IllegalStateException();
 				
-				synchronizeRequirementList();
+				refreshRequirementListUI();
 			}
 		};
 	}
 	
-	private void synchronizeRequirementList()
+	private void refreshRequirementListUI()
 	{
-		List<Requirement> newRequirementList = _challenge.getRequirements(_expectedMatchResult);
+		List<Requirement> newRequirementList;
+		if (_challenge != null)
+			newRequirementList = _challenge.getRequirements(_expectedMatchResult);
+		else
+			newRequirementList = new ArrayList<>();
 		
-		for (Requirement r : _ui.getItems())
-		{
-			if (!newRequirementList.contains(r))
-				_ui.removeRequirement(r);
-		}
-		
-		for (Requirement r : newRequirementList)
-		{
-			if (!_ui.getItems().contains(r))
-				_ui.addRequirement(r);
-		}
+		regexgolf2.util.Util.synchronize(newRequirementList, _ui.getItems());
 		
 	}
 	
@@ -100,7 +100,7 @@ public class RequirementListingController
 		if (_challenge != null)
 		{
 			_challenge.addObjectChangedListener(_challengeListener);
-			synchronizeRequirementList();
+			refreshRequirementListUI();
 		}
 	}
 	

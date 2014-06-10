@@ -8,6 +8,7 @@ import javafx.scene.control.ListView;
 import javafx.util.Callback;
 import regexgolf2.model.Requirement;
 import regexgolf2.ui.subcomponents.requirementlisting.requirementcell.RequirementCellFactory;
+import regexgolf2.ui.util.DisabledSelectionModel;
 
 import com.google.java.contract.Ensures;
 import com.google.java.contract.Requires;
@@ -20,10 +21,13 @@ public class RequirementListUI
 	
 		
 	@Requires("factory != null")
-	public RequirementListUI(RequirementCellFactory factory)
+	public RequirementListUI(RequirementCellFactory factory, boolean editable)
 	{
 		_factory = factory;
 		initListView();
+		
+		if (!editable)
+			_listView.setSelectionModel(new DisabledSelectionModel<Requirement>());
 	}
 	
 	

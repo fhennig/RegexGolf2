@@ -9,9 +9,9 @@ import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
-import regexgolf2.ui.JavafxUtil;
 import regexgolf2.ui.subcomponents.scoredisplay.ScoreDisplayUI;
 import regexgolf2.ui.subcomponents.solutionediting.SolutionEditingUI;
+import regexgolf2.ui.util.JavafxUtil;
 
 public class ChallengeSolvingUI
 {
@@ -29,21 +29,16 @@ public class ChallengeSolvingUI
 
     @FXML
     private AnchorPane _doMatchPane;
-    private Node _doMatchUI;
 
     @FXML
     private AnchorPane _dontMatchPane;
-    private Node _dontMatchUI;
     
     private Parent _rootNode;
     
     
     
     public ChallengeSolvingUI(Node doMatchUI, Node dontMatchUI) throws IOException
-    {
-    	_doMatchUI = doMatchUI;
-    	_dontMatchUI = dontMatchUI;
-    	
+    {    	
     	FXMLLoader loader = new FXMLLoader(getClass().getResource("ChallengeSolvingUI.fxml")); 
     	loader.setController(this);
     	_rootNode = loader.load();
@@ -54,8 +49,8 @@ public class ChallengeSolvingUI
     	assert _doMatchPane != null;
     	assert _dontMatchPane != null;
 
-    	JavafxUtil.setAsContent(_doMatchUI, _doMatchPane);
-    	JavafxUtil.setAsContent(_dontMatchUI, _dontMatchPane);
+    	JavafxUtil.setAsContent(doMatchUI, _doMatchPane);
+    	JavafxUtil.setAsContent(dontMatchUI, _dontMatchPane);
     	
     	_scoreDisplayUI = new ScoreDisplayUI(_scoreLabel);
     	_solutionEditingUI = new SolutionEditingUI(_solutionTextField);

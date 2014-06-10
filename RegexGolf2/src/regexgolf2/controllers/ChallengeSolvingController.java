@@ -15,25 +15,23 @@ public class ChallengeSolvingController
 	private final RequirementListingController _doMatchController;
 	private final RequirementListingController _dontMatchController;
 	private SolvableChallenge _challenge;
+	private ObjectChangedListener _challengeListener;
 	
 	
 	
-	//TODO enable challenge == null to disable the UI
-	public ChallengeSolvingController(SolvableChallenge challenge)
+	public ChallengeSolvingController() throws IOException
+	{
+		this(null);
+	}
+	
+	public ChallengeSolvingController(SolvableChallenge challenge) throws IOException
 	{
 		_challenge = challenge; 
 		_doMatchController = new RequirementListingController(_challenge, true, false);
 		_dontMatchController = new RequirementListingController(_challenge, false, false);
-		
-		try
-		{
-			_ui = new ChallengeSolvingUI(_doMatchController.getUINode(), _dontMatchController.getUINode());
-		} catch (IOException e)
-		{
-			// TODO Proper error handling 
-			throw new IllegalStateException();
-		}
-		
+
+		_ui = new ChallengeSolvingUI(_doMatchController.getUINode(), _dontMatchController.getUINode());
+
 		initTextBox();
 		initChallengeListener();
 		refreshUI();
@@ -53,18 +51,20 @@ public class ChallengeSolvingController
 	
 	private void initChallengeListener()
 	{
-		_challenge.addObjectChangedListener(new ObjectChangedListener()
+		_challengeListener = new ObjectChangedListener()
 		{
 			@Override
 			public void objectChanged(EventObject event)
 			{
 				refreshUI();
 			}
-		});
+		};
 	}
 	
 	private void reactToInputChanged()
 	{
+		if (_challenge == null)
+			return;
 		_challenge.getSolution().trySetSolution(_ui.getSolutionEditingUI().getText());
 	}
 	
@@ -77,19 +77,44 @@ public class ChallengeSolvingController
 	
 	private void refreshChallengeNameLabel()
 	{
-		_ui.getChallengeNameLabel().setText(_challenge.getChallenge().getName());
+		String text = (_challenge == null ? "" : _challenge.getChallenge().getName());
+		_ui.getChallengeNameLabel().setText(text);
 	}
 	
 	private void refreshScoreDisplay()
 	{
-		_ui.getScoreDisplayUI().setAmountCompliedRequirements(_challenge.getAmountCompliedRequirements());
-		_ui.getScoreDisplayUI().setAmountRequirements(_challenge.getAmountRequirements());
-		_ui.getScoreDisplayUI().setHighlight(_challenge.isSolved());
+		if (_challenge == null)
+		{
+			_ui.getScoreDisplayUI().setAmountCompliedRequirements(0);
+			_ui.getScoreDisplayUI().setAmountRequirements(0);
+			_ui.getScoreDisplayUI().setHighlight(false);
+		}
+		else
+		{
+			_ui.getScoreDisplayUI().setAmountCompliedRequirements(_challenge.getAmountCompliedRequirements());
+			_ui.getScoreDisplayUI().setAmountRequirements(_challenge.getAmountRequirements());
+			_ui.getScoreDisplayUI().setHighlight(_challenge.isSolved());
+		}
 	}
 	
 	private void refreshSolutionTextBox()
 	{
-		_ui.getSolutionEditingUI().setText(_challenge.getSolution().getSolution());
+		String text = (_challenge == null ? "" : _challenge.getSolution().getSolution());
+		_ui.getSolutionEditingUI().setText(text);
+	}
+	
+	public void setChallenge(SolvableChallenge challenge)
+	{
+		if (_challenge == challenge)
+			return; //Nothing to do here
+		if (_challenge != null)
+			_challenge.removeObjectChangedListener(_challengeListener);
+		_challenge = challenge;
+		if (_challenge != null)
+			_challenge.addObjectChangedListener(_challengeListener);
+		
+		_doMatchController.setChallenge(_challenge);
+		_dontMatchController.setChallenge(_challenge);
 	}
 	
 	public Parent getUINode()

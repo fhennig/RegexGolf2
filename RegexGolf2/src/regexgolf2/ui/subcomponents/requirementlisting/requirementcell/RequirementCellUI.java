@@ -1,10 +1,7 @@
 package regexgolf2.ui.subcomponents.requirementlisting.requirementcell;
 
-import java.io.IOException;
-
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.ListCell;
@@ -18,54 +15,66 @@ import com.google.java.contract.Requires;
 
 public class RequirementCellUI extends ListCell<Requirement>
 {
-    @FXML
-    private ImageView _imageView;
+	/**
+	 * ImageView that displays the check-image that indicates,
+	 * if the requirement is complied or not.
+	 */
+    private final ImageView _imageView = new ImageView();
     
-    private EditableLabel _editLabel = new EditableLabel();
+    private final EditableLabel _editLabel = new EditableLabel();
 
-    private final RequirementCellListener _listener;
+    private final RequirementCellHandler _listener;
     
-    private final AnchorPane _rootNode;
+    private final AnchorPane _rootNode = new AnchorPane();
     
     private Image _notCompliedImage;
     private Image _compliedImage;
-    private Object _item;
+    private Requirement _requirement;
     
     
     
     @Requires("listener != null")
-    public RequirementCellUI(RequirementCellListener listener) throws IOException
+    public RequirementCellUI(RequirementCellHandler listener)
     {
     	_listener = listener;
+    	initLayout();
+    	initImages();
+    	initEditLabelListener();
+    }
+    
+    
+    
+    private void initLayout()
+    {
+    	Node editLabelNode = _editLabel.getUINode();
+    	AnchorPane.setLeftAnchor(editLabelNode, 0.0);
+    	AnchorPane.setTopAnchor(editLabelNode, 0.0);
+    	AnchorPane.setBottomAnchor(editLabelNode, 0.0);
     	
-    	_rootNode = new AnchorPane();
-    	
-    	Node editLabel = _editLabel.getUINode();
-    	
-    	AnchorPane.setLeftAnchor(editLabel, 0.0);
-    	AnchorPane.setTopAnchor(editLabel, 1.0);
-    	AnchorPane.setBottomAnchor(editLabel, 1.0);
-    	
-    	_imageView = new ImageView();
     	_imageView.setFitHeight(25);
     	_imageView.setFitWidth(25);
     	
     	AnchorPane.setTopAnchor(_imageView, 0.0);
     	AnchorPane.setRightAnchor(_imageView, 0.0);
     	
-    	_rootNode.getChildren().add(editLabel);
+    	_rootNode.getChildren().add(editLabelNode);
     	_rootNode.getChildren().add(_imageView);
     	
     	//Setup correct scaling
     	this.setPrefWidth(0);
-    	_rootNode.prefWidthProperty().bind(this.widthProperty().subtract(14));
+    	_rootNode.prefWidthProperty().bind(this.widthProperty());
     	
-    	initImages();
-    	initListeners();
+    	setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
     }
     
+    private void initImages()
     
-    private void initListeners()
+    {
+    	_compliedImage = new Image(getClass().getResourceAsStream("complied.png"));
+    	_notCompliedImage = new Image(getClass().getResourceAsStream("notComplied.png"));
+    }
+    
+    private void initEditLabelListener()
     {
     	_editLabel.textProperty().addListener(new ChangeListener<String>()
 		{
@@ -73,20 +82,23 @@ public class RequirementCellUI extends ListCell<Requirement>
 			public void changed(ObservableValue<? extends String> arg0,
 					String arg1, String arg2)
 			{
-				_listener.requirementEdited(_editLabel.getText());
+				_listener.requirementEdited(RequirementCellUI.this, _editLabel.getText());
 			}
 		});
     }
-
-    private void initImages()
-    {
-    	_compliedImage = new Image(getClass().getResourceAsStream("complied.png"));
-    	_notCompliedImage = new Image(getClass().getResourceAsStream("notComplied.png"));
-    }
     
+    /**
+     * Sets the text that should be display in the Cell.
+     */
+    @Requires("word != null")
     public void setWord(String word)
     {
     	_editLabel.setText(word);
+    }
+    
+    public Requirement getRequirement()
+    {
+    	return _requirement;
     }
     
     public void setComplied(boolean complied)
@@ -109,18 +121,17 @@ public class RequirementCellUI extends ListCell<Requirement>
     protected void updateItem(Requirement requirement, boolean empty)
     {
     	super.updateItem(requirement, empty);
-    	if (_item == requirement)
+    	if (_requirement == requirement)
     		return;
-    	setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
-    	if (requirement == null)
+    	_requirement = requirement;
+    	if (_requirement == null)
     	{
     		setGraphic(null);
     	}
     	else
     	{
     		setGraphic(_rootNode);
-    		_listener.requirementChanged(requirement);
+    		_listener.requirementChanged(this, _requirement);
     	}
-    	_item = requirement;
     }
 }
