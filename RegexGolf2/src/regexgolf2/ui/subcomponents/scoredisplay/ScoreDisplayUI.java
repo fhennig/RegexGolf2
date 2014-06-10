@@ -3,6 +3,7 @@ package regexgolf2.ui.subcomponents.scoredisplay;
 import com.google.java.contract.Requires;
 
 import javafx.scene.control.Label;
+import javafx.scene.paint.Color;
 
 public class ScoreDisplayUI
 {
@@ -29,6 +30,14 @@ public class ScoreDisplayUI
 	{
 		_amountCompliedRequirements = amount;
 		refreshUI();
+	}
+	
+	public void setHighlight(boolean highlight)
+	{
+		if (highlight)
+			_label.setTextFill(Color.GREEN); //check-color: 5fd251
+		else
+			_label.setTextFill(Color.BLACK);
 	}
 	
 	private void refreshUI()

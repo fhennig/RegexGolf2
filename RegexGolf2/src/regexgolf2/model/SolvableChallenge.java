@@ -112,6 +112,16 @@ public class SolvableChallenge extends ObservableObject
 		}
 		return compliedRequirements;
 	}
+	
+	public boolean isSolved()
+	{
+		for (Requirement r : _challenge.getRequirements())
+		{
+			if (_complianceResults.get(r) == false)
+				return false;
+		}
+		return true;
+	}
 
 	@Requires("_challenge.getRequirements().contains(requirement)")
 	public boolean isComplied(Requirement requirement)

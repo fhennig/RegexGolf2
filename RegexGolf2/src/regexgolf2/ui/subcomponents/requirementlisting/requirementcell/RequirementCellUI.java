@@ -4,19 +4,15 @@ import java.io.IOException;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.event.ActionEvent;
-import javafx.event.Event;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.control.ContentDisplay;
-import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
-import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import regexgolf2.model.Requirement;
+import regexgolf2.ui.subcomponents.editablelabel.EditableLabel;
 
 import com.google.java.contract.Requires;
 
@@ -24,12 +20,8 @@ public class RequirementCellUI extends ListCell<Requirement>
 {
     @FXML
     private ImageView _imageView;
-
-    @FXML
-    private TextField _textField;
-
-    @FXML
-    private Label _label;
+    
+    private EditableLabel _editLabel = new EditableLabel();
 
     private final RequirementCellListener _listener;
     
@@ -37,7 +29,6 @@ public class RequirementCellUI extends ListCell<Requirement>
     
     private Image _notCompliedImage;
     private Image _compliedImage;
-    private boolean _editable;
     private Object _item;
     
     
@@ -47,15 +38,27 @@ public class RequirementCellUI extends ListCell<Requirement>
     {
     	_listener = listener;
     	
-    	FXMLLoader loader = new FXMLLoader(getClass().getResource("RequirementCellUI.fxml")); 
-    	loader.setController(this);
-    	_rootNode = loader.load();
-    	_textField.setVisible(false);
+    	_rootNode = new AnchorPane();
+    	
+    	Node editLabel = _editLabel.getUINode();
+    	
+    	AnchorPane.setLeftAnchor(editLabel, 0.0);
+    	AnchorPane.setTopAnchor(editLabel, 1.0);
+    	AnchorPane.setBottomAnchor(editLabel, 1.0);
+    	
+    	_imageView = new ImageView();
+    	_imageView.setFitHeight(25);
+    	_imageView.setFitWidth(25);
+    	
+    	AnchorPane.setTopAnchor(_imageView, 0.0);
+    	AnchorPane.setRightAnchor(_imageView, 0.0);
+    	
+    	_rootNode.getChildren().add(editLabel);
+    	_rootNode.getChildren().add(_imageView);
     	
     	//Setup correct scaling
     	this.setPrefWidth(0);
     	_rootNode.prefWidthProperty().bind(this.widthProperty().subtract(14));
-    	_rootNode.maxWidthProperty().bind(this.widthProperty().subtract(14));
     	
     	initImages();
     	initListeners();
@@ -64,76 +67,17 @@ public class RequirementCellUI extends ListCell<Requirement>
     
     private void initListeners()
     {
-    	this.setOnMouseClicked(new EventHandler<Event>()
-		{
-			@Override
-			public void handle(Event arg0)
-			{
-				reactToLabelClicked();
-			}
-		});
-    	
-    	_textField.setOnAction(new EventHandler<ActionEvent>()
-		{
-			@Override
-			public void handle(ActionEvent arg0)
-			{
-				setEditMode(false);
-			}
-		});
-    	
-    	_textField.textProperty().addListener(new ChangeListener<String>()
+    	_editLabel.textProperty().addListener(new ChangeListener<String>()
 		{
 			@Override
 			public void changed(ObservableValue<? extends String> arg0,
 					String arg1, String arg2)
 			{
-				_listener.requirementEdited(_textField.getText());
-				
-			}
-		});
-    	
-    	_textField.focusedProperty().addListener(new ChangeListener<Boolean>()
-		{
-			@Override
-			public void changed(ObservableValue<? extends Boolean> arg0, Boolean arg1, Boolean arg2)
-			{
-				if (!_textField.isFocused())
-				{
-					reactToTextFieldFocusLost();
-				}
+				_listener.requirementEdited(_editLabel.getText());
 			}
 		});
     }
-    
-    private void reactToLabelClicked()
-    {
-    	if (_editable)
-    		setEditMode(true);
-    }
-    
-    private void reactToTextFieldFocusLost()
-    {
-    	setEditMode(false);
-    }
-    
-    private void setEditMode(boolean editMode)
-    {
-    	if (editMode)
-    	{
-    		_label.setVisible(false);
-    		_textField.setText(_label.getText());
-    		_textField.setVisible(true);
-    		_textField.requestFocus();
-    	}
-    	else
-    	{
-    		_textField.setVisible(false);
-    		_label.setVisible(true);
-    		_label.requestFocus();
-    	}
-    }
-    
+
     private void initImages()
     {
     	_compliedImage = new Image(getClass().getResourceAsStream("complied.png"));
@@ -142,7 +86,7 @@ public class RequirementCellUI extends ListCell<Requirement>
     
     public void setWord(String word)
     {
-    	_label.setText(word);
+    	_editLabel.setText(word);
     }
     
     public void setComplied(boolean complied)
@@ -155,7 +99,7 @@ public class RequirementCellUI extends ListCell<Requirement>
     
     public void setIsEditable(boolean editable)
     {
-    	_editable = editable;
+    	_editLabel.setEditable(editable);
     }
     
     /**

@@ -22,8 +22,8 @@ public class ChallengeSolvingController
 	public ChallengeSolvingController(SolvableChallenge challenge)
 	{
 		_challenge = challenge; 
-		_doMatchController = new RequirementListingController(_challenge, true, true);
-		_dontMatchController = new RequirementListingController(_challenge, false, true);
+		_doMatchController = new RequirementListingController(_challenge, true, false);
+		_dontMatchController = new RequirementListingController(_challenge, false, false);
 		
 		try
 		{
@@ -84,6 +84,7 @@ public class ChallengeSolvingController
 	{
 		_ui.getScoreDisplayUI().setAmountCompliedRequirements(_challenge.getAmountCompliedRequirements());
 		_ui.getScoreDisplayUI().setAmountRequirements(_challenge.getAmountRequirements());
+		_ui.getScoreDisplayUI().setHighlight(_challenge.isSolved());
 	}
 	
 	private void refreshSolutionTextBox()
