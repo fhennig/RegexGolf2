@@ -4,6 +4,11 @@ import java.util.Collection;
 
 public class Util
 {
+	/**
+	 * Removes every Element in the target Collection that is not present 
+	 * in the source Collection and 
+	 * adds every Element from the source to the target that is missing in the target.
+	 */
 	public static <T> void synchronize(Collection<T> source, Collection<T> target)
 	{
 		//Remove all items from target that are not contained in the source.

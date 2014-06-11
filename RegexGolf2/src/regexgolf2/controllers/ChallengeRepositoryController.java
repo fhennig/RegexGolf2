@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.scene.Node;
 import regexgolf2.model.Solution;
 import regexgolf2.model.SolvableChallenge;
@@ -22,10 +23,14 @@ public class ChallengeRepositoryController
 		
 		List<SolvableChallenge> list = new ArrayList<>();
 		list.add(new SolvableChallenge(new Solution(), ChallengeFactory.getTestChallenge2()));
+		list.add(new SolvableChallenge(new Solution(), ChallengeFactory.getIPChallenge()));
 		_ui.setChallenges(list);
 	}
-	
-	//TODO implement everything
+
+	public ReadOnlyObjectProperty<SolvableChallenge> selectedChallengeProperty()
+	{
+		return _ui.selectedChallengeProperty();
+	}
 	
 	public Node getUINode()
 	{

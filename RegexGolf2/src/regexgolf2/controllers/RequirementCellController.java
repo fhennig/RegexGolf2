@@ -6,7 +6,6 @@ import javafx.scene.control.ListCell;
 import regexgolf2.model.ObjectChangedListener;
 import regexgolf2.model.Requirement;
 import regexgolf2.model.SolvableChallenge;
-import regexgolf2.ui.subcomponents.requirementlisting.requirementcell.RequirementCellHandler;
 import regexgolf2.ui.subcomponents.requirementlisting.requirementcell.RequirementCellUI;
 
 import com.google.java.contract.Requires;
@@ -24,7 +23,6 @@ public class RequirementCellController
 		_challenge = challenge;
 		initChallengeListener();
 		initCellUI();
-		_cellUI.setIsEditable(editable);
 	}
 
 	
@@ -42,26 +40,26 @@ public class RequirementCellController
 	
 	private void initCellUI()
 	{
-		_cellUI = new RequirementCellUI(new RequirementCellHandler()
-		{
-			@Override
-			public void requirementChanged(RequirementCellUI source,
-					Requirement requirement)
-			{
-				if (_challenge == null || !_challenge.getChallenge().getRequirements().contains(requirement))
-					throw new IllegalArgumentException();
-				refreshCellUI();
-			}
-	
-			@Override
-			public void requirementEdited(RequirementCellUI source,
-					String newWord)
-			{
-				if (source.getRequirement() == null)
-					throw new IllegalStateException("Requirement cannot be edited, because it is null!");
-				source.getRequirement().setWord(newWord);
-			}
-		});
+//		_cellUI = new RequirementCellUI(new RequirementCellHandler()
+//		{
+//			@Override
+//			public void requirementChanged(RequirementCellUI source,
+//					Requirement requirement)
+//			{
+//				if (_challenge == null || !_challenge.getChallenge().getRequirements().contains(requirement))
+//					throw new IllegalArgumentException("Challenge: " + _challenge + " | Requirement: " + requirement);
+//				refreshCellUI();
+//			}
+//	
+//			@Override
+//			public void requirementEdited(RequirementCellUI source,
+//					String newWord)
+//			{
+//				if (source.getRequirement() == null)
+//					throw new IllegalStateException("Requirement cannot be edited, because it is null!");
+//				source.getRequirement().setWord(newWord);
+//			}
+//		});
 	}
 	
 	/**
@@ -69,15 +67,16 @@ public class RequirementCellController
 	 */
 	private void refreshCellUI()
 	{
-		Requirement r = _cellUI.getRequirement();
-		if (r == null)
-			return;
-		_cellUI.setWord(r.getWord());
-		_cellUI.setComplied(_challenge.isComplied(r));
+//		Requirement r = _cellUI.getRequirement();
+//		if (r == null)
+//			return;
+//		_cellUI.setWord(r.getWord());
+//		_cellUI.setComplied(_challenge.isComplied(r));
 	}
 	
 	public ListCell<Requirement> getCellUI()
 	{
-		return _cellUI;
+//		return _cellUI;
+		return null;
 	}
 }

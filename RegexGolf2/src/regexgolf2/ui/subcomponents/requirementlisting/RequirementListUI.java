@@ -6,8 +6,8 @@ import javafx.scene.Node;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.util.Callback;
-import regexgolf2.model.Requirement;
-import regexgolf2.ui.subcomponents.requirementlisting.requirementcell.RequirementCellFactory;
+import regexgolf2.ui.subcomponents.requirementlisting.requirementcell.RequirementCellUI;
+import regexgolf2.ui.subcomponents.requirementlisting.requirementcell.RequirementItem;
 import regexgolf2.ui.util.DisabledSelectionModel;
 
 import com.google.java.contract.Ensures;
@@ -15,50 +15,50 @@ import com.google.java.contract.Requires;
 
 public class RequirementListUI
 {
-	private final ListView<Requirement> _listView = new ListView<>();
-	private final RequirementCellFactory _factory;
+	private final ListView<RequirementItem> _listView;
 	
 	
 		
-	@Requires("factory != null")
-	public RequirementListUI(RequirementCellFactory factory, boolean editable)
+	public RequirementListUI(boolean editable)
 	{
-		_factory = factory;
+		_listView = new ListView<RequirementItem>()
+				{
+					public void requestFocus() { }
+				};
 		initListView();
+		_listView.setEditable(editable);
 		
-		if (!editable)
-			_listView.setSelectionModel(new DisabledSelectionModel<Requirement>());
+		_listView.setSelectionModel(new DisabledSelectionModel<RequirementItem>());
 	}
 	
 	
 	
 	private void initListView()
 	{
-		_listView.setCellFactory(new Callback<ListView<Requirement>, ListCell<Requirement>>()
+		_listView.setCellFactory(new Callback<ListView<RequirementItem>, ListCell<RequirementItem>>()
 		{
 			@Override
-			public ListCell<Requirement> call(ListView<Requirement> lv)
+			public ListCell<RequirementItem> call(ListView<RequirementItem> lv)
 			{
-				ListCell<Requirement> cell = _factory.createCell();
-				return cell;
+				return new RequirementCellUI();
 			}
 		});
 	}
 	
-	@Requires("requirement != null")
-	public void addRequirement(Requirement requirement)
+	@Requires("requirementItem != null")
+	public void addRequirementItem(RequirementItem requirementItem)
 	{
-		_listView.getItems().add(requirement);
+		_listView.getItems().add(requirementItem);
 	}
 	
-	@Requires("requirement != null")
-	public void removeRequirement(Requirement requirement)
+	@Requires("requirementItem != null")
+	public void removeRequirementItem(RequirementItem requirementItem)
 	{
-		_listView.getItems().remove(requirement);
+		_listView.getItems().remove(requirementItem);
 	}
 	
 	@Ensures("result != null")
-	public List<Requirement> getItems()
+	public List<RequirementItem> getItems()
 	{
 		return _listView.getItems();
 	}

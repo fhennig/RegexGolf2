@@ -28,6 +28,8 @@ public class Requirement extends ObservableObject
 	@Requires("word != null")
 	public void setWord(String word)
 	{
+		if (_word.equals(word))
+			return;
 		_word = word;
 		fireObjectChangedEvent();
 	}
@@ -41,5 +43,11 @@ public class Requirement extends ObservableObject
 	{
 		boolean matchResult = solution.getPattern().matcher(getWord()).matches();
 		return _expectedMatchResult == matchResult;
+	}
+	
+	@Override
+	public String toString()
+	{
+		return getWord();
 	}
 }

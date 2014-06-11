@@ -126,7 +126,20 @@ public class SolvableChallenge extends ObservableObject
 	@Requires("_challenge.getRequirements().contains(requirement)")
 	public boolean isComplied(Requirement requirement)
 	{
-		return _complianceResults.get(requirement);
-		//throws NPE if the requirement is not in the map
+		try
+		{
+			return _complianceResults.get(requirement);
+		}
+		catch (NullPointerException npe)
+		{
+			throw new IllegalArgumentException("Requirement: " + requirement +
+					" is not a Requirement of this challenge (" + this + ")");
+		}
+	}
+	
+	@Override
+	public String toString()
+	{
+		return _challenge.getName();
 	}
 }

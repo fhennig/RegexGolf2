@@ -33,14 +33,14 @@ public class MainController
 		_challengeSolvingController = new ChallengeSolvingController();
 		_challengeRepoController = new ChallengeRepositoryController();
 		
+		_challengeSolvingController.challengeProperty().bind(_challengeRepoController.selectedChallengeProperty());
+		
 		_mainUI = new MainUI(_challengeRepoController.getUINode(), null);
 
 				
 		Challenge testChallenge = ChallengeFactory.getTestChallenge();
 		Solution userSolution = new Solution();
 		SolvableChallenge sChallenge = new SolvableChallenge(userSolution, testChallenge);
-		
-		_challengeSolvingController.setChallenge(sChallenge);
 		
 		_mainUI.setMainPaneContent(_challengeSolvingController.getUINode());
 	}

@@ -1,5 +1,7 @@
 package regexgolf2.ui.subcomponents.requirementlisting.requirementcell;
 
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.Node;
@@ -8,12 +10,9 @@ import javafx.scene.control.ListCell;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
-import regexgolf2.model.Requirement;
 import regexgolf2.ui.subcomponents.editablelabel.EditableLabel;
 
-import com.google.java.contract.Requires;
-
-public class RequirementCellUI extends ListCell<Requirement>
+public class RequirementCellUI extends ListCell<RequirementItem>
 {
 	/**
 	 * ImageView that displays the check-image that indicates,
@@ -23,23 +22,22 @@ public class RequirementCellUI extends ListCell<Requirement>
     
     private final EditableLabel _editLabel = new EditableLabel();
 
-    private final RequirementCellHandler _listener;
-    
     private final AnchorPane _rootNode = new AnchorPane();
     
     private Image _notCompliedImage;
     private Image _compliedImage;
-    private Requirement _requirement;
+
+    private final BooleanProperty _complied = new SimpleBooleanProperty();
     
     
     
-    @Requires("listener != null")
-    public RequirementCellUI(RequirementCellHandler listener)
+    public RequirementCellUI()
     {
-    	_listener = listener;
     	initLayout();
     	initImages();
-    	initEditLabelListener();
+    	initCompliedChangedReaction();
+    	_editLabel.editableProperty().bind(this.editableProperty());
+    	setComplied(false);
     }
     
     
@@ -74,34 +72,20 @@ public class RequirementCellUI extends ListCell<Requirement>
     	_notCompliedImage = new Image(getClass().getResourceAsStream("notComplied.png"));
     }
     
-    private void initEditLabelListener()
+    private void initCompliedChangedReaction()
     {
-    	_editLabel.textProperty().addListener(new ChangeListener<String>()
+    	_complied.addListener(new ChangeListener<Boolean>()
 		{
 			@Override
-			public void changed(ObservableValue<? extends String> arg0,
-					String arg1, String arg2)
+			public void changed(ObservableValue<? extends Boolean> observable,
+					Boolean oldValue, Boolean newValue)
 			{
-				_listener.requirementEdited(RequirementCellUI.this, _editLabel.getText());
+				setComplied(newValue);
 			}
 		});
     }
     
-    /**
-     * Sets the text that should be display in the Cell.
-     */
-    @Requires("word != null")
-    public void setWord(String word)
-    {
-    	_editLabel.setText(word);
-    }
-    
-    public Requirement getRequirement()
-    {
-    	return _requirement;
-    }
-    
-    public void setComplied(boolean complied)
+    private void setComplied(boolean complied)
     {
     	if (complied)
     		_imageView.setImage(_compliedImage);
@@ -109,29 +93,24 @@ public class RequirementCellUI extends ListCell<Requirement>
     		_imageView.setImage(_notCompliedImage);
     }
     
-    public void setIsEditable(boolean editable)
-    {
-    	_editLabel.setEditable(editable);
-    }
-    
     /**
      * Called on various events to update the UI accordingly
      */
     @Override
-    protected void updateItem(Requirement requirement, boolean empty)
+    protected void updateItem(RequirementItem requirement, boolean empty)
     {
     	super.updateItem(requirement, empty);
-    	if (_requirement == requirement)
-    		return;
-    	_requirement = requirement;
-    	if (_requirement == null)
+
+    	if (requirement == null)
     	{
     		setGraphic(null);
     	}
     	else
     	{
     		setGraphic(_rootNode);
-    		_listener.requirementChanged(this, _requirement);
+
+    		_editLabel.textProperty().bind(requirement.wordProperty());
+    		_complied.bind(requirement.compliedProperty());
     	}
     }
 }
