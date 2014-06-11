@@ -3,11 +3,7 @@ package regexgolf2.controllers;
 import java.io.IOException;
 
 import javafx.scene.Parent;
-import regexgolf2.model.Challenge;
-import regexgolf2.model.Solution;
-import regexgolf2.model.SolvableChallenge;
 import regexgolf2.services.challengerepository.ChallengeRepository;
-import regexgolf2.startup.ChallengeFactory;
 import regexgolf2.ui.main.MainUI;
 
 import com.google.java.contract.Ensures;
@@ -34,14 +30,11 @@ public class MainController
 		_challengeRepoController = new ChallengeRepositoryController();
 		
 		_challengeSolvingController.challengeProperty().bind(_challengeRepoController.selectedChallengeProperty());
+		 
+		_mainUI = new MainUI();
+		_mainUI.setChallengeRepoPanelContent(_challengeRepoController.getUINode());
 		
-		_mainUI = new MainUI(_challengeRepoController.getUINode(), null);
-
-				
-		Challenge testChallenge = ChallengeFactory.getTestChallenge();
-		Solution userSolution = new Solution();
-		SolvableChallenge sChallenge = new SolvableChallenge(userSolution, testChallenge);
-		
+		//Set Challenge Solving UI as Main-Panel content
 		_mainUI.setMainPaneContent(_challengeSolvingController.getUINode());
 	}
 	

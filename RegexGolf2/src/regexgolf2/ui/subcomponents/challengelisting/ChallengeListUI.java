@@ -1,4 +1,4 @@
-package regexgolf2.ui.subcomponents.challengelistview;
+package regexgolf2.ui.subcomponents.challengelisting;
 
 import java.util.Collection;
 

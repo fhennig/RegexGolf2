@@ -26,6 +26,11 @@ public class MainUI
 
     
     
+    public MainUI() throws IOException
+    {
+    	this(null, null);
+    }
+    
     public MainUI(Node savedChallengesUI, Node challengeGeneratorUI) throws IOException
     {
     	FXMLLoader loader = new FXMLLoader(getClass().getResource("MainUI.fxml")); 
@@ -45,6 +50,16 @@ public class MainUI
     public void setMainPaneContent(Node content)
     {
     	JavafxUtil.setAsContent(content, _mainPane);
+    }
+    
+    public void setChallengeRepoPanelContent(Node content)
+    {
+    	JavafxUtil.setAsContent(content, _savedChallengesPane);
+    }
+    
+    public void setChallengeGeneratorPanel(Node content)
+    {
+    	JavafxUtil.setAsContent(content, _challengeGeneratorPane);
     }
     
     @Ensures("result != null")

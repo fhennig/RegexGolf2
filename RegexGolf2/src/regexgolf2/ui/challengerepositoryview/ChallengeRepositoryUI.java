@@ -11,7 +11,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
 import regexgolf2.model.SolvableChallenge;
-import regexgolf2.ui.subcomponents.challengelistview.ChallengeListUI;
+import regexgolf2.ui.subcomponents.challengelisting.ChallengeListUI;
 import regexgolf2.ui.util.JavafxUtil;
 
 public class ChallengeRepositoryUI

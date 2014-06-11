@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="180.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<children><HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="3.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+<children><Label fx:id="_nameLabel" text="Challenge" /><Region prefHeight="200.0" prefWidth="0.0" HBox.hgrow="ALWAYS" /><Label fx:id="_scoreLabel" text="0/0">
+<font>
+<Font size="17.0" />
+</font></Label><Label fx:id="_changeIndicator" alignment="TOP_RIGHT" minWidth="10.0" text="*">
+<font>
+<Font name="System Bold" size="17.0" />
+</font></Label>
+</children></HBox>
+</children></AnchorPane>

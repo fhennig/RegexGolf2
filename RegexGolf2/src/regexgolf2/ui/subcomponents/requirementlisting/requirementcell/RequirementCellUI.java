@@ -28,7 +28,8 @@ public class RequirementCellUI extends ListCell<RequirementItem>
     private Image _compliedImage;
 
     private final BooleanProperty _complied = new SimpleBooleanProperty();
-    
+
+    private RequirementItem _item;
     
     
     public RequirementCellUI()
@@ -109,8 +110,17 @@ public class RequirementCellUI extends ListCell<RequirementItem>
     	{
     		setGraphic(_rootNode);
 
-    		_editLabel.textProperty().bind(requirement.wordProperty());
-    		_complied.bind(requirement.compliedProperty());
+    		if (_item != null)
+    		{
+    			_editLabel.textProperty().unbindBidirectional(_item.wordProperty());
+    			_complied.unbindBidirectional(_item.compliedProperty());
+    		}
+    		_item = requirement;
+    		if (_item != null)
+    		{
+    			_editLabel.textProperty().bindBidirectional(requirement.wordProperty());
+    			_complied.bind(requirement.compliedProperty());
+    		}
     	}
     }
 }
