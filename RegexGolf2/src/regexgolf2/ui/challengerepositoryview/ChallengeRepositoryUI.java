@@ -1,7 +1,7 @@
 package regexgolf2.ui.challengerepositoryview;
 
 import java.io.IOException;
-import java.util.Collection;
+import java.util.List;
 
 import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;
@@ -10,8 +10,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
-import regexgolf2.model.SolvableChallenge;
 import regexgolf2.ui.subcomponents.challengelisting.ChallengeListUI;
+import regexgolf2.ui.subcomponents.challengelisting.challengecell.ChallengeItem;
 import regexgolf2.ui.util.JavafxUtil;
 
 public class ChallengeRepositoryUI
@@ -65,9 +65,9 @@ public class ChallengeRepositoryUI
     	return _saveButton;
     }
     
-    public ChallengeListUI getChallengeListUI()
+    public void select(ChallengeItem item)
     {
-    	return _challengeListUI;
+    	_challengeListUI.select(item);
     }
     
     public ReadOnlyBooleanProperty challengeSelectedProperty()
@@ -75,14 +75,19 @@ public class ChallengeRepositoryUI
     	return _challengeListUI.challengeSelectedProperty();
     }
     
-    public ReadOnlyObjectProperty<SolvableChallenge> selectedChallengeProperty()
+    public ChallengeItem getSelectedChallengeItem()
+    {
+    	return _challengeListUI.selectedChallengeProperty().get();
+    }
+    
+    public ReadOnlyObjectProperty<ChallengeItem> selectedChallengeProperty()
     {
     	return _challengeListUI.selectedChallengeProperty();
     }
     
-    public void setChallenges(Collection<SolvableChallenge> challenges)
+    public List<ChallengeItem> getChallengeItemList()
     {
-    	_challengeListUI.setChallenges(challenges);
+    	return _challengeListUI.getChallengeItems();
     }
     
     public Node getUINode()

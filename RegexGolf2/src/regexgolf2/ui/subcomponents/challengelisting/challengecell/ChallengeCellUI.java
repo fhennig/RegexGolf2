@@ -4,11 +4,12 @@ import java.io.IOException;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
-import regexgolf2.model.Challenge;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.paint.Color;
+import regexgolf2.ui.subcomponents.scoredisplay.ScoreDisplayUI;
 
 public class ChallengeCellUI extends ListCell<ChallengeItem>
 {
@@ -17,11 +18,12 @@ public class ChallengeCellUI extends ListCell<ChallengeItem>
 	
     @FXML
     private Label _scoreLabel;
+    private final ScoreDisplayUI _scoreUI;
 
     @FXML
     private Label _changeIndicator;
 	
-    private final Node _rootNode;
+    private final AnchorPane _rootNode;
     
     private ChallengeItem _item;
 
@@ -37,6 +39,11 @@ public class ChallengeCellUI extends ListCell<ChallengeItem>
 		assert _scoreLabel != null;
 		assert _changeIndicator != null;
 		
+		_scoreUI = new ScoreDisplayUI(_scoreLabel);
+		
+		this.setPrefWidth(0.0);
+		_rootNode.prefWidthProperty().bind(this.widthProperty().subtract(10.0));
+		
 		setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
 	}
 	
@@ -51,16 +58,32 @@ public class ChallengeCellUI extends ListCell<ChallengeItem>
 		}
 		else
 		{
-			//Because of init with null
-			if (_item != null)
-			{
-				_nameLabel.textProperty().unbindBidirectional(_item.nameProperty());
-				_changeIndicator.visibleProperty().unbindBidirectional(_item.isChangedProperty());
-			}
+			setGraphic(_rootNode);
+			
+			_nameLabel.textProperty().unbind();
+			_changeIndicator.visibleProperty().unbind();
+			_scoreUI.amountRequirementsProperty().unbind();
+			_scoreUI.amountCompliedRequirementsProperty().unbind();
+			_scoreUI.isHighlightedProperty().unbind();
+			
 			_item = item;
-			_nameLabel.textProperty().bindBidirectional(_item.nameProperty());
-			_changeIndicator.visibleProperty().bindBidirectional(_item.isChangedProperty());
+			
+			_nameLabel.textProperty().bind(_item.nameProperty());
+			_changeIndicator.visibleProperty().bind(_item.isChangedProperty());
+			_scoreUI.amountRequirementsProperty().bind(_item.amountRequirementsProperty());
+			_scoreUI.amountCompliedRequirementsProperty().bind(_item.amountCompliedRequirementsProperty());
+			_scoreUI.isHighlightedProperty().bind(_item.isSolvedProperty());
 		}
-		
+	}
+	
+	@Override
+	public void updateSelected(boolean arg0)
+	{
+		//TODO fix the coloring of the scorelabel text
+		super.updateSelected(arg0);
+		if (isSelected())
+			_scoreLabel.setTextFill(Color.WHITE);
+		else
+			_scoreUI.refresh();
 	}
 }

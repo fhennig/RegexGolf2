@@ -3,29 +3,33 @@ package regexgolf2.services.challengerepository;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.EventObject;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import regexgolf2.model.Challenge;
+import regexgolf2.model.ObjectChangedListener;
 import regexgolf2.model.Solution;
 import regexgolf2.model.SolvableChallenge;
 import regexgolf2.services.ObservableService;
 import regexgolf2.services.persistence.mappers.SolvableChallengeMapper;
 import regexgolf2.services.persistence.mappers.SolvableChallengeMapper.SolvableChallengeDTO;
+import regexgolf2.startup.ChallengeFactory;
 
 import com.google.java.contract.Ensures;
 import com.google.java.contract.Requires;
 
 /**
- * Fires the serviceChangedEvent if a challenge is added or removed.
+ * Fires the serviceChangedEvent if a challenge is added or removed,
+ * and if the persistence state of a contained challenge changes.
  */
 public class ChallengeRepository extends ObservableService
 {
 	private final SolvableChallengeMapper _mapper;
 	private final Map<SolvableChallenge, Integer> _idMap = new HashMap<>();
 	private final Map<SolvableChallenge, PersistenceStateImpl> _persistenceStates = new HashMap<>();
+	private ObjectChangedListener _persistenceStateListener;
 	
 	
 	
@@ -33,10 +37,23 @@ public class ChallengeRepository extends ObservableService
 	public ChallengeRepository(SolvableChallengeMapper mapper) throws SQLException
 	{
 		_mapper = mapper;
+		initPersistenceStateListener();
 		reloadAll();
 	}
 	
 	
+	
+	private void initPersistenceStateListener()
+	{
+		_persistenceStateListener = new ObjectChangedListener()
+		{
+			@Override
+			public void objectChanged(EventObject event)
+			{
+				fireServiceChangedEvent();
+			}
+		};
+	}
 	
 	private void reloadAll() throws SQLException
 	{
@@ -48,7 +65,7 @@ public class ChallengeRepository extends ObservableService
 		for (SolvableChallengeDTO dto : dtos)
 		{
 			_idMap.put(dto.challenge, dto.challengeId);
-			_persistenceStates.put(dto.challenge, new PersistenceStateImpl(dto.challenge, false));
+			addPersistenceState(dto.challenge, false);
 		}
 		fireServiceChangedEvent();
 	}
@@ -71,9 +88,10 @@ public class ChallengeRepository extends ObservableService
 	@Ensures("result != null")
 	public SolvableChallenge createNew()
 	{
-		SolvableChallenge c = new SolvableChallenge(new Solution(), new Challenge());
+		//XXX remove random generated challenge
+		SolvableChallenge c = new SolvableChallenge(new Solution(), ChallengeFactory.getRandomChallenge());
 		_idMap.put(c, 0);
-		_persistenceStates.put(c, new PersistenceStateImpl(c, true));
+		addPersistenceState(c, true);
 		fireServiceChangedEvent();
 		return c;
 	}
@@ -105,14 +123,28 @@ public class ChallengeRepository extends ObservableService
 	})
 	public void delete(SolvableChallenge c) throws SQLException
 	{
-		_mapper.delete(_idMap.get(c));
+		if (!getPersistenceState(c).isNew())
+			_mapper.delete(_idMap.get(c));
 		_idMap.remove(c);
-		_persistenceStates.remove(c);
+		removePersistenceState(c);
 		fireServiceChangedEvent();
 	}
 	
 	public boolean contains(SolvableChallenge c)
 	{
 		return _idMap.keySet().contains(c);
+	}
+	
+	private void addPersistenceState(SolvableChallenge c, boolean isNew)
+	{
+		PersistenceStateImpl pState = new PersistenceStateImpl(c, isNew);
+		pState.addObjectChangedListener(_persistenceStateListener);
+		_persistenceStates.put(c, pState);
+	}
+	
+	private void removePersistenceState(SolvableChallenge c)
+	{
+		_persistenceStates.get(c).removeObjectChangedListener(_persistenceStateListener);
+		_persistenceStates.remove(c);
 	}
 }

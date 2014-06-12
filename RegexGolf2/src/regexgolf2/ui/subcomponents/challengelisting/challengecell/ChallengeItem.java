@@ -16,13 +16,14 @@ public class ChallengeItem
 	private final IntegerProperty _amountRequirements = new SimpleIntegerProperty();
 	private final IntegerProperty _amountCompliedRequirements = new SimpleIntegerProperty();
 	private final BooleanProperty _isChanged = new SimpleBooleanProperty();
+	private final BooleanProperty _isSolved = new SimpleBooleanProperty();
 	
 	
-	
+
 	@Requires("name != null")
-	public ChallengeItem(String name, int amountRequirements, int amountComplied, boolean isChanged)
+	public ChallengeItem(String name, int aR, int aC, boolean isChanged, boolean isSolved)
 	{
-		update(name, amountRequirements, amountComplied, isChanged);
+		update(name, aR, aC, isChanged, isSolved);
 	}
 	
 	
@@ -34,12 +35,13 @@ public class ChallengeItem
 	 * @param aC  Amount of complied Requirements in Challenge
 	 */
 	@Requires("name != null")
-	public void update(String name, int aR, int aC, boolean isChanged)
+	public void update(String name, int aR, int aC, boolean isChanged, boolean isSolved)
 	{
 		_name.set(name);
 		_amountRequirements.set(aR);
 		_amountCompliedRequirements.set(aC);
 		_isChanged.set(isChanged);
+		_isSolved.set(isSolved);
 	}
 	
 	@Ensures("result != null")
@@ -64,5 +66,10 @@ public class ChallengeItem
 	public BooleanProperty isChangedProperty()
 	{
 		return _isChanged;
+	}
+	
+	public BooleanProperty isSolvedProperty()
+	{
+		return _isSolved;
 	}
 }

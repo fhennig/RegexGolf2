@@ -29,7 +29,7 @@ public class PersistenceStateImpl extends ObservableObject implements Persistenc
 			@Override
 			public void objectChanged(EventObject event)
 			{
-				if (_object.equals(event.getSource()))
+				if (!_object.equals(event.getSource()))
 					throw new IllegalArgumentException();
 				
 				reactToObjectChanged();
@@ -82,5 +82,11 @@ public class PersistenceStateImpl extends ObservableObject implements Persistenc
 	public boolean isChanged()
 	{
 		return _isChanged;
+	}
+
+	@Override
+	public Object getObservedItem()
+	{
+		return _object;
 	}
 }

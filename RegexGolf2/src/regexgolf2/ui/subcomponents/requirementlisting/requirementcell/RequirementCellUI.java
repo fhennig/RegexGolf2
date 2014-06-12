@@ -116,11 +116,8 @@ public class RequirementCellUI extends ListCell<RequirementItem>
     			_complied.unbindBidirectional(_item.compliedProperty());
     		}
     		_item = requirement;
-    		if (_item != null)
-    		{
-    			_editLabel.textProperty().bindBidirectional(requirement.wordProperty());
-    			_complied.bind(requirement.compliedProperty());
-    		}
+			_editLabel.textProperty().bindBidirectional(requirement.wordProperty());
+			_complied.bind(requirement.compliedProperty());
     	}
     }
 }

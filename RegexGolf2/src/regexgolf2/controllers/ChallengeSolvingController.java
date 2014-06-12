@@ -114,13 +114,13 @@ public class ChallengeSolvingController
 		{
 			_ui.getScoreDisplayUI().setAmountCompliedRequirements(0);
 			_ui.getScoreDisplayUI().setAmountRequirements(0);
-			_ui.getScoreDisplayUI().setHighlight(false);
+			_ui.getScoreDisplayUI().setHighlighted(false);
 		}
 		else
 		{
 			_ui.getScoreDisplayUI().setAmountCompliedRequirements(getChallenge().getAmountCompliedRequirements());
 			_ui.getScoreDisplayUI().setAmountRequirements(getChallenge().getAmountRequirements());
-			_ui.getScoreDisplayUI().setHighlight(getChallenge().isSolved());
+			_ui.getScoreDisplayUI().setHighlighted(getChallenge().isSolved());
 		}
 	}
 	

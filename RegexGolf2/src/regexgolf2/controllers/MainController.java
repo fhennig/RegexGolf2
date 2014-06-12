@@ -27,7 +27,7 @@ public class MainController
 		_challengeRepo.getAll();
 
 		_challengeSolvingController = new ChallengeSolvingController();
-		_challengeRepoController = new ChallengeRepositoryController();
+		_challengeRepoController = new ChallengeRepositoryController(_challengeRepo);
 		
 		_challengeSolvingController.challengeProperty().bind(_challengeRepoController.selectedChallengeProperty());
 		 

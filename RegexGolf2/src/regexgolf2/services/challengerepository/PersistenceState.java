@@ -10,6 +10,8 @@ public interface PersistenceState
 	//TODO write requires (if isnew ==> isChanged)
 	boolean isChanged();
 	
+	Object getObservedItem();
+	
 	void addObjectChangedListener(ObjectChangedListener listener);
 	void removeObjectChangedListener(ObjectChangedListener listener);
 }
