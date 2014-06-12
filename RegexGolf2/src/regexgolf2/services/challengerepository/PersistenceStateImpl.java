@@ -15,7 +15,8 @@ public class PersistenceStateImpl extends ObservableObject implements Persistenc
 	
 	public PersistenceStateImpl(ObservableObject object, boolean isNew)
 	{
-		setNew();
+		if (isNew)
+			setNew();
 		_object = object;
 		initListener();
 	}

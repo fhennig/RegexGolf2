@@ -40,13 +40,11 @@ public class ChallengeRepositoryController
 	{
 		_challengeRepo = challengeRepo;
 		_ui = new ChallengeRepositoryUI();
-		//Add Random challenges
-		for (int i = 0; i < 5; i++)
-			_challengeRepo.createNew();
 
 		initListeners();
 		initAddButtonHandler();
 		initRemoveButtonHandler();
+		initSaveButtonHandler();
 		refreshListViewItemList();
 	}
 	
@@ -111,6 +109,25 @@ public class ChallengeRepositoryController
 					//TODO use fancy dialog here
 					JOptionPane.showMessageDialog(null, "Error while accessing the database!\n" +
 												"Challenge was not deleted.");
+				}
+			}
+		});
+	}
+	
+	private void initSaveButtonHandler()
+	{
+		_ui.getSaveButton().setOnAction(new EventHandler<ActionEvent>()
+		{
+			@Override
+			public void handle(ActionEvent arg0)
+			{
+				try
+				{
+					_challengeRepo.saveAll();
+				} catch (SQLException e)
+				{
+					//TODO use fancy error dialog here
+					JOptionPane.showMessageDialog(null, "Error in DB");
 				}
 			}
 		});

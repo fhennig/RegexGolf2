@@ -1,7 +1,6 @@
 package regexgolf2.services.challengerepository;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EventObject;
 import java.util.HashMap;
@@ -60,7 +59,7 @@ public class ChallengeRepository extends ObservableService
 		_idMap.clear();
 		_persistenceStates.clear();
 		
-		List<SolvableChallengeDTO> dtos = new ArrayList<>();
+		List<SolvableChallengeDTO> dtos = _mapper.getAll();
 		
 		for (SolvableChallengeDTO dto : dtos)
 		{
@@ -96,6 +95,20 @@ public class ChallengeRepository extends ObservableService
 		return c;
 	}
 
+	/**
+	 * Saves all changed Challenges
+	 * @throws SQLException 
+	 */
+	public void saveAll() throws SQLException
+	{
+		for (SolvableChallenge challenge : getAll())
+		{
+			if (_persistenceStates.get(challenge).isChanged())
+			{
+				save(challenge);
+			}
+		}
+	}
 	
 	@Requires({
 		"c != null",
@@ -130,6 +143,10 @@ public class ChallengeRepository extends ObservableService
 		fireServiceChangedEvent();
 	}
 	
+	/**
+	 * Returns true if the given Challenge is managed by this ChallengeRepository,
+	 * false otherwise.
+	 */
 	public boolean contains(SolvableChallenge c)
 	{
 		return _idMap.keySet().contains(c);

@@ -9,6 +9,8 @@ import javax.swing.JOptionPane;
 import com.google.java.contract.Ensures;
 
 import regexgolf2.model.Challenge;
+import regexgolf2.model.Solution;
+import regexgolf2.model.SolvableChallenge;
 import regexgolf2.services.challengerepository.ChallengeRepository;
 import regexgolf2.services.persistence.Database;
 import regexgolf2.services.persistence.PersistenceService;
@@ -104,12 +106,14 @@ public class InitializingService
 	private boolean testDB(PersistenceService ps)
 	{
 		Challenge c = ChallengeFactory.getIPChallenge();
+		Solution s = new Solution("test");
+		SolvableChallenge sc = new SolvableChallenge(s, c);
 		try
 		{
-			int challengeID = ps.getChallengeMapper().insert(c);
-			ps.getChallengeMapper().getAll();
-			ps.getChallengeMapper().update(c, challengeID);
-			ps.getChallengeMapper().delete(challengeID);
+			int cID = ps.getSolvableChallengeMapper().insert(sc);
+			ps.getSolvableChallengeMapper().getAll();
+			ps.getSolvableChallengeMapper().update(sc, cID);
+			ps.getSolvableChallengeMapper().delete(cID);
 		} catch (SQLException e)
 		{
 			JOptionPane.showMessageDialog(null, "Accessing the Database failed!\n" + 
