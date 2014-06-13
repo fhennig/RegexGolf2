@@ -6,14 +6,14 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
-<children><VBox prefHeight="400.0" prefWidth="600.0" spacing="8.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<children><VBox spacing="8.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
 <children>
 <HBox layoutX="14.0" layoutY="14.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="14.0">
 <children><Label fx:id="_challengeNameLabel" text="Challenge Name" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="14.0" HBox.hgrow="ALWAYS">
 <font>
 <Font size="18.0" />
-</font></Label><Region prefHeight="1.0" prefWidth="1.0" HBox.hgrow="SOMETIMES" /><Label fx:id="_scoreLabel" alignment="CENTER_RIGHT" layoutX="561.0" layoutY="14.0" minWidth="50.0" text="22/22" textAlignment="RIGHT" HBox.hgrow="ALWAYS">
+</font></Label><Region prefHeight="0.0" prefWidth="0.0" HBox.hgrow="SOMETIMES" /><Label fx:id="_scoreLabel" alignment="CENTER_RIGHT" layoutX="561.0" layoutY="14.0" minWidth="50.0" text="22/22" textAlignment="RIGHT" HBox.hgrow="ALWAYS">
 <font>
 <Font size="18.0" />
 </font>
@@ -21,7 +21,7 @@
 <Insets />
 </HBox.margin></Label>
 </children>
-</HBox><TextField fx:id="_solutionTextField" layoutX="14.0" layoutY="14.0" prefHeight="25.0" prefWidth="524.0" promptText="REGEX" HBox.hgrow="ALWAYS" /><GridPane layoutX="12.0" layoutY="185.0" prefHeight="199.0" prefWidth="389.0" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="51.0" VBox.vgrow="ALWAYS">
+</HBox><TextField fx:id="_solutionTextField" layoutX="14.0" layoutY="14.0" promptText="REGEX" HBox.hgrow="ALWAYS" /><GridPane layoutX="12.0" layoutY="185.0" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="51.0" VBox.vgrow="ALWAYS">
   <columnConstraints>
     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
     <ColumnConstraints fillWidth="false" hgrow="NEVER" maxWidth="14.0" minWidth="14.0" prefWidth="14.0" />

@@ -41,7 +41,6 @@ public class ChallengeMapper
 		
 		PreparedStatement challengePS = _db.getConnection().prepareStatement(challengeSQL);
 		ResultSet challengeRS = challengePS.executeQuery();
-		System.out.println(challengeSQL);
 		
 		while(challengeRS.next())
 		{
@@ -112,7 +111,6 @@ public class ChallengeMapper
 		ps.setInt(3, challengeId);
 		ps.execute();
 		ps.close();
-		System.out.println(challengeSQL + "|" + challenge.getSampleSolution().getSolution() + "|" + challenge.getName() + "|" + challengeId);
 
 		_requirements.delete(challengeId);
 		_requirements.insert(challenge.getRequirements(), challengeId);

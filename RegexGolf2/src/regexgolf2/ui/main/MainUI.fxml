@@ -4,23 +4,51 @@
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
-<children><Accordion layoutX="-10.0" layoutY="116.5" prefWidth="250.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
-  <panes>
-    <TitledPane animated="false" text="Saved Challenges">
-      <content>
-        <AnchorPane fx:id="_savedChallengesPane" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-      </content>
-    </TitledPane>
-    <TitledPane animated="false" expanded="false" text="Challenge Generator">
-      <content>
-        <AnchorPane fx:id="_challengeGeneratorPane" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-      </content>
-    </TitledPane>
-  </panes>
-</Accordion><AnchorPane fx:id="_mainPane" layoutX="256.0" layoutY="77.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="250.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="471.0" prefWidth="783.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<children><SplitPane dividerPositions="0.3738796414852753" layoutX="-274.0" layoutY="161.0" prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+<items><TabPane prefHeight="200.0" prefWidth="200.0" side="LEFT" tabClosingPolicy="UNAVAILABLE">
+  <tabs>
+    <Tab text="Challenge Generator">
+<content>
+<VBox spacing="8.0">
+<children><Label text="Challenge Generator">
+<font>
+<Font size="18.0" />
+</font></Label>
+        <AnchorPane fx:id="_challengeGeneratorPane" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
 <padding>
 <Insets bottom="14.0" left="14.0" right="14.0" top="14.0" />
 </padding></AnchorPane>
+</children>
+<padding>
+<Insets bottom="14.0" left="14.0" right="14.0" top="14.0" />
+</padding>
+</VBox>
+</content></Tab>
+    <Tab text="Saved Challenges">
+<content><VBox layoutX="84.0" layoutY="106.0" prefHeight="200.0" prefWidth="100.0" spacing="8.0" AnchorPane.topAnchor="156.0">
+<children><Label text="My Challenges">
+<font>
+<Font size="18.0" />
+</font>
+<opaqueInsets>
+<Insets />
+</opaqueInsets>
+<VBox.margin>
+<Insets />
+</VBox.margin></Label>
+        <AnchorPane fx:id="_savedChallengesPane" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
+</children>
+<padding>
+<Insets bottom="14.0" left="14.0" right="14.0" top="14.0" />
+</padding></VBox>
+</content></Tab>
+  </tabs>
+</TabPane><AnchorPane fx:id="_mainPane" layoutX="256.0" layoutY="77.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="250.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+<padding>
+<Insets bottom="14.0" left="14.0" right="14.0" top="14.0" />
+</padding></AnchorPane>
+</items></SplitPane>
 </children></AnchorPane>

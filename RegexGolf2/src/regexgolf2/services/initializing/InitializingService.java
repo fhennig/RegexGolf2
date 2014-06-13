@@ -49,7 +49,8 @@ public class InitializingService
 		}
 		catch (Exception ex)
 		{
-			JOptionPane.showMessageDialog(null, "Unexpected fatal Error!");
+			JOptionPane.showMessageDialog(null, "Unexpected fatal Error!\n\n" + ex.toString());
+			ex.printStackTrace();
 			return null;
 		}
 	}
