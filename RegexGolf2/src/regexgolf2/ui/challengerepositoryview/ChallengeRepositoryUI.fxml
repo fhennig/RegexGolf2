@@ -15,24 +15,24 @@
 <Font name="System Bold" size="12.0" />
 </font>
 <graphic>
-<ImageView fitHeight="16.0" fitWidth="16.0">
+<ImageView fitHeight="16.0" preserveRatio="true">
 <image>
-<Image url="@storage1.png" />
+<Image url="@../img/save.png" />
 </image>
 </ImageView>
 </graphic></Button><HBox spacing="5.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
 <children><Button fx:id="_addButton" mnemonicParsing="false">
 <graphic>
-<ImageView fitHeight="16.0" fitWidth="16.0">
+<ImageView fitHeight="16.0" preserveRatio="true">
 <image>
-<Image url="@plus.png" />
+<Image url="@../img/add.png" />
 </image>
 </ImageView>
 </graphic></Button><Button fx:id="_removeButton" mnemonicParsing="false">
 <graphic>
-<ImageView fitHeight="16.0" fitWidth="16.0">
+<ImageView fitHeight="16.0" preserveRatio="true">
 <image>
-<Image url="@minus.png" />
+<Image url="@../img/remove.png" />
 </image>
 </ImageView>
 </graphic></Button>

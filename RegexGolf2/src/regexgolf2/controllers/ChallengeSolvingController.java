@@ -3,24 +3,30 @@ package regexgolf2.controllers;
 import java.io.IOException;
 import java.util.EventObject;
 
-import com.google.java.contract.Ensures;
-
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.Parent;
 import regexgolf2.model.ObjectChangedListener;
+import regexgolf2.model.Requirement;
 import regexgolf2.model.SolvableChallenge;
 import regexgolf2.ui.challengesolving.ChallengeSolvingUI;
 import regexgolf2.ui.subcomponents.solutionediting.TextChangedListener;
 
+import com.google.java.contract.Ensures;
+
 public class ChallengeSolvingController
 {
+	private final BooleanProperty _editable = new SimpleBooleanProperty();
+	private final ObjectProperty<SolvableChallenge> _challenge = new SimpleObjectProperty<>();
 	private final ChallengeSolvingUI _ui;
 	private final RequirementListingController _doMatchController;
 	private final RequirementListingController _dontMatchController;
-	private final ObjectProperty<SolvableChallenge> _challenge = new SimpleObjectProperty<>();
 	private ObjectChangedListener _challengeListener;
 	
 	
@@ -32,14 +38,20 @@ public class ChallengeSolvingController
 	
 	public ChallengeSolvingController(SolvableChallenge challenge) throws IOException
 	{
-		_doMatchController = new RequirementListingController(_challenge, true, false);
-		_dontMatchController = new RequirementListingController(_challenge, false, false);
+		_doMatchController = new RequirementListingController(_challenge, true);
+		_dontMatchController = new RequirementListingController(_challenge, false);
+		
+		_doMatchController.editableProperty().bind(_editable);
+		_dontMatchController.editableProperty().bind(_editable);
 		
 		_ui = new ChallengeSolvingUI(_doMatchController.getUINode(), _dontMatchController.getUINode());
+		_ui.editableProperty().bind(_editable);
 
 		initTextBox();
+		initChallengeNameUI();
 		initChallengeListener();
 		initChallengeChangedReaction();
+		initAddButtonHandlers();
 		
 		setChallenge(challenge); //TODO possibly move to the end of ctor
 		
@@ -54,6 +66,41 @@ public class ChallengeSolvingController
 			public void textChanged(EventObject event)
 			{
 				reactToInputChanged();
+			}
+		});
+	}
+	
+	private void initChallengeNameUI()
+	{
+		_ui.getChallengeTitleUI().textProperty().addListener(new ChangeListener<String>()
+		{
+			@Override
+			public void changed(ObservableValue<? extends String> observable,
+					String oldValue, String newValue)
+			{
+				if (getChallenge() != null)
+					getChallenge().getChallenge().setName(newValue);
+			}
+		});
+	}
+	
+	private void initAddButtonHandlers()
+	{
+		_ui.getAddDoMatchBtn().setOnAction(new EventHandler<ActionEvent>()
+		{
+			@Override
+			public void handle(ActionEvent arg0)
+			{
+				getChallenge().getChallenge().addRequirement(new Requirement(true));
+			}
+		});
+		
+		_ui.getAddDontMatchBtn().setOnAction(new EventHandler<ActionEvent>()
+		{
+			@Override
+			public void handle(ActionEvent arg0)
+			{
+				getChallenge().getChallenge().addRequirement(new Requirement(false));
 			}
 		});
 	}
@@ -105,7 +152,7 @@ public class ChallengeSolvingController
 	private void refreshChallengeNameLabel()
 	{
 		String text = (getChallenge() == null ? "" : getChallenge().getChallenge().getName());
-		_ui.getChallengeNameLabel().setText(text);
+		_ui.getChallengeTitleUI().setText(text);
 	}
 	
 	private void refreshScoreDisplay()
@@ -144,6 +191,21 @@ public class ChallengeSolvingController
 	public ObjectProperty<SolvableChallenge> challengeProperty()
 	{
 		return _challenge;
+	}
+	
+	public boolean isEditable()
+	{
+		return _editable.get();
+	}
+	
+	public void setEditable(boolean editable)
+	{
+		_editable.set(editable);
+	}
+	
+	public BooleanProperty editableProperty()
+	{
+		return _editable;
 	}
 	
 	public Parent getUINode()

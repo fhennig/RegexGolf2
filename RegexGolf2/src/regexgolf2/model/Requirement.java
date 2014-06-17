@@ -10,6 +10,15 @@ public class Requirement extends ObservableObject
 	
 	
 	
+	/**
+	 * Initializes a Requirement with the given expectedMatchResult
+	 * and an empty String for the Word.
+	 */
+	public Requirement(boolean expectedMatchResult)
+	{
+		this(expectedMatchResult, "");
+	}
+	
 	@Requires("word != null")
 	public Requirement(boolean expectedMatchResult, String word)
 	{

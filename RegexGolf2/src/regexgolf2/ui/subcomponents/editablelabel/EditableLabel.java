@@ -70,7 +70,7 @@ public class EditableLabel
 		_root.getChildren().add(_label);
 		_root.getChildren().add(_textField);
 		
-		Image image = new Image(getClass().getResourceAsStream("editSymbol.png"));
+		Image image = new Image(this.getClass().getResourceAsStream("/regexgolf2/ui/img/edit.png"));
 		_imageView.setImage(image);
 		
 		_imageView.setVisible(false);

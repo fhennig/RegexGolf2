@@ -3,17 +3,15 @@
 <?import java.lang.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
 <children><VBox spacing="8.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
 <children>
-<HBox layoutX="14.0" layoutY="14.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="14.0">
-<children><Label fx:id="_challengeNameLabel" text="Challenge Name" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="14.0" HBox.hgrow="ALWAYS">
-<font>
-<Font size="18.0" />
-</font></Label><Region prefHeight="0.0" prefWidth="0.0" HBox.hgrow="SOMETIMES" /><Label fx:id="_scoreLabel" alignment="CENTER_RIGHT" layoutX="561.0" layoutY="14.0" minWidth="50.0" text="22/22" textAlignment="RIGHT" HBox.hgrow="ALWAYS">
+<HBox layoutX="14.0" layoutY="14.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="14.0" VBox.vgrow="SOMETIMES">
+<children><AnchorPane fx:id="_titlePane" HBox.hgrow="SOMETIMES" /><Region prefHeight="0.0" prefWidth="0.0" HBox.hgrow="SOMETIMES" /><Label fx:id="_scoreLabel" alignment="CENTER_RIGHT" layoutX="561.0" layoutY="14.0" minWidth="50.0" text="22/22" textAlignment="RIGHT" HBox.hgrow="ALWAYS">
 <font>
 <Font size="18.0" />
 </font>
@@ -31,15 +29,39 @@
     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
   </rowConstraints>
 <children><VBox prefHeight="200.0" prefWidth="100.0">
+<children><HBox>
 <children><Label text="Do Match">
 <font>
 <Font size="16.0" />
-</font></Label><AnchorPane fx:id="_doMatchPane" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
+</font></Label><Region prefHeight="0.0" prefWidth="0.0" HBox.hgrow="ALWAYS" /><Button fx:id="_addDoMatchBtn" mnemonicParsing="false">
+<graphic>
+<ImageView fitHeight="16.0" fitWidth="16.0">
+<image>
+<Image url="@../img/add.png" />
+</image>
+</ImageView>
+</graphic></Button>
+</children></HBox><AnchorPane fx:id="_doMatchPane" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
 </children></VBox><VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="2">
-<children><Label text="Don't Match">
+<children><HBox>
+<children>
+<Label text="Don't  Match">
 <font>
 <Font size="16.0" />
-</font></Label><AnchorPane fx:id="_dontMatchPane" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
+</font>
+</Label>
+<Region prefHeight="0.0" prefWidth="0.0" HBox.hgrow="ALWAYS" />
+<Button fx:id="_addDontMatchBtn" mnemonicParsing="false">
+<graphic>
+<ImageView fitHeight="16.0" fitWidth="16.0">
+<image>
+<Image url="@../img/add.png" />
+</image>
+</ImageView>
+</graphic>
+</Button>
+</children>
+</HBox><AnchorPane fx:id="_dontMatchPane" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
 </children></VBox>
 </children>
 </GridPane>

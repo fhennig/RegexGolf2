@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.EventObject;
 import java.util.List;
 
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
@@ -24,9 +25,7 @@ import regexgolf2.ui.subcomponents.requirementlisting.requirementcell.Requiremen
 public class RequirementListingController
 {
 	private final RequirementListUI _ui;
-	private final boolean _editable;
 	private ObjectChangedListener _challengeListener;
-	
 	
 	private final boolean _expectedMatchResult;
 	private final ObjectProperty<SolvableChallenge> _challenge = new SimpleObjectProperty<>();
@@ -39,11 +38,10 @@ public class RequirementListingController
 	 * @param editable  If the Requirements should be editable or not.
 	 */
 	public RequirementListingController(ObjectProperty<SolvableChallenge> challengeProperty,
-			boolean expectedMatchResult, boolean editable)
+			boolean expectedMatchResult)
 	{
-		_editable = editable;
 		_expectedMatchResult = expectedMatchResult;
-		_ui = new RequirementListUI(_editable);
+		_ui = new RequirementListUI();
 		initChallengeListener(); //Listener for Changes INSIDE the Challenge
 		initChallengeChangedReaction(); //Change of the Challenge Property
 		if (challengeProperty != null)
@@ -160,6 +158,11 @@ public class RequirementListingController
 	public ObjectProperty<SolvableChallenge> challengeProperty()
 	{
 		return _challenge;
+	}
+	
+	public BooleanProperty editableProperty()
+	{
+		return _ui.editableProperty();
 	}
 	
 	public Node getUINode()

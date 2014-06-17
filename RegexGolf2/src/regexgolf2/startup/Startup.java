@@ -13,6 +13,9 @@ import regexgolf2.services.initializing.ServiceContainer;
 
 public class Startup extends Application
 {	
+	private static final int _WIDTH = 800;
+	private static final int _HEIGHT = 500;
+	
 	private static ServiceContainer _services;
 	
 	public static void main(String[] args)
@@ -20,7 +23,7 @@ public class Startup extends Application
 		InitializingService initializer = new InitializingService();
 		ServiceContainer sc = initializer.start();
 		if (sc == null)
-			System.exit(0);
+			System.exit(0); //Initialization failed
 		
 		_services = sc;
 		
@@ -43,11 +46,11 @@ public class Startup extends Application
 		}
 		
 		Scene scene = new Scene(mc.getUINode());
-		stage.setTitle("Test");
-		stage.setWidth(680);
-		stage.setHeight(400);
-		
 		stage.setScene(scene);
+		stage.setTitle("RegexGolf");
+		stage.setWidth(_WIDTH);
+		stage.setHeight(_HEIGHT);
+		
 		stage.show();
 	}
 }

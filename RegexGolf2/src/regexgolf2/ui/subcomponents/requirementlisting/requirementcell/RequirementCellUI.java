@@ -41,7 +41,7 @@ public class RequirementCellUI extends ListCell<RequirementItem>
     	setComplied(false);
     }
     
-    
+    //TODO move all the images into a different directory
     
     private void initLayout()
     {

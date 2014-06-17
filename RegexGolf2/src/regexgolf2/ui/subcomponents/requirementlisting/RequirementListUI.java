@@ -2,6 +2,7 @@ package regexgolf2.ui.subcomponents.requirementlisting;
 
 import java.util.List;
 
+import javafx.beans.property.BooleanProperty;
 import javafx.scene.Node;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
@@ -19,14 +20,14 @@ public class RequirementListUI
 	
 	
 		
-	public RequirementListUI(boolean editable)
+	public RequirementListUI()
 	{
 		_listView = new ListView<RequirementItem>()
 				{
+					//makes ListView unfocusable
 					public void requestFocus() { }
 				};
 		initListView();
-		_listView.setEditable(editable);
 		
 		_listView.setSelectionModel(new DisabledSelectionModel<RequirementItem>());
 	}
@@ -40,7 +41,9 @@ public class RequirementListUI
 			@Override
 			public ListCell<RequirementItem> call(ListView<RequirementItem> lv)
 			{
-				return new RequirementCellUI();
+				RequirementCellUI cellUI = new RequirementCellUI();
+				cellUI.editableProperty().bind(lv.editableProperty());
+				return cellUI;
 			}
 		});
 	}
@@ -66,6 +69,21 @@ public class RequirementListUI
 	public void clear()
 	{
 		_listView.getItems().clear();
+	}
+	
+	public boolean isEditable()
+	{
+		return _listView.isEditable();
+	}
+	
+	public void setEditable(boolean editable)
+	{
+		_listView.setEditable(editable);
+	}
+	
+	public BooleanProperty editableProperty()
+	{
+		return _listView.editableProperty();
 	}
 	
 	public Node getUINode()
