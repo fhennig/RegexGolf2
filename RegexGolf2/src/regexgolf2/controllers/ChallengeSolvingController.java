@@ -147,6 +147,10 @@ public class ChallengeSolvingController
 		refreshScoreDisplay();
 		refreshSolutionTextBox();
 		refreshChallengeNameLabel();
+		if (getChallenge() == null)
+			_ui.setDisabled(true);
+		else
+			_ui.setDisabled(false);
 	}
 	
 	private void refreshChallengeNameLabel()

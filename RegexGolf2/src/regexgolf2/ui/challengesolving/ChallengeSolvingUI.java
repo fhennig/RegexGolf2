@@ -115,6 +115,11 @@ public class ChallengeSolvingUI
     	return _editable;
     }
     
+    public void setDisabled(boolean disabled)
+    {
+    	_rootNode.setDisable(disabled);
+    }
+    
     public Parent getUINode()
     {
     	return _rootNode;
