@@ -1,5 +1,7 @@
 package regexgolf2.ui.subcomponents.challengetitle;
 
+import java.util.Optional;
+
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -21,6 +23,7 @@ import javafx.scene.text.Font;
 
 import org.controlsfx.control.PopOver;
 import org.controlsfx.control.PopOver.ArrowLocation;
+import org.controlsfx.dialog.Dialogs;
 
 import com.google.java.contract.Ensures;
 import com.google.java.contract.Requires;
@@ -80,7 +83,20 @@ public class ChallengeTitleUI
 			public void handle(MouseEvent event)
 			{
 				if (isEditable())
-					_popOver.show(_nameLabel);
+				{
+					//TODO fix PopOver-Exception
+//					_popOver.show(_nameLabel);
+					
+					//Workaround while PopOver is unusable: Use a Dialog
+					Optional<String> result = Dialogs.create()
+								.title("Enter Challenge Name")
+								.message("Challenge Name: ")
+								//.style(DialogStyle.UNDECORATED)
+								.showTextInput(getText());
+					if (result.isPresent())
+						setText(result.get());
+						
+				}
 			}
 		});
 		
