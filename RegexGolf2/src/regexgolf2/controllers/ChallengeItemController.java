@@ -15,7 +15,6 @@ public class ChallengeItemController
 	private final SolvableChallenge _challenge;
 	private final PersistenceState _persistenceState;
 	private ChallengeItem _item;
-	private ObjectChangedListener _listener;
 	
 	
 	
@@ -46,7 +45,7 @@ public class ChallengeItemController
 	
 	private void initListener()
 	{
-		_listener = new ObjectChangedListener()
+		ObjectChangedListener listener = new ObjectChangedListener()
 		{
 			@Override
 			public void objectChanged(EventObject event)
@@ -58,8 +57,8 @@ public class ChallengeItemController
 						_challenge.isSolved());
 			}
 		};
-		_challenge.addObjectChangedListener(_listener);
-		_persistenceState.addObjectChangedListener(_listener);
+		_challenge.addObjectChangedListener(listener);
+		_persistenceState.addObjectChangedListener(listener);
 	}
 	
 	/**

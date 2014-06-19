@@ -86,6 +86,10 @@ public class RequirementCellUI extends ListCell<RequirementItem>
 		});
     }
     
+    /**
+     * Used by the eventHandler to update the UI according to
+     * the State in the Item.
+     */
     private void setComplied(boolean complied)
     {
     	if (complied)
