@@ -87,8 +87,8 @@ public class Challenge extends ObservableObject
 		boolean elementWasAdded = _requirements.add(requirement);
 		if (!elementWasAdded)
 			return;
-		fireObjectChangedEvent();
 		requirement.addObjectChangedListener(_requirementListener);
+		fireObjectChangedEvent();
 	}
 	
 	@Requires("requirement != null")
@@ -96,7 +96,10 @@ public class Challenge extends ObservableObject
 	{
 		boolean wasRemoved = _requirements.remove(requirement);
 		if (wasRemoved)
+		{
 			requirement.removeObjectChangedListener(_requirementListener);
+			fireObjectChangedEvent();
+		}
 	}
 
 	/**

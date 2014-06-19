@@ -9,11 +9,8 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.Parent;
 import regexgolf2.model.ObjectChangedListener;
-import regexgolf2.model.Requirement;
 import regexgolf2.model.SolvableChallenge;
 import regexgolf2.ui.challengesolving.ChallengeSolvingUI;
 import regexgolf2.ui.subcomponents.solutionediting.TextChangedListener;
@@ -51,7 +48,6 @@ public class ChallengeSolvingController
 		initChallengeNameUI();
 		initChallengeListener();
 		initChallengeChangedReaction();
-		initAddButtonHandlers();
 		
 		setChallenge(challenge); //TODO possibly move to the end of ctor
 		
@@ -80,27 +76,6 @@ public class ChallengeSolvingController
 			{
 				if (getChallenge() != null)
 					getChallenge().getChallenge().setName(newValue);
-			}
-		});
-	}
-	
-	private void initAddButtonHandlers()
-	{
-		_ui.getAddDoMatchBtn().setOnAction(new EventHandler<ActionEvent>()
-		{
-			@Override
-			public void handle(ActionEvent arg0)
-			{
-				getChallenge().getChallenge().addRequirement(new Requirement(true));
-			}
-		});
-		
-		_ui.getAddDontMatchBtn().setOnAction(new EventHandler<ActionEvent>()
-		{
-			@Override
-			public void handle(ActionEvent arg0)
-			{
-				getChallenge().getChallenge().addRequirement(new Requirement(false));
 			}
 		});
 	}

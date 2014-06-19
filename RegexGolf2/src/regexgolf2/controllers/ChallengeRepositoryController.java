@@ -103,6 +103,7 @@ public class ChallengeRepositoryController
 			{
 				SolvableChallenge newChallenge = _challengeRepo.createNew();
 				selectChallenge(newChallenge);
+				setEditmode(true);
 			}
 		});
 	}

@@ -8,7 +8,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
@@ -34,12 +33,6 @@ public class ChallengeSolvingUI
     private SolutionEditingUI _solutionEditingUI;
 
     @FXML
-    private Button _addDontMatchBtn;
-
-    @FXML
-    private Button _addDoMatchBtn;
-
-    @FXML
     private AnchorPane _doMatchPane;
 
     @FXML
@@ -60,8 +53,6 @@ public class ChallengeSolvingUI
     	assert _solutionTextField != null;
     	assert _doMatchPane != null;
     	assert _dontMatchPane != null;
-    	assert _addDontMatchBtn != null;
-    	assert _addDoMatchBtn != null;
 
     	JavafxUtil.setAsContent(_challengeTitleUI.getUINode(), _titlePane);
     	JavafxUtil.setAsContent(doMatchUI, _doMatchPane);
@@ -71,8 +62,6 @@ public class ChallengeSolvingUI
     	_solutionEditingUI = new SolutionEditingUI(_solutionTextField);    	
     	
     	_challengeTitleUI.editableProperty().bind(_editable);
-    	_addDoMatchBtn.visibleProperty().bind(_editable);
-    	_addDontMatchBtn.visibleProperty().bind(_editable);
     }
     
     public ScoreDisplayUI getScoreDisplayUI()
@@ -88,16 +77,6 @@ public class ChallengeSolvingUI
     public ChallengeTitleUI getChallengeTitleUI()
     {
     	return _challengeTitleUI;
-    }
-    
-    public Button getAddDoMatchBtn()
-    {
-    	return _addDoMatchBtn;
-    }
-    
-    public Button getAddDontMatchBtn()
-    {
-    	return _addDontMatchBtn;
     }
     
     public boolean isEditable()

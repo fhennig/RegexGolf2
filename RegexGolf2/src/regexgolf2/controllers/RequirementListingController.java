@@ -1,14 +1,18 @@
 package regexgolf2.controllers;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.EventObject;
 import java.util.List;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.Node;
 import regexgolf2.model.ObjectChangedListener;
 import regexgolf2.model.Requirement;
@@ -29,6 +33,7 @@ public class RequirementListingController
 	
 	private final boolean _expectedMatchResult;
 	private final ObjectProperty<SolvableChallenge> _challenge = new SimpleObjectProperty<>();
+	private final BooleanProperty _editableProperty = new SimpleBooleanProperty();
 	
 	
 	
@@ -38,10 +43,13 @@ public class RequirementListingController
 	 * @param editable  If the Requirements should be editable or not.
 	 */
 	public RequirementListingController(ObjectProperty<SolvableChallenge> challengeProperty,
-			boolean expectedMatchResult)
+			boolean expectedMatchResult) throws IOException
 	{
 		_expectedMatchResult = expectedMatchResult;
 		_ui = new RequirementListUI();
+		_ui.editableProperty().bind(_editableProperty);
+		initUITitle();
+		initButtonHandlers();
 		initChallengeListener(); //Listener for Changes INSIDE the Challenge
 		initChallengeChangedReaction(); //Change of the Challenge Property
 		if (challengeProperty != null)
@@ -49,6 +57,34 @@ public class RequirementListingController
 	}
 	
 		
+	
+	private void initUITitle()
+	{
+		String title = _expectedMatchResult ? "Do Match" : "Don't Match";
+		_ui.getTitleLabel().setText(title);
+	}
+	
+	private void initButtonHandlers()
+	{
+		_ui.getAddButton().setOnAction(new EventHandler<ActionEvent>()
+		{
+			@Override
+			public void handle(ActionEvent ae)
+			{
+				getChallenge().getChallenge().addRequirement(new Requirement(_expectedMatchResult));
+				//TODO preselect the newly created requirement and also set editMode = true on cell
+			}
+		});
+		_ui.getRemoveButton().setOnAction(new EventHandler<ActionEvent>()
+		{
+			@Override
+			public void handle(ActionEvent arg0)
+			{
+				Requirement r = _ui.getSelectedItem().getRequirement();
+				getChallenge().getChallenge().removeRequirement(r);
+			}
+		});
+	}
 	
 	/**
 	 * Initializes the ChallengeListener that refreshes the UI
@@ -116,12 +152,16 @@ public class RequirementListingController
 				}
 			}
 			if (!itemExits)
-				_ui.addRequirementItem(createRequirementItem(r));
+				addRequirementToUI(r);
 		}
 		refreshListViewItems();
 	}
 	
-	private RequirementItem createRequirementItem(Requirement r)
+	/**
+	 * Creates a new RequirementItem with the given Requirement and adds
+	 * the Item to the UI-List. The created Item is also returned.
+	 */
+	private RequirementItem addRequirementToUI(Requirement r)
 	{
 		final RequirementItem item = new RequirementItem(r, getChallenge().isComplied(r));
 		item.wordProperty().addListener(new ChangeListener<String>()
@@ -133,6 +173,7 @@ public class RequirementListingController
 				item.getRequirement().setWord(newValue);
 			}
 		});
+		_ui.addRequirementItem(item);
 		return item;
 	}
 	
@@ -162,7 +203,7 @@ public class RequirementListingController
 	
 	public BooleanProperty editableProperty()
 	{
-		return _ui.editableProperty();
+		return _editableProperty;
 	}
 	
 	public Node getUINode()

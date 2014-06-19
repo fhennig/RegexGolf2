@@ -8,13 +8,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import regexgolf2.model.Challenge;
 import regexgolf2.model.ObjectChangedListener;
 import regexgolf2.model.Solution;
 import regexgolf2.model.SolvableChallenge;
 import regexgolf2.services.ObservableService;
 import regexgolf2.services.persistence.mappers.SolvableChallengeMapper;
 import regexgolf2.services.persistence.mappers.SolvableChallengeMapper.SolvableChallengeDTO;
-import regexgolf2.startup.ChallengeFactory;
 
 import com.google.java.contract.Ensures;
 import com.google.java.contract.Requires;
@@ -87,8 +87,7 @@ public class ChallengeRepository extends ObservableService
 	@Ensures("result != null")
 	public SolvableChallenge createNew()
 	{
-		//XXX remove random generated challenge
-		SolvableChallenge c = new SolvableChallenge(new Solution(), ChallengeFactory.getRandomChallenge());
+		SolvableChallenge c = new SolvableChallenge(new Solution(), new Challenge());
 		_idMap.put(c, 0);
 		addPersistenceState(c, true);
 		fireServiceChangedEvent();

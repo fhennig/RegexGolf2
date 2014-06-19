@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" spacing="8.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<children><HBox alignment="CENTER_LEFT" spacing="5.0">
+<children><Label fx:id="_titleLabel" text="Label">
+<font>
+<Font size="16.0" />
+</font></Label><Region prefHeight="0.0" prefWidth="0.0" HBox.hgrow="ALWAYS" /><Button fx:id="_addButton" mnemonicParsing="false">
+<graphic><ImageView fitHeight="16.0" pickOnBounds="true" preserveRatio="true">
+<image>
+<Image url="@../../img/add.png" />
+</image></ImageView>
+</graphic></Button><Button fx:id="_removeButton" mnemonicParsing="false">
+<graphic><ImageView fitHeight="16.0" pickOnBounds="true" preserveRatio="true">
+<image>
+<Image url="@../../img/remove.png" />
+</image></ImageView>
+</graphic></Button>
+</children></HBox><ListView fx:id="_listView" prefHeight="0.0" prefWidth="0.0" VBox.vgrow="ALWAYS" />
+</children></VBox>

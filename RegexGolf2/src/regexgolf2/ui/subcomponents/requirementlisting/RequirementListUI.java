@@ -1,37 +1,83 @@
 package regexgolf2.ui.subcomponents.requirementlisting;
 
+import java.io.IOException;
 import java.util.List;
 
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.util.Callback;
 import regexgolf2.ui.subcomponents.requirementlisting.requirementcell.RequirementCellUI;
 import regexgolf2.ui.subcomponents.requirementlisting.requirementcell.RequirementItem;
-import regexgolf2.ui.util.DisabledSelectionModel;
 
 import com.google.java.contract.Ensures;
 import com.google.java.contract.Requires;
 
 public class RequirementListUI
 {
-	private final ListView<RequirementItem> _listView;
+	private BooleanProperty _editableProperty = new SimpleBooleanProperty();
 	
+	@FXML
+	private Label _titleLabel;
 	
+	@FXML
+	private Button _addButton;
+
+    @FXML
+    private Button _removeButton;
+	
+    @FXML
+    private ListView<RequirementItem> _listView;
+    
+    private final Node _rootNode;
+    
+    
 		
-	public RequirementListUI()
+	public RequirementListUI() throws IOException
 	{
-		_listView = new ListView<RequirementItem>()
-				{
-					//makes ListView unfocusable
-					public void requestFocus() { }
-				};
-		initListView();
+    	FXMLLoader loader = new FXMLLoader(getClass().getResource("RequirementListUI.fxml")); 
+    	loader.setController(this);
+    	_rootNode = loader.load();
 		
-		_listView.setSelectionModel(new DisabledSelectionModel<RequirementItem>());
+    	assert _titleLabel != null;
+    	assert _addButton != null;
+    	assert _removeButton != null;
+    	assert _listView != null;
+    	
+		initListView();
+		initBindings();
 	}
 	
+	
+	private void initBindings()
+	{
+		_addButton.visibleProperty().bind(_editableProperty);
+		_removeButton.visibleProperty().bind(_editableProperty);
+		_removeButton.disableProperty().bind(_listView.getSelectionModel().selectedItemProperty().isNull());
+		_listView.editableProperty().bind(_editableProperty);
+		
+		_listView.mouseTransparentProperty().bind(_editableProperty.not());
+		_listView.focusTraversableProperty().bind(_editableProperty);
+		
+		_editableProperty.addListener(new ChangeListener<Boolean>()
+		{
+			@Override
+			public void changed(ObservableValue<? extends Boolean> observable,
+					Boolean oldValue, Boolean newValue)
+			{
+				if (!newValue)
+					_listView.getSelectionModel().clearSelection();
+			}
+		});
+	}
 	
 	
 	private void initListView()
@@ -46,6 +92,22 @@ public class RequirementListUI
 				return cellUI;
 			}
 		});
+	}
+
+	
+	public Label getTitleLabel()
+	{
+		return _titleLabel;
+	}
+	
+	public Button getAddButton()
+	{
+		return _addButton;
+	}
+	
+	public Button getRemoveButton()
+	{
+		return _removeButton;
 	}
 	
 	@Requires("requirementItem != null")
@@ -73,21 +135,26 @@ public class RequirementListUI
 	
 	public boolean isEditable()
 	{
-		return _listView.isEditable();
+		return _editableProperty.get();
 	}
 	
 	public void setEditable(boolean editable)
 	{
-		_listView.setEditable(editable);
+		_editableProperty.set(editable);
 	}
 	
 	public BooleanProperty editableProperty()
 	{
-		return _listView.editableProperty();
+		return _editableProperty;
+	}
+	
+	public RequirementItem getSelectedItem()
+	{
+		return _listView.getSelectionModel().getSelectedItem();
 	}
 	
 	public Node getUINode()
 	{
-		return _listView;
+		return _rootNode;
 	}
 }

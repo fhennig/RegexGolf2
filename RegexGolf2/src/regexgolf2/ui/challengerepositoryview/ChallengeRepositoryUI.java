@@ -34,6 +34,7 @@ public class ChallengeRepositoryUI
     
     private final Node _rootNode;
     
+    //ChallengeListUI could probably be merged into this class, but now it is already seperate
     private ChallengeListUI _challengeListUI = new ChallengeListUI();
     
     

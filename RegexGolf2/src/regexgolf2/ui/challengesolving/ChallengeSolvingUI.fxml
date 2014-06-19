@@ -3,7 +3,6 @@
 <?import java.lang.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
@@ -19,50 +18,15 @@
 <Insets />
 </HBox.margin></Label>
 </children>
-</HBox><TextField fx:id="_solutionTextField" layoutX="14.0" layoutY="14.0" promptText="REGEX" HBox.hgrow="ALWAYS" /><GridPane layoutX="12.0" layoutY="185.0" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="51.0" VBox.vgrow="ALWAYS">
+</HBox><TextField fx:id="_solutionTextField" layoutX="14.0" layoutY="14.0" promptText="REGEX" HBox.hgrow="ALWAYS" /><GridPane hgap="14.0" layoutX="12.0" layoutY="185.0" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="51.0" VBox.vgrow="ALWAYS">
   <columnConstraints>
     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-    <ColumnConstraints fillWidth="false" hgrow="NEVER" maxWidth="14.0" minWidth="14.0" prefWidth="14.0" />
 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
   </columnConstraints>
   <rowConstraints>
     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
   </rowConstraints>
-<children><VBox prefHeight="200.0" prefWidth="100.0">
-<children><HBox>
-<children><Label text="Do Match">
-<font>
-<Font size="16.0" />
-</font></Label><Region prefHeight="0.0" prefWidth="0.0" HBox.hgrow="ALWAYS" /><Button fx:id="_addDoMatchBtn" mnemonicParsing="false">
-<graphic>
-<ImageView fitHeight="16.0" fitWidth="16.0">
-<image>
-<Image url="@../img/add.png" />
-</image>
-</ImageView>
-</graphic></Button>
-</children></HBox><AnchorPane fx:id="_doMatchPane" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
-</children></VBox><VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="2">
-<children><HBox>
-<children>
-<Label text="Don't  Match">
-<font>
-<Font size="16.0" />
-</font>
-</Label>
-<Region prefHeight="0.0" prefWidth="0.0" HBox.hgrow="ALWAYS" />
-<Button fx:id="_addDontMatchBtn" mnemonicParsing="false">
-<graphic>
-<ImageView fitHeight="16.0" fitWidth="16.0">
-<image>
-<Image url="@../img/add.png" />
-</image>
-</ImageView>
-</graphic>
-</Button>
-</children>
-</HBox><AnchorPane fx:id="_dontMatchPane" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
-</children></VBox>
+<children><AnchorPane fx:id="_doMatchPane" VBox.vgrow="ALWAYS" /><AnchorPane fx:id="_dontMatchPane" GridPane.columnIndex="1" VBox.vgrow="ALWAYS" />
 </children>
 </GridPane>
 </children></VBox>
