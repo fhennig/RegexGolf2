@@ -30,6 +30,7 @@ public class MainController
 		_challengeRepoController = new ChallengeRepositoryController(_challengeRepo);
 		
 		_challengeSolvingController.challengeProperty().bind(_challengeRepoController.selectedChallengeProperty());
+		_challengeSolvingController.editableProperty().bind(_challengeRepoController.editModeProperty());
 		 
 		_mainUI = new MainUI();
 		_mainUI.setChallengeRepoPanelContent(_challengeRepoController.getUINode());
@@ -37,8 +38,7 @@ public class MainController
 		//Set Challenge Solving UI as Main-Panel content
 		_mainUI.setMainPaneContent(_challengeSolvingController.getUINode());
 	}
-	
-	
+		
 	
 	
 	@Ensures("result != null")
@@ -46,10 +46,4 @@ public class MainController
 	{
 		return _mainUI.getUINode();
 	}
-	
-	//TODO ChallengeRepository.ChallengesChangedEvent
-	//TODO challengeRepositoryController (save-, delete-, new-Buttons)
-	//TODO challengeSelectionController (Table with Challenges)
-	//TODO challengeSolvingController
-	//TODO challengeEditingController
 }

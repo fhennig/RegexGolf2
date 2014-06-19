@@ -80,8 +80,17 @@ public class ChallengeItemController
 		return _item;
 	}
 	
+	/**
+	 * This method makes the Controller unsubscibe from the PersistenceState
+	 * and Challenge it previously listened.
+	 * That way, references to the Controller are removed and it can be 
+	 * garbage collected.
+	 */
 	public void discard()
 	{
+		//XXX actually, this method will only be called, if the challenge
+		//and persistenceState will also be un-referenced in the near future.
+		//If this is allways the case, this method would be obsolete.
 		_challenge.removeObjectChangedListener(_listener);
 		_persistenceState.removeObjectChangedListener(_listener);
 	}

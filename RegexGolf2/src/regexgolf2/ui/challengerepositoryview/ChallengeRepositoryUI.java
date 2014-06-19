@@ -9,6 +9,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.AnchorPane;
 import regexgolf2.ui.subcomponents.challengelisting.ChallengeListUI;
 import regexgolf2.ui.subcomponents.challengelisting.challengecell.ChallengeItem;
@@ -24,6 +25,9 @@ public class ChallengeRepositoryUI
 
     @FXML
     private Button _addButton;
+    
+    @FXML
+    private ToggleButton _editButton;
 
     @FXML
     private Button _saveButton;
@@ -58,6 +62,11 @@ public class ChallengeRepositoryUI
     public Button getAddButton()
     {
     	return _addButton;
+    }
+    
+    public ToggleButton getEditButton()
+    {
+    	return _editButton;
     }
     
     public Button getSaveButton()

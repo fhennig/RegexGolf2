@@ -35,7 +35,14 @@
 <Image url="@../img/remove.png" />
 </image>
 </ImageView>
-</graphic></Button>
+</graphic></Button><ToggleButton fx:id="_editButton" mnemonicParsing="false">
+<graphic>
+<ImageView fitHeight="16.0" preserveRatio="true">
+<image>
+<Image url="@../img/edit.png" />
+</image>
+</ImageView>
+</graphic></ToggleButton>
 </children></HBox>
 </children></AnchorPane><AnchorPane fx:id="_challengeViewPane" layoutX="14.0" layoutY="199.0" VBox.vgrow="ALWAYS" />
 </children>
