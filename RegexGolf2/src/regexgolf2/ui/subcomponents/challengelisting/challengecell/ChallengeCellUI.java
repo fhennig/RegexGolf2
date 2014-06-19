@@ -52,22 +52,21 @@ public class ChallengeCellUI extends ListCell<ChallengeItem>
 	protected void updateItem(ChallengeItem item, boolean empty)
 	{
 		super.updateItem(item, empty);
-
-		_nameLabel.textProperty().unbind();
-		_changeIndicator.visibleProperty().unbind();
-		_scoreUI.amountRequirementsProperty().unbind();
-		_scoreUI.amountCompliedRequirementsProperty().unbind();
-		_scoreUI.isHighlightedProperty().unbind();
-
-		_item = item;
-		
-		if (_item == null)
+		if (item == null)
 		{
 			setGraphic(null);
 		}
 		else
 		{
 			setGraphic(_rootNode);
+			
+			_nameLabel.textProperty().unbind();
+			_changeIndicator.visibleProperty().unbind();
+			_scoreUI.amountRequirementsProperty().unbind();
+			_scoreUI.amountCompliedRequirementsProperty().unbind();
+			_scoreUI.isHighlightedProperty().unbind();
+			
+			_item = item;
 			
 			_nameLabel.textProperty().bind(_item.nameProperty());
 			_changeIndicator.visibleProperty().bind(_item.isChangedProperty());

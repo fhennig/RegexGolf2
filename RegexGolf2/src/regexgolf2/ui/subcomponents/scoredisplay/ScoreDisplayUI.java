@@ -82,10 +82,6 @@ public class ScoreDisplayUI
 		return _isHighlighted;
 	}
 	
-	/**
-	 * Only public as a temporary fix for the error with the coloring of the label 
-	 * on the challengeCell
-	 */
 	public void refresh()
 	{		
 		String displayValue = _amountCompliedRequirements.get() + "/" + _amountRequirements.get();
