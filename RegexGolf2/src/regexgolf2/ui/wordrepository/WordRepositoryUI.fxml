@@ -3,6 +3,7 @@
 <?import java.lang.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
@@ -15,11 +16,22 @@
 <font>
 <Font size="18.0" />
 </font></Label><HBox spacing="5.0">
-<children><Button mnemonicParsing="false" text="Button" /><Button mnemonicParsing="false" text="Button" /><Region prefHeight="0.0" prefWidth="0.0" HBox.hgrow="ALWAYS" /><Button mnemonicParsing="false" text="Button" />
-</children></HBox><TableView editable="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" VBox.vgrow="ALWAYS">
-  <columns>
-    <TableColumn maxWidth="1.7976931348623157E308" minWidth="-1.0" text="C1" />
-  </columns>
-</TableView>
+<children><Button fx:id="_addButton" mnemonicParsing="false">
+<graphic><ImageView fitHeight="16.0" pickOnBounds="true" preserveRatio="true">
+<image>
+<Image url="@../img/add.png" />
+</image></ImageView>
+</graphic></Button><Button fx:id="_removeButton" mnemonicParsing="false">
+<graphic><ImageView fitHeight="16.0" pickOnBounds="true" preserveRatio="true">
+<image>
+<Image url="@../img/remove.png" />
+</image></ImageView>
+</graphic></Button><Region prefHeight="0.0" prefWidth="0.0" HBox.hgrow="ALWAYS" /><Button fx:id="_saveButton" mnemonicParsing="false">
+<graphic><ImageView fitHeight="16.0" pickOnBounds="true" preserveRatio="true">
+<image>
+<Image url="@../img/save.png" />
+</image></ImageView>
+</graphic></Button>
+</children></HBox><ListView fx:id="_listView" prefHeight="0.0" prefWidth="0.0" VBox.vgrow="ALWAYS" />
 </children></VBox>
 </children></AnchorPane>

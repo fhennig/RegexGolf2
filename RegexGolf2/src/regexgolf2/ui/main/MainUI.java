@@ -2,6 +2,8 @@ package regexgolf2.ui.main;
 
 import java.io.IOException;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -39,7 +41,7 @@ public class MainUI
 
     
         
-    public MainUI(Stage stage) throws IOException
+    public MainUI(final Stage stage) throws IOException
     {
     	FXMLLoader loader = new FXMLLoader(getClass().getResource("MainUI.fxml")); 
     	loader.setController(this);
@@ -57,6 +59,17 @@ public class MainUI
     	stage.setTitle("RegexGolf");
     	stage.setWidth(800);
     	stage.setHeight(500);
+    	stage.focusedProperty().addListener(new ChangeListener<Boolean>()
+		{
+			@Override
+			public void changed(ObservableValue<? extends Boolean> arg0,
+					Boolean arg1, Boolean newValue)
+			{
+				if (!newValue);
+//					stage.toFront();
+			}
+    		
+		});
     	stage.show();
     }
     
@@ -67,8 +80,8 @@ public class MainUI
     	_wordRepositoryStage = new Stage();
     	
     	_wordRepositoryStage.setScene(new Scene(_wordRepositoryPane));
-    	_wordRepositoryStage.initModality(Modality.APPLICATION_MODAL);
-    	_wordRepositoryStage.initOwner(parent);
+//    	_wordRepositoryStage.initModality(Modality.APPLICATION_MODAL);
+//    	_wordRepositoryStage.initOwner(parent);
     	//Set dimensions:
     	_wordRepositoryStage.setWidth(500);
     	_wordRepositoryStage.setHeight(500);
@@ -93,7 +106,7 @@ public class MainUI
 				if (_wordRepositoryStage == null)
 					initWordRepoStage(parent);
 				_wordRepositoryStage.show();
-				
+//				_wordRepositoryStage.requestFocus();
 			}
 		});
     }
