@@ -11,8 +11,15 @@ import regexgolf2.controllers.MainController;
 import regexgolf2.services.initializing.InitializingService;
 import regexgolf2.services.initializing.ServiceContainer;
 
+/**
+ * This is the class containing the main method.
+ * It initializes the Services and the MainController.
+ */
 public class Startup extends Application
 {	
+	/**
+	 * Used to transfer the created Services to the 'start' method.
+	 */
 	private static ServiceContainer _services;
 	
 	public static void main(String[] args)
@@ -28,27 +35,19 @@ public class Startup extends Application
 	}
 
 	@Override
-	public void start(Stage stage)
+	public void start(Stage primaryStage)
 	{
 		assert _services != null;
 		
-		
-		
 		try
 		{
-			new MainController(_services.getChallengeRepository(), stage);
+			//Initialize the MainController with the given ChallengeRepository
+			//and the primaryStage
+			new MainController(_services.getChallengeRepository(), primaryStage);
 		} catch (IOException e)
 		{
 			JOptionPane.showMessageDialog(null, "Initializing UI failed!");
 			System.exit(0);
 		}
-		
-//		Scene scene = new Scene(mc.getUINode());
-//		stage.setScene(scene);
-//		stage.setTitle("RegexGolf");
-//		stage.setWidth(_WIDTH);
-//		stage.setHeight(_HEIGHT);
-//		
-//		stage.show();
 	}
 }
