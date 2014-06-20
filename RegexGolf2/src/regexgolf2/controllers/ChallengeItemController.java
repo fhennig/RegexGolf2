@@ -4,7 +4,7 @@ import java.util.EventObject;
 
 import regexgolf2.model.ObjectChangedListener;
 import regexgolf2.model.SolvableChallenge;
-import regexgolf2.services.challengerepository.PersistenceState;
+import regexgolf2.services.repositories.PersistenceState;
 import regexgolf2.ui.subcomponents.challengelisting.challengecell.ChallengeItem;
 
 import com.google.java.contract.Ensures;

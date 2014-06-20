@@ -1,4 +1,4 @@
-package regexgolf2.services.challengerepository;
+package regexgolf2.services.repositories;
 
 import java.sql.SQLException;
 import java.util.Collections;

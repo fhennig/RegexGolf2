@@ -11,10 +11,10 @@ import com.google.java.contract.Ensures;
 import regexgolf2.model.Challenge;
 import regexgolf2.model.Solution;
 import regexgolf2.model.SolvableChallenge;
-import regexgolf2.services.challengerepository.ChallengeRepository;
 import regexgolf2.services.persistence.Database;
 import regexgolf2.services.persistence.PersistenceService;
 import regexgolf2.services.persistence.mappers.SolvableChallengeMapper;
+import regexgolf2.services.repositories.ChallengeRepository;
 import regexgolf2.services.settingsservice.SettingsService;
 import regexgolf2.startup.ChallengeFactory;
 

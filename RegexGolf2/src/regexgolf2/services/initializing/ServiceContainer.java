@@ -3,8 +3,8 @@ package regexgolf2.services.initializing;
 import com.google.java.contract.Ensures;
 import com.google.java.contract.Requires;
 
-import regexgolf2.services.challengerepository.ChallengeRepository;
 import regexgolf2.services.persistence.PersistenceService;
+import regexgolf2.services.repositories.ChallengeRepository;
 import regexgolf2.services.settingsservice.SettingsService;
 
 public class ServiceContainer

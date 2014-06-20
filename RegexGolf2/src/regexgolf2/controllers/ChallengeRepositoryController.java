@@ -23,7 +23,7 @@ import javafx.event.EventHandler;
 import javafx.scene.Node;
 import regexgolf2.model.SolvableChallenge;
 import regexgolf2.services.ServiceChangedListener;
-import regexgolf2.services.challengerepository.ChallengeRepository;
+import regexgolf2.services.repositories.ChallengeRepository;
 import regexgolf2.ui.challengerepositoryview.ChallengeRepositoryUI;
 import regexgolf2.ui.subcomponents.challengelisting.challengecell.ChallengeItem;
 

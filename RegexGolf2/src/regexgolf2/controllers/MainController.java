@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import javafx.scene.Parent;
 import javafx.stage.Stage;
-import regexgolf2.services.challengerepository.ChallengeRepository;
+import regexgolf2.services.repositories.ChallengeRepository;
 import regexgolf2.ui.main.MainUI;
 
 import com.google.java.contract.Ensures;

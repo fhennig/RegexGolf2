@@ -1,4 +1,4 @@
-package regexgolf2.services.challengerepository;
+package regexgolf2.services.repositories;
 
 import regexgolf2.model.ObjectChangedListener;
 
