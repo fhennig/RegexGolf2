@@ -17,6 +17,7 @@ public class MainController
 	
 	private final ChallengeSolvingController _challengeSolvingController;
 	private final ChallengeRepositoryController _challengeRepoController;
+	private final WordRepositoryController _wordRepositoryController;
 	
 	
 	
@@ -25,6 +26,8 @@ public class MainController
 	{
 		_challengeRepo = challengeRepo;
 		_challengeRepo.getAll();
+		
+		_wordRepositoryController = new WordRepositoryController(); //TODO initialize properly
 
 		_challengeSolvingController = new ChallengeSolvingController();
 		_challengeRepoController = new ChallengeRepositoryController(_challengeRepo);
@@ -34,9 +37,9 @@ public class MainController
 		 
 		_mainUI = new MainUI();
 		_mainUI.setChallengeRepoPanelContent(_challengeRepoController.getUINode());
-		
 		//Set Challenge Solving UI as Main-Panel content
 		_mainUI.setMainPaneContent(_challengeSolvingController.getUINode());
+		_mainUI.setWordRepositoryPanel(_wordRepositoryController.getUINode());
 	}
 		
 	

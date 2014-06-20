@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<padding>
+<Insets bottom="14.0" left="14.0" right="14.0" top="14.0" />
+</padding>
+<children><VBox spacing="8.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+<children><Label text="Word Pool">
+<font>
+<Font size="18.0" />
+</font></Label><HBox spacing="5.0">
+<children><Button mnemonicParsing="false" text="Button" /><Button mnemonicParsing="false" text="Button" /><Region prefHeight="0.0" prefWidth="0.0" HBox.hgrow="ALWAYS" /><Button mnemonicParsing="false" text="Button" />
+</children></HBox><TableView editable="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" VBox.vgrow="ALWAYS">
+  <columns>
+    <TableColumn maxWidth="1.7976931348623157E308" minWidth="-1.0" text="C1" />
+  </columns>
+</TableView>
+</children></VBox>
+</children></AnchorPane>
