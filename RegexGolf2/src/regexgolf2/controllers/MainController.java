@@ -3,6 +3,7 @@ package regexgolf2.controllers;
 import java.io.IOException;
 
 import javafx.scene.Parent;
+import javafx.stage.Stage;
 import regexgolf2.services.challengerepository.ChallengeRepository;
 import regexgolf2.ui.main.MainUI;
 
@@ -13,7 +14,7 @@ public class MainController
 {
 	private final ChallengeRepository _challengeRepo;
 
-	private final MainUI _mainUI;
+	private MainUI _mainUI;
 	
 	private final ChallengeSolvingController _challengeSolvingController;
 	private final ChallengeRepositoryController _challengeRepoController;
@@ -22,7 +23,7 @@ public class MainController
 	
 	
 	@Requires("challengeRepo != null")
-	public MainController(ChallengeRepository challengeRepo) throws IOException
+	public MainController(ChallengeRepository challengeRepo, Stage primaryStage) throws IOException
 	{
 		_challengeRepo = challengeRepo;
 		_challengeRepo.getAll();
@@ -35,14 +36,21 @@ public class MainController
 		_challengeSolvingController.challengeProperty().bind(_challengeRepoController.selectedChallengeProperty());
 		_challengeSolvingController.editableProperty().bind(_challengeRepoController.editModeProperty());
 		 
-		_mainUI = new MainUI();
-		_mainUI.setChallengeRepoPanelContent(_challengeRepoController.getUINode());
-		//Set Challenge Solving UI as Main-Panel content
-		_mainUI.setMainPaneContent(_challengeSolvingController.getUINode());
-		_mainUI.setWordRepositoryPanel(_wordRepositoryController.getUINode());
+		initUI(primaryStage);
 	}
 		
 	
+	
+	private void initUI(Stage stage) throws IOException
+	{
+		_mainUI = new MainUI(stage);
+		
+		_mainUI.setChallengeRepoPanelContent(_challengeRepoController.getUINode());
+		//Set Challenge Solving UI as Main-Panel content
+		_mainUI.setMainPaneContent(_challengeSolvingController.getUINode());
+		//Word repository Panel
+		_mainUI.setWordRepositoryPanel(_wordRepositoryController.getUINode());
+	}
 	
 	@Ensures("result != null")
 	public Parent getUINode()

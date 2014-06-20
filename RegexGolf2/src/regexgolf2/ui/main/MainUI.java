@@ -13,6 +13,7 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 import regexgolf2.ui.util.JavafxUtil;
 
 import com.google.java.contract.Ensures;
@@ -32,12 +33,13 @@ public class MainUI
     private Button _wordRepoButton;
     
     private AnchorPane _wordRepositoryPane = new AnchorPane();
+    private Stage _wordRepositoryStage;
     
     private final Parent _rootNode;
 
     
         
-    public MainUI() throws IOException
+    public MainUI(Stage stage) throws IOException
     {
     	FXMLLoader loader = new FXMLLoader(getClass().getResource("MainUI.fxml")); 
     	loader.setController(this);
@@ -48,23 +50,50 @@ public class MainUI
     	assert _challengeGeneratorPane != null;
     	assert _wordRepoButton != null;
     	
-    	initWordRepoButtonHandler();
+    	initWordRepoButtonHandler(stage);
+    	
+    	Scene mainScene = new Scene(_rootNode);
+    	stage.setScene(mainScene);
+    	stage.setTitle("RegexGolf");
+    	stage.setWidth(800);
+    	stage.setHeight(500);
+    	stage.show();
     }
     
     
     
-    private void initWordRepoButtonHandler()
+    private void initWordRepoStage(Window parent)
     {
+    	_wordRepositoryStage = new Stage();
+    	
+    	_wordRepositoryStage.setScene(new Scene(_wordRepositoryPane));
+    	_wordRepositoryStage.initModality(Modality.APPLICATION_MODAL);
+    	_wordRepositoryStage.initOwner(parent);
+    	//Set dimensions:
+    	_wordRepositoryStage.setWidth(500);
+    	_wordRepositoryStage.setHeight(500);
+    	//Center stage in parentstage
+    	_wordRepositoryStage.setX(
+    			parent.getX() + parent.getWidth() / 2
+    			- _wordRepositoryStage.getWidth() / 2);
+    	_wordRepositoryStage.setY(
+    			parent.getY() + parent.getHeight() / 2
+    			- _wordRepositoryStage.getWidth() / 2);
+    	_wordRepositoryStage.setY(parent.getHeight() / 2);
+    }
+    
+    private void initWordRepoButtonHandler(Window dialogParent)
+    {
+    	final Window parent = dialogParent;
     	_wordRepoButton.setOnAction(new EventHandler<ActionEvent>()
 		{
 			@Override
 			public void handle(ActionEvent arg0)
 			{
-				Stage stage = new Stage();
+				if (_wordRepositoryStage == null)
+					initWordRepoStage(parent);
+				_wordRepositoryStage.show();
 				
-				stage.setScene(new Scene(_wordRepositoryPane));
-				stage.initModality(Modality.APPLICATION_MODAL);
-				stage.show();
 			}
 		});
     }
