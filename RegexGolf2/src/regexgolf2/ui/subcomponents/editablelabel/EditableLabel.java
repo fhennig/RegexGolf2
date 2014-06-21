@@ -70,6 +70,7 @@ public class EditableLabel
 		_root.getChildren().add(_label);
 		_root.getChildren().add(_textField);
 		
+		//XXX here the Image(String) constructor could be used
 		Image image = new Image(this.getClass().getResourceAsStream("/regexgolf2/ui/img/edit.png"));
 		_imageView.setImage(image);
 		

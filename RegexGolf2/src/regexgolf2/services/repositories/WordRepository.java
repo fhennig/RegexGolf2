@@ -10,10 +10,15 @@ import java.util.Set;
 import regexgolf2.model.Word;
 import regexgolf2.services.ObservableService;
 import regexgolf2.services.persistence.mappers.WordMapper;
+import regexgolf2.util.Validator;
 
 import com.google.java.contract.Ensures;
 import com.google.java.contract.Requires;
 
+/**
+ * The WordRepository contains all the words from the database.
+ * It also ensures that every word has a unique text.
+ */
 public class WordRepository extends ObservableService
 {
 	private final WordMapper _mapper;
@@ -23,6 +28,7 @@ public class WordRepository extends ObservableService
 	 * This makes it easier to handle, because there is just one collection that needs to be updated etc.
 	 */
 	private final Map<Word, PersistenceStateImpl> _persistenceStates = new HashMap<>();
+	private Validator<String> _wordValidator;
 	
 	
 	
@@ -30,10 +36,32 @@ public class WordRepository extends ObservableService
 	public WordRepository(WordMapper mapper) throws SQLException
 	{
 		_mapper = mapper;
+		initWordValidator();
 		reloadAll();
 	}
 	
 	
+	
+	/**
+	 * Initializes a Validator that ensures that every Word
+	 * has a unique text. This is also specified in the database.
+	 */
+	private void initWordValidator()
+	{
+		_wordValidator = new Validator<String>()
+		{
+			@Override
+			public boolean isValid(String text)
+			{
+				for (Word w : getAll())
+				{
+					if (w.getText().equals(text))
+						return false;
+				}
+				return true;
+			}
+		};
+	}
 	
 	private void reloadAll() throws SQLException
 	{
@@ -43,6 +71,7 @@ public class WordRepository extends ObservableService
 		
 		for (Word word : words)
 		{
+			word.setTextValidator(_wordValidator);
 			PersistenceStateImpl ps = new PersistenceStateImpl(word, false);
 			_persistenceStates.put(word, ps);
 		}
@@ -72,6 +101,7 @@ public class WordRepository extends ObservableService
 	public Word createNew()
 	{
 		Word w = new Word();
+		w.setTextValidator(_wordValidator);
 		_persistenceStates.put(w, new PersistenceStateImpl(w, true));
 		fireServiceChangedEvent();
 		return w;
@@ -113,6 +143,7 @@ public class WordRepository extends ObservableService
 		if (!getPersistenceState(word).isNew())
 			_mapper.delete(word.getId());
 		_persistenceStates.remove(word);
+		word.setTextValidator(null);
 		fireServiceChangedEvent();
 	}
 	

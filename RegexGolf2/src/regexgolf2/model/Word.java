@@ -72,7 +72,10 @@ public class Word extends ObservableObject
 	 */
 	public void setTextValidator(Validator<String> validator)
 	{
+		if (_textValidator == validator)
+			return;
 		_textValidator = validator;
+		fireObjectChangedEvent();
 	}
 	
 	@Override
