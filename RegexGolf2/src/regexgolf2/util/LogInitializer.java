@@ -13,7 +13,8 @@ public class LogInitializer
 		consoleHandler.setLevel(Level.ALL);
 		
 		Logger rootLogger = Logger.getLogger("");
-		rootLogger.setLevel(Level.ALL);
+		rootLogger.setLevel(Level.INFO);
+		//Use Level INFO as a default.
 		
 		for (Handler h : rootLogger.getHandlers())
 		{

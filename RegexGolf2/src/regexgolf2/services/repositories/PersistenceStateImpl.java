@@ -2,6 +2,8 @@ package regexgolf2.services.repositories;
 
 import java.util.EventObject;
 
+import com.google.java.contract.Requires;
+
 import regexgolf2.model.ObjectChangedListener;
 import regexgolf2.model.ObservableObject;
 
@@ -13,6 +15,7 @@ public class PersistenceStateImpl extends ObservableObject implements Persistenc
 	
 		
 	
+	@Requires("object != null")
 	public PersistenceStateImpl(ObservableObject object, boolean isNew)
 	{
 		if (isNew)

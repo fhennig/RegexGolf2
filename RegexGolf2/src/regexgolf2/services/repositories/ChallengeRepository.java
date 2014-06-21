@@ -2,14 +2,12 @@ package regexgolf2.services.repositories;
 
 import java.sql.SQLException;
 import java.util.Collections;
-import java.util.EventObject;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import regexgolf2.model.Challenge;
-import regexgolf2.model.ObjectChangedListener;
 import regexgolf2.model.Solution;
 import regexgolf2.model.SolvableChallenge;
 import regexgolf2.services.ObservableService;
@@ -28,7 +26,6 @@ public class ChallengeRepository extends ObservableService
 	private final SolvableChallengeMapper _mapper;
 	private final Map<SolvableChallenge, Integer> _idMap = new HashMap<>();
 	private final Map<SolvableChallenge, PersistenceStateImpl> _persistenceStates = new HashMap<>();
-	private ObjectChangedListener _persistenceStateListener;
 	
 	
 	
@@ -36,23 +33,10 @@ public class ChallengeRepository extends ObservableService
 	public ChallengeRepository(SolvableChallengeMapper mapper) throws SQLException
 	{
 		_mapper = mapper;
-		initPersistenceStateListener();
 		reloadAll();
 	}
 	
 	
-	
-	private void initPersistenceStateListener()
-	{
-		_persistenceStateListener = new ObjectChangedListener()
-		{
-			@Override
-			public void objectChanged(EventObject event)
-			{
-				fireServiceChangedEvent();
-			}
-		};
-	}
 	
 	private void reloadAll() throws SQLException
 	{
@@ -63,6 +47,8 @@ public class ChallengeRepository extends ObservableService
 		
 		for (SolvableChallengeDTO dto : dtos)
 		{
+			//XXX because the dto is just public fields, we can not be sure that the values are != null;
+			//				/ contract model ist harder to apply
 			_idMap.put(dto.challenge, dto.challengeId);
 			addPersistenceState(dto.challenge, false);
 		}
@@ -82,6 +68,7 @@ public class ChallengeRepository extends ObservableService
 		"c != null",
 		"contains(c)"
 	})
+	@Ensures("result != null")
 	public PersistenceState getPersistenceState(SolvableChallenge c)
 	{
 		return _persistenceStates.get(c);
@@ -116,9 +103,10 @@ public class ChallengeRepository extends ObservableService
 		"c != null",
 		"contains(c)"
 	})
+	@Ensures("getPersistenceState(c).isNew() == false")
 	public void save(SolvableChallenge c) throws SQLException
 	{
-		boolean isNew = _persistenceStates.get(c).isNew();
+		boolean isNew = getPersistenceState(c).isNew();
 		
 		if (isNew)
 		{
@@ -136,6 +124,7 @@ public class ChallengeRepository extends ObservableService
 		"c != null",
 		"contains(c)"
 	})
+	@Ensures("!contains(c)")
 	public void delete(SolvableChallenge c) throws SQLException
 	{
 		if (!getPersistenceState(c).isNew())
@@ -151,19 +140,20 @@ public class ChallengeRepository extends ObservableService
 	 */
 	public boolean contains(SolvableChallenge c)
 	{
+		if (c == null)
+			return false;
 		return _idMap.keySet().contains(c);
 	}
 	
+	@Requires("c != null")
 	private void addPersistenceState(SolvableChallenge c, boolean isNew)
 	{
 		PersistenceStateImpl pState = new PersistenceStateImpl(c, isNew);
-		pState.addObjectChangedListener(_persistenceStateListener);
 		_persistenceStates.put(c, pState);
 	}
 	
 	private void removePersistenceState(SolvableChallenge c)
 	{
-		_persistenceStates.get(c).removeObjectChangedListener(_persistenceStateListener);
 		_persistenceStates.remove(c);
 	}
 }

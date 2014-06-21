@@ -66,6 +66,7 @@ public class ChallengeItemController
 	 * Returns the Challenge that is represented by the ChallengeItem
 	 * associated with this Controller.
 	 */
+	@Ensures("result != null")
 	public SolvableChallenge getChallenge()
 	{
 		return _challenge;
