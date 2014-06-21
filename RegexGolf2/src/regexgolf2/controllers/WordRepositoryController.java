@@ -2,9 +2,8 @@ package regexgolf2.controllers;
 
 import java.io.IOException;
 
-import regexgolf2.ui.wordrepository.WordRepositoryUI;
 import javafx.scene.Parent;
-import javafx.scene.layout.AnchorPane;
+import regexgolf2.ui.wordrepository.WordRepositoryUI;
 
 public class WordRepositoryController
 {
@@ -19,8 +18,6 @@ public class WordRepositoryController
 	
 	
 	
-	
-	//TODO implement properly
 	public Parent getUINode()
 	{
 		return _ui.getUINode();

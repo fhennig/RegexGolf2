@@ -89,6 +89,11 @@ public class ChallengeMapper
 		return challengeId;
 	}
 	
+	/**
+	 * Simply selects the max id and adds 1.
+	 * This is not safe for concurrency!
+	 * Currently, this Application is designed without support for concurrent database access.
+	 */
 	private int getNextChallengeId() throws SQLException
 	{
 		String sql = "SELECT CASE WHEN count(*) = 0 THEN 1 ELSE max(id) + 1 END FROM challenges";

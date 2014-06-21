@@ -23,6 +23,10 @@ public class DatabaseInitializer
 				"expectedmatchresult boolean, " +
 				"word text not null); "; 
 		
+		String createWordTableSQL = "create table if not exists words (" +
+				"id integer primary key autoincrement," +
+				"text text not null unique); ";
+		
 		String enableForeignKeySupportSQL = "pragma foreign_keys = on;";
 		
 		Statement stmt;
@@ -30,6 +34,7 @@ public class DatabaseInitializer
 		stmt.execute(createChallengesTableSQL);
 		stmt.execute(createSolutionsTableSQL);
 		stmt.execute(createRequirementsTableSQL);
+		stmt.execute(createWordTableSQL);
 		stmt.execute(enableForeignKeySupportSQL);
 		stmt.close();
 	}

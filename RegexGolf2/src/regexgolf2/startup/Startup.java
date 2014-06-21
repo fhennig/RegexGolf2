@@ -10,6 +10,7 @@ import javax.swing.JOptionPane;
 import regexgolf2.controllers.MainController;
 import regexgolf2.services.initializing.InitializingService;
 import regexgolf2.services.initializing.ServiceContainer;
+import regexgolf2.util.LogInitializer;
 
 /**
  * This is the class containing the main method.
@@ -24,6 +25,7 @@ public class Startup extends Application
 	
 	public static void main(String[] args)
 	{
+		LogInitializer.initializeLoggingSettings();
 		InitializingService initializer = new InitializingService();
 		ServiceContainer sc = initializer.start();
 		if (sc == null)

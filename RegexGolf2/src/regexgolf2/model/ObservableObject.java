@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.EventObject;
 import java.util.List;
 
+/**
+ * An abstract class that provides an Implementation for a simple
+ * 'ObjectChangedEvent'.
+ */
 public abstract class ObservableObject
 {
 	private final List<ObjectChangedListener> _listeners = new ArrayList<>();

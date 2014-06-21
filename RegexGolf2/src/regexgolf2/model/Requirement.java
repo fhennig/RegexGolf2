@@ -3,6 +3,15 @@ package regexgolf2.model;
 import com.google.java.contract.Ensures;
 import com.google.java.contract.Requires;
 
+/**
+ * A requirement consists of a word and an expected match result.
+ * A Solution can comply (meet) a Requirement, if the match result
+ * of the solution and the word equals the expected match result.
+ * For example: word = "Apple", expectedMatchResult = false
+ * 				Solution = "A.*"
+ * 				The word matches the solution but the expectedMatchResult is false,
+ * 				therefore, the Solution does not comply the requirement.
+ */
 public class Requirement extends ObservableObject
 {
 	private final boolean _expectedMatchResult;
@@ -48,6 +57,12 @@ public class Requirement extends ObservableObject
 		return _expectedMatchResult;
 	}
 	
+	/**
+	 * Returns true, if the expectedMatchResult is equal to the
+	 * match result of the word and the solution.
+	 * False otherwise.
+	 */
+	@Requires("solution != null")
 	public boolean applySolution(Solution solution)
 	{
 		boolean matchResult = solution.getPattern().matcher(getWord()).matches();

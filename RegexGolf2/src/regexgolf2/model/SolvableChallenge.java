@@ -75,7 +75,7 @@ public class SolvableChallenge extends ObservableObject
 		_complianceResults.clear();
 		for (Requirement r : _challenge.getRequirements())
 		{
-			boolean rIsComplied = r.applySolution(_solution);			
+			boolean rIsComplied = r.applySolution(getSolution());			
 			_complianceResults.put(r, rIsComplied);
 		}
 	}

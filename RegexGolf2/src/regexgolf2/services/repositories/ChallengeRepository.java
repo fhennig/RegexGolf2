@@ -69,6 +69,9 @@ public class ChallengeRepository extends ObservableService
 		fireServiceChangedEvent();
 	}
 	
+	/**
+	 * Returns an <b>unmodifiable</b> Set.
+	 */
 	@Ensures("result != null")
 	public Set<SolvableChallenge> getAll()
 	{
