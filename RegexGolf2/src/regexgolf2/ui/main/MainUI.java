@@ -2,8 +2,6 @@ package regexgolf2.ui.main;
 
 import java.io.IOException;
 
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -13,7 +11,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import regexgolf2.ui.util.JavafxUtil;
@@ -59,17 +56,7 @@ public class MainUI
     	stage.setTitle("RegexGolf");
     	stage.setWidth(800);
     	stage.setHeight(500);
-    	stage.focusedProperty().addListener(new ChangeListener<Boolean>()
-		{
-			@Override
-			public void changed(ObservableValue<? extends Boolean> arg0,
-					Boolean arg1, Boolean newValue)
-			{
-				if (!newValue);
-//					stage.toFront();
-			}
-    		
-		});
+
     	stage.show();
     }
     
@@ -80,10 +67,8 @@ public class MainUI
     	_wordRepositoryStage = new Stage();
     	
     	_wordRepositoryStage.setScene(new Scene(_wordRepositoryPane));
-//    	_wordRepositoryStage.initModality(Modality.APPLICATION_MODAL);
-//    	_wordRepositoryStage.initOwner(parent);
     	//Set dimensions:
-    	_wordRepositoryStage.setWidth(500);
+    	_wordRepositoryStage.setWidth(300);
     	_wordRepositoryStage.setHeight(500);
     	//Center stage in parentstage
     	_wordRepositoryStage.setX(
@@ -95,6 +80,11 @@ public class MainUI
     	_wordRepositoryStage.setY(parent.getHeight() / 2);
     }
     
+    /**
+     * Initializes the WordRepository-Button Handler.
+     * The Handler initializes the WordRepositoryStage if it is not initialized
+     * and show it and focuses it.
+     */
     private void initWordRepoButtonHandler(Window dialogParent)
     {
     	final Window parent = dialogParent;
@@ -103,10 +93,11 @@ public class MainUI
 			@Override
 			public void handle(ActionEvent arg0)
 			{
+				//lazy initialization
 				if (_wordRepositoryStage == null)
 					initWordRepoStage(parent);
 				_wordRepositoryStage.show();
-//				_wordRepositoryStage.requestFocus();
+				_wordRepositoryStage.requestFocus();
 			}
 		});
     }
