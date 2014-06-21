@@ -13,6 +13,7 @@ public class LogInitializer
 		consoleHandler.setLevel(Level.ALL);
 		
 		Logger rootLogger = Logger.getLogger("");
+		rootLogger.setLevel(Level.ALL);
 		
 		for (Handler h : rootLogger.getHandlers())
 		{

@@ -1,6 +1,5 @@
 package regexgolf2.model;
 
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import regexgolf2.util.Validator;
@@ -20,13 +19,6 @@ public class Word extends ObservableObject
 	 */
 	private Validator<String> _textValidator = null;
 		
-	
-	
-	public Word()
-	{
-		_LOG.setLevel(Level.ALL);
-	}
-	
 	
 	
 	@Ensures("result != null")

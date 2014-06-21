@@ -3,6 +3,7 @@ package regexgolf2.services.initializing;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.logging.Logger;
 
 import javax.swing.JOptionPane;
 
@@ -20,6 +21,8 @@ import regexgolf2.startup.ChallengeFactory;
 
 public class InitializingService
 {
+	private static final Logger _LOG = Logger.getLogger(InitializingService.class.getName());
+	
 	private SettingsService _settingsService;
 	private PersistenceService _persistenceService;
 	private ChallengeRepository _challengeRepository;
@@ -35,20 +38,25 @@ public class InitializingService
 		{
 			if (!initSettingsService())
 				return null;
+			_LOG.info("SettingsService initialized");
 			
 			if (!initPersistenceService(_settingsService.getSettings().getSQLiteDBPath()))
 				return null;
+			_LOG.info("PersistenceService initialized");
 			
 			if (!testDB(_persistenceService))
 				return null;
+			_LOG.info("Database Test successful");
 			
 			if (!initChallengeRepository(_persistenceService.getSolvableChallengeMapper()))
 				return null;
+			_LOG.info("ChallengeRepository initialized");
 			
 			return createServiceContainer();
 		}
 		catch (Exception ex)
 		{
+			_LOG.severe(ex.toString());
 			JOptionPane.showMessageDialog(null, "Unexpected fatal Error!\n\n" + ex.toString());
 			ex.printStackTrace();
 			return null;
