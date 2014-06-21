@@ -15,7 +15,9 @@ import regexgolf2.model.SolvableChallenge;
 import regexgolf2.services.persistence.Database;
 import regexgolf2.services.persistence.PersistenceService;
 import regexgolf2.services.persistence.mappers.SolvableChallengeMapper;
+import regexgolf2.services.persistence.mappers.WordMapper;
 import regexgolf2.services.repositories.ChallengeRepository;
+import regexgolf2.services.repositories.WordRepository;
 import regexgolf2.services.settingsservice.SettingsService;
 import regexgolf2.startup.ChallengeFactory;
 
@@ -26,6 +28,7 @@ public class InitializingService
 	private SettingsService _settingsService;
 	private PersistenceService _persistenceService;
 	private ChallengeRepository _challengeRepository;
+	private WordRepository _wordRepository;
 	
 	
 	
@@ -51,6 +54,10 @@ public class InitializingService
 			if (!initChallengeRepository(_persistenceService.getSolvableChallengeMapper()))
 				return null;
 			_LOG.info("ChallengeRepository initialized");
+			
+			if (!initWordRepository(_persistenceService.getWordMapper()))
+				return null;
+			_LOG.info("WordRepository initialized");
 			
 			return createServiceContainer();
 		}
@@ -145,8 +152,22 @@ public class InitializingService
 		return true;
 	}
 	
+	private boolean initWordRepository(WordMapper mapper)
+	{
+		try
+		{
+			_wordRepository = new WordRepository(mapper);
+		}
+		catch (SQLException e)
+		{
+			JOptionPane.showMessageDialog(null, "Error while loading words from the Database!");
+			return false;
+		}
+		return false;
+	}
+	
 	private ServiceContainer createServiceContainer()
 	{
-		return new ServiceContainer(_settingsService, _persistenceService, _challengeRepository);
+		return new ServiceContainer(_settingsService, _persistenceService, _challengeRepository, _wordRepository);
 	}
 }

@@ -5,6 +5,7 @@ import java.io.IOException;
 import javafx.scene.Parent;
 import javafx.stage.Stage;
 import regexgolf2.services.repositories.ChallengeRepository;
+import regexgolf2.services.repositories.WordRepository;
 import regexgolf2.ui.main.MainUI;
 
 import com.google.java.contract.Ensures;
@@ -16,8 +17,6 @@ import com.google.java.contract.Requires;
  */
 public class MainController
 {
-	private final ChallengeRepository _challengeRepo;
-
 	private MainUI _mainUI;
 	
 	private final ChallengeSolvingController _challengeSolvingController;
@@ -32,15 +31,11 @@ public class MainController
 	 * @throws IOException  if initializing the UI components failed (fxml document failed to load).
 	 */
 	@Requires("challengeRepo != null")
-	public MainController(ChallengeRepository challengeRepo, Stage primaryStage) throws IOException
+	public MainController(ChallengeRepository challengeRepo, WordRepository wordRepo, Stage primaryStage) throws IOException
 	{
-		_challengeRepo = challengeRepo;
-		_challengeRepo.getAll();
-		
-		_wordRepositoryController = new WordRepositoryController(); //TODO initialize properly
-
 		_challengeSolvingController = new ChallengeSolvingController();
-		_challengeRepoController = new ChallengeRepositoryController(_challengeRepo);
+		_challengeRepoController = new ChallengeRepositoryController(challengeRepo);
+		_wordRepositoryController = new WordRepositoryController(wordRepo);
 		
 		_challengeSolvingController.challengeProperty().bind(_challengeRepoController.selectedChallengeProperty());
 		_challengeSolvingController.editableProperty().bind(_challengeRepoController.editModeProperty());

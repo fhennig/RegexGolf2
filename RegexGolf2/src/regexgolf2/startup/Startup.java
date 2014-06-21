@@ -45,7 +45,9 @@ public class Startup extends Application
 		{
 			//Initialize the MainController with the given ChallengeRepository
 			//and the primaryStage
-			new MainController(_services.getChallengeRepository(), primaryStage);
+			new MainController(_services.getChallengeRepository(),
+							   _services.getWordRepository(),
+							   primaryStage);
 		} catch (IOException e)
 		{
 			JOptionPane.showMessageDialog(null, "Initializing UI failed!");
