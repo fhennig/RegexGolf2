@@ -128,6 +128,7 @@ public class ChallengeMapper
 		PreparedStatement ps = _db.getConnection().prepareStatement(challengeSQL);
 		ps.setInt(1, challengeId);
 		ps.execute();
+		ps.close();
 		
 		//requirements are deleted via cascade by the database itself
 		//_requirements.delete(challengeId);
