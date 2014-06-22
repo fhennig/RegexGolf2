@@ -87,6 +87,21 @@ public class WordRepository extends ObservableService
 		return Collections.unmodifiableSet(_persistenceStates.keySet());
 	}
 	
+	/**
+	 * This method searches for a word with the given text.
+	 * If <code> text </code> is null, the result will be null too.
+	 * If no word with the given text could be found, null is returned.
+	 */
+	public Word getWord(String text)
+	{
+		for (Word w : getAll())
+		{
+			if (w.getText().equals(text))
+				return w;
+		}
+		return null;
+	}
+	
 	@Requires({
 		"word != null",
 		"contains(word)"
@@ -97,9 +112,19 @@ public class WordRepository extends ObservableService
 		return _persistenceStates.get(word);
 	}
 	
+	/**
+	 * This method will attempt to create a new empty word.
+	 * Because every word needs to have a unique text,
+	 * if an empty word already exists, no new word is created,
+	 * the empty word is returned.
+	 * @return
+	 */
 	@Ensures("result != null")
 	public Word createNew()
 	{
+		Word emptyWord = getWord("");
+		if (emptyWord != null)
+			return emptyWord;
 		Word w = new Word();
 		w.setTextValidator(_wordValidator);
 		_persistenceStates.put(w, new PersistenceStateImpl(w, true));

@@ -67,6 +67,7 @@ public class MainUI
     	_wordRepositoryStage = new Stage();
     	
     	_wordRepositoryStage.setScene(new Scene(_wordRepositoryPane));
+    	_wordRepositoryStage.initOwner(parent);
     	//Set dimensions:
     	_wordRepositoryStage.setWidth(300);
     	_wordRepositoryStage.setHeight(500);

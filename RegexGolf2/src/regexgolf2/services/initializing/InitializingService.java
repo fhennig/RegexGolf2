@@ -163,7 +163,7 @@ public class InitializingService
 			JOptionPane.showMessageDialog(null, "Error while loading words from the Database!");
 			return false;
 		}
-		return false;
+		return true;
 	}
 	
 	private ServiceContainer createServiceContainer()

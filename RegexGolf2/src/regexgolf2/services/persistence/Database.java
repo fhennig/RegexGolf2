@@ -22,7 +22,11 @@ public class Database
 	{
 		Class.forName("org.sqlite.JDBC");
 		_connection = DriverManager.getConnection("jdbc:sqlite:" + file.getPath());
-		new DatabaseInitializer().createTablesIfNotExists(this);
+		DatabaseInitializer dbInit = new DatabaseInitializer(this);
+		//TODO merge this DatabaseInitializer into this class
+		//also, this reference escaped before construction finished! EVIL!
+		dbInit.createTablesIfNotExists();
+		dbInit.insertDefaultWords();
 	}
 	
 	
