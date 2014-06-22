@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.EventObject;
 import java.util.List;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Parent;
@@ -25,6 +27,7 @@ public class WordRepositoryController
 {
 	private final WordRepositoryUI _ui;
 	private final WordRepository _repository;
+	private ChangeListener<Boolean> _outOfSynchListener;
 	
 	
 	
@@ -35,11 +38,48 @@ public class WordRepositoryController
 		initBindings();
 		initButtonHandlers();
 		initRepositoryListener();
+		initOutOfSynchListener();
 		
 		refreshListViewItemList();
 	}
 	
 	
+	
+	private void initOutOfSynchListener()
+	{
+		_outOfSynchListener = new ChangeListener<Boolean>()
+		{
+			private int amountOutOfSynch = 0;
+			
+			@Override
+			public void changed(ObservableValue<? extends Boolean> observable,
+					Boolean oldValue, Boolean newValue)
+			{
+				if (newValue)
+					amountOutOfSynch++;
+				else
+					amountOutOfSynch--;
+				
+				_ui.getSaveButton().setDisable(amountOutOfSynch != 0);
+					
+				
+//				if (newValue)
+//					_ui.getSaveButton().setDisable(true);
+//				else
+//				{
+//					for (WordItem item : _ui.getListView().getItems())
+//					{
+//						if (item.isOutOfSynch())
+//						{
+//							_ui.getSaveButton().setDisable(true);
+//							return;
+//						}
+//					}
+//					_ui.getSaveButton().setDisable(false);
+//				}
+			}
+		};
+	}
 	
 	private void initButtonHandlers()
 	{
@@ -51,9 +91,6 @@ public class WordRepositoryController
 				Word newWord = _repository.createNew();
 				WordItem item = getItem(newWord);
 				_ui.getListView().edit(_ui.getListView().getItems().indexOf(item));
-//				_ui.getListView().requestFocus();
-//				selectWord(newWord);
-				//TODO preselect the new item
 			}
 		});
 		
@@ -69,7 +106,7 @@ public class WordRepositoryController
 				} catch (SQLException e)
 				{
 					//TODO use fancy dialog here
-					JOptionPane.showMessageDialog(null, "DB Error");
+					JOptionPane.showMessageDialog(null, "Error with the Database, could not delete.");
 				}
 			}
 		});
@@ -147,6 +184,7 @@ public class WordRepositoryController
 	private WordItem addItem(Word word)
 	{
 		WordItem item = new WordItem(word, _repository.getPersistenceState(word));
+		item.isOutOfSynchPropery().addListener(_outOfSynchListener);
 		_ui.getListView().getItems().add(item);
 		return item;
 	}
@@ -154,6 +192,7 @@ public class WordRepositoryController
 	private void removeItem(WordItem item)
 	{
 		_ui.getListView().getItems().remove(item);
+		item.isOutOfSynchPropery().removeListener(_outOfSynchListener);
 		item.discard();
 	}
 	

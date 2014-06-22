@@ -90,6 +90,17 @@ public class WordItem
 		return _isChanged;
 	}
 	
+	/**
+	 * Indicates that the Text inside the Item and the Text inside the
+	 * Word are out of synch.
+	 * This occurs if a Text is entered for which a Word already exists
+	 *(duplicate words are not allowed).
+	 */
+	public boolean isOutOfSynch()
+	{
+		return _isOutOfSynch.get();
+	}
+	
 	@Ensures("result != null")
 	public ReadOnlyBooleanProperty isOutOfSynchPropery()
 	{

@@ -29,11 +29,11 @@ public class RequirementCellUI extends ListCell<RequirementItem>
 
     private final BooleanProperty _complied = new SimpleBooleanProperty();
 
-    private RequirementItem _item;
-    
+
     
     public RequirementCellUI()
     {
+    	initCommitEditCall();
     	initLayout();
     	initImages();
     	initCompliedChangedReaction();
@@ -45,6 +45,7 @@ public class RequirementCellUI extends ListCell<RequirementItem>
     
     private void initLayout()
     {
+    	_editLabel.editIconAppearsProperty().bind(this.hoverProperty());
     	Node editLabelNode = _editLabel.getUINode();
     	AnchorPane.setLeftAnchor(editLabelNode, 0.0);
     	AnchorPane.setTopAnchor(editLabelNode, 0.0);
@@ -64,6 +65,20 @@ public class RequirementCellUI extends ListCell<RequirementItem>
     	_rootNode.prefWidthProperty().bind(this.widthProperty());
     	
     	setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
+    }
+    
+    private void initCommitEditCall()
+    {
+    	_editLabel.editModeProperty().addListener(new ChangeListener<Boolean>()
+		{
+			@Override
+			public void changed(ObservableValue<? extends Boolean> arg0,
+					Boolean arg1, Boolean arg2)
+			{
+				if (!arg2)
+				RequirementCellUI.this.commitEdit(getItem());
+			}
+		});
     }
     
     private void initImages()
@@ -94,15 +109,29 @@ public class RequirementCellUI extends ListCell<RequirementItem>
     		_imageView.setImage(_notCompliedImage);
     }
     
+    @Override
+    public void startEdit()
+    {
+    	super.startEdit();
+    	_editLabel.tryEnterEditMode();
+    }
+    
     /**
      * Called on various events to update the UI accordingly
      */
     @Override
     protected void updateItem(RequirementItem requirement, boolean empty)
     {
+    	//Get current item and unsubscribe if item is set
+		if (getItem() != null)
+		{
+			_editLabel.textProperty().unbindBidirectional(getItem().wordProperty());
+			_complied.unbindBidirectional(getItem().compliedProperty());
+		}
+		
     	super.updateItem(requirement, empty);
 
-    	if (requirement == null)
+    	if (getItem() == null)
     	{
     		setGraphic(null);
     	}
@@ -110,12 +139,6 @@ public class RequirementCellUI extends ListCell<RequirementItem>
     	{
     		setGraphic(_rootNode);
 
-    		if (_item != null)
-    		{
-    			_editLabel.textProperty().unbindBidirectional(_item.wordProperty());
-    			_complied.unbindBidirectional(_item.compliedProperty());
-    		}
-    		_item = requirement;
 			_editLabel.textProperty().bindBidirectional(requirement.wordProperty());
 			_complied.bind(requirement.compliedProperty());
     	}
