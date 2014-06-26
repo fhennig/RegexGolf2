@@ -37,7 +37,7 @@ public class MainController
 		_challengeRepoController = new ChallengeRepositoryController(challengeRepo);
 		_wordRepositoryController = new WordRepositoryController(wordRepo);
 		
-		_challengeSolvingController.challengeProperty().bind(_challengeRepoController.selectedChallengeProperty());
+		_challengeSolvingController.challengeProperty().bind(_challengeRepoController.challengeProperty());
 		_challengeSolvingController.editableProperty().bind(_challengeRepoController.editModeProperty());
 		 
 		initUI(primaryStage);

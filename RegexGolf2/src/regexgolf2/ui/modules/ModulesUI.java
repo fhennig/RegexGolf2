@@ -8,7 +8,6 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Tab;
@@ -59,6 +58,10 @@ public class ModulesUI
     
     
     
+    /**
+     * Called from the Button Handler because of lazy initialization
+     * @param parent
+     */
     private void initWordRepoStage(Window parent)
     {
     	_wordRepositoryStage = new Stage();
@@ -131,7 +134,7 @@ public class ModulesUI
     }
     
     @Ensures("result != null")
-    public Parent getUINode()
+    public Node getUINode()
     {
     	return _rootNode;
     }

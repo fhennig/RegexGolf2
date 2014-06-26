@@ -30,7 +30,7 @@ import regexgolf2.ui.subcomponents.challengelisting.challengecell.ChallengeItem;
 import com.google.java.contract.Ensures;
 import com.google.java.contract.Requires;
 
-public class ChallengeRepositoryController
+public class ChallengeRepositoryController implements ChallengeContainer
 {
 	private final ChallengeRepository _challengeRepo;
 	private final ChallengeRepositoryUI _ui;
@@ -243,16 +243,6 @@ public class ChallengeRepositoryController
 		else
 			return null;
 	}
-
-	/**
-	 * Returns a Property that holds the currently selected Challenge.
-	 * This can be null, if no Challenge is selected.
-	 */
-	@Ensures("result != null")
-	public ReadOnlyObjectProperty<SolvableChallenge> selectedChallengeProperty()
-	{
-		return _selectedChObjectProperty;
-	}
 	
 	private void setEditmode(boolean edit)
 	{
@@ -269,5 +259,11 @@ public class ChallengeRepositoryController
 	public Node getUINode()
 	{
 		return _ui.getUINode();
+	}
+
+	@Override
+	public ReadOnlyObjectProperty<SolvableChallenge> challengeProperty()
+	{
+		return _selectedChObjectProperty;
 	}
 }
