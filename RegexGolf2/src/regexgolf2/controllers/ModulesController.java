@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -22,15 +23,11 @@ public class ModulesController
 {
 	private ModulesUI _ui;
 
-
 	private final ChallengeRepositoryController _challengeRepoController;
 	private final WordRepositoryController _wordRepositoryController;
 	private final ChallengeGeneratorController _challengeGeneratorController;
 	
-	
-	//TODO method to access selectedChallenge (readonly)
 	private final ObjectProperty<SolvableChallenge> _selectedChallenge = new SimpleObjectProperty<>();
-
     
     private Map<Tab, ChallengeContainer> _challengeContainerMap = new HashMap<>();
 	
@@ -47,11 +44,20 @@ public class ModulesController
 		_challengeGeneratorController = new ChallengeGeneratorController();
 		
 		initUI(parent);
-		
-		
+		initSelectedTabHandler();
+		initChallengePropertyBinding();
 	}
 	
 	
+	
+	/**
+	 * This needs to be done once. When the selected Tab changes,
+	 * the Handler will take care of the binding.
+	 */
+	private void initChallengePropertyBinding()
+	{
+		_selectedChallenge.bind(_challengeContainerMap.get(_ui.getSelectedTab()).challengeProperty());
+	}
 	
 	private void initUI(Window parent) throws IOException
 	{
@@ -63,6 +69,11 @@ public class ModulesController
 		_challengeContainerMap.put(_ui.getSavedChallengesTab(), _challengeRepoController);
 		_challengeContainerMap.put(_ui.getChallengeGeneratorTab(), _challengeGeneratorController);
 		
+
+	}
+	
+	private void initSelectedTabHandler()
+	{
 		_ui.selectedTabProperty().addListener(new ChangeListener<Tab>()
 		{
 			@Override
@@ -70,11 +81,16 @@ public class ModulesController
 					Tab newValue)
 			{
 				if (oldValue != null);
-					//unbind
+					_selectedChallenge.unbind();
 				if (newValue != null);
-					//bind
+					_selectedChallenge.bind(_challengeContainerMap.get(newValue).challengeProperty());
 			}
 		});
+	}
+	
+	public ReadOnlyObjectProperty<SolvableChallenge> challengeProperty()
+	{
+		return _selectedChallenge;
 	}
 	
 	public Node getUINode()

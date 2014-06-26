@@ -7,10 +7,10 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="452.0" prefWidth="299.0" side="LEFT" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<TabPane side="LEFT" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
   <tabs><Tab fx:id="_savedChallengesTab" text="Saved Challenges">
 <content>
-<VBox layoutX="84.0" layoutY="106.0" prefHeight="200.0" prefWidth="100.0" spacing="8.0" AnchorPane.topAnchor="156.0">
+<VBox layoutX="84.0" layoutY="106.0" spacing="8.0" AnchorPane.topAnchor="156.0">
 <children>
 <Label text="My Challenges">
 <font>
@@ -53,11 +53,7 @@
 </Button>
 </children>
 </HBox>
-<AnchorPane fx:id="_challengeGeneratorPane" VBox.vgrow="ALWAYS">
-<padding>
-<Insets bottom="14.0" left="14.0" right="14.0" top="14.0" />
-</padding>
-</AnchorPane>
+<AnchorPane fx:id="_challengeGeneratorPane" VBox.vgrow="ALWAYS" />
 </children>
 <padding>
 <Insets bottom="14.0" left="14.0" right="14.0" top="14.0" />

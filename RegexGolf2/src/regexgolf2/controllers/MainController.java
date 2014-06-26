@@ -20,8 +20,7 @@ public class MainController
 	private MainUI _mainUI;
 	
 	private final ChallengeSolvingController _challengeSolvingController;
-	private final ChallengeRepositoryController _challengeRepoController;
-	private final WordRepositoryController _wordRepositoryController;
+	private final ModulesController _modulesController;
 	
 	
 	
@@ -34,11 +33,12 @@ public class MainController
 	public MainController(ChallengeRepository challengeRepo, WordRepository wordRepo, Stage primaryStage) throws IOException
 	{
 		_challengeSolvingController = new ChallengeSolvingController();
-		_challengeRepoController = new ChallengeRepositoryController(challengeRepo);
-		_wordRepositoryController = new WordRepositoryController(wordRepo);
+		_modulesController = new ModulesController(challengeRepo, wordRepo, primaryStage);
 		
-		_challengeSolvingController.challengeProperty().bind(_challengeRepoController.challengeProperty());
-		_challengeSolvingController.editableProperty().bind(_challengeRepoController.editModeProperty());
+		_challengeSolvingController.challengeProperty().bind(_modulesController.challengeProperty());
+		
+		//TODO get bindable editableProperty somehow
+		//_challengeSolvingController.editableProperty().bind(_challengeRepoController.editModeProperty());
 		 
 		initUI(primaryStage);
 	}
@@ -49,15 +49,8 @@ public class MainController
 	{
 		_mainUI = new MainUI(stage);
 		
-		//Insert Child UI elements:
-		//ChallengeRepository
-		_mainUI.setChallengeRepoPanelContent(_challengeRepoController.getUINode());
-		//ChallengeSolvingUI into mainPane
 		_mainUI.setMainPaneContent(_challengeSolvingController.getUINode());
-		//Word repository Panel
-		_mainUI.setWordRepositoryPanel(_wordRepositoryController.getUINode());
-		
-		//TODO challengegenerator
+		_mainUI.setModulesPaneContent(_modulesController.getUINode());
 	}
 	
 	@Ensures("result != null")

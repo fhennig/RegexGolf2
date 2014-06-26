@@ -28,6 +28,9 @@ public class ChallengeListUI
 	{
 		initProperties();
 		initListView();
+		//Set the Preferred size to 0, 0. This fixes UI issues somehow...
+		_listView.setPrefHeight(0);
+		_listView.setPrefWidth(0);
 	}
 	
 	

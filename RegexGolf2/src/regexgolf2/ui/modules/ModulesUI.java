@@ -113,6 +113,11 @@ public class ModulesUI
     	return _challengeGeneratorTab;
     }
     
+    public Tab getSelectedTab()
+    {
+    	return _rootNode.getSelectionModel().getSelectedItem();
+    }
+    
     public ReadOnlyObjectProperty<Tab> selectedTabProperty()
     {
     	return _rootNode.getSelectionModel().selectedItemProperty();
