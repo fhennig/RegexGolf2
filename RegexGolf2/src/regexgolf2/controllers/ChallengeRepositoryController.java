@@ -244,26 +244,28 @@ public class ChallengeRepositoryController implements ChallengeContainer
 			return null;
 	}
 	
+	@Override
+	public ReadOnlyObjectProperty<SolvableChallenge> challengeProperty()
+	{
+		return _selectedChObjectProperty;
+	}
+
 	private void setEditmode(boolean edit)
 	{
 		_editmodeProperty.set(edit);
 	}
 	
-	@Ensures("result != null")
-	public ReadOnlyBooleanProperty editModeProperty()
+	@Override
+	public ReadOnlyBooleanProperty editableProperty()
 	{
 		return _editmodeProperty;
 	}
-	
+
+
+
 	@Ensures("result != null")
 	public Node getUINode()
 	{
 		return _ui.getUINode();
-	}
-
-	@Override
-	public ReadOnlyObjectProperty<SolvableChallenge> challengeProperty()
-	{
-		return _selectedChObjectProperty;
 	}
 }

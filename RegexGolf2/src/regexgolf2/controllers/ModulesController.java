@@ -4,8 +4,11 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -28,6 +31,7 @@ public class ModulesController
 	private final ChallengeGeneratorController _challengeGeneratorController;
 	
 	private final ObjectProperty<SolvableChallenge> _selectedChallenge = new SimpleObjectProperty<>();
+	private final BooleanProperty _editableProperty = new SimpleBooleanProperty();
     
     private Map<Tab, ChallengeContainer> _challengeContainerMap = new HashMap<>();
 	
@@ -56,7 +60,7 @@ public class ModulesController
 	 */
 	private void initChallengePropertyBinding()
 	{
-		_selectedChallenge.bind(_challengeContainerMap.get(_ui.getSelectedTab()).challengeProperty());
+		refreshBindings(_challengeContainerMap.get(_ui.getSelectedTab()));
 	}
 	
 	private void initUI(Window parent) throws IOException
@@ -68,8 +72,6 @@ public class ModulesController
 		
 		_challengeContainerMap.put(_ui.getSavedChallengesTab(), _challengeRepoController);
 		_challengeContainerMap.put(_ui.getChallengeGeneratorTab(), _challengeGeneratorController);
-		
-
 	}
 	
 	private void initSelectedTabHandler()
@@ -80,17 +82,29 @@ public class ModulesController
 			public void changed(ObservableValue<? extends Tab> observable, Tab oldValue,
 					Tab newValue)
 			{
-				if (oldValue != null);
-					_selectedChallenge.unbind();
-				if (newValue != null);
-					_selectedChallenge.bind(_challengeContainerMap.get(newValue).challengeProperty());
+				refreshBindings(_challengeContainerMap.get(newValue));
 			}
 		});
+	}
+	
+	@Requires("selectedContainer != null")
+	private void refreshBindings(ChallengeContainer selectedContainer)
+	{
+		_selectedChallenge.unbind();
+		_selectedChallenge.bind(selectedContainer.challengeProperty());
+		
+		_editableProperty.unbind();
+		_editableProperty.bind(selectedContainer.editableProperty());
 	}
 	
 	public ReadOnlyObjectProperty<SolvableChallenge> challengeProperty()
 	{
 		return _selectedChallenge;
+	}
+	
+	public ReadOnlyBooleanProperty editableProperty()
+	{
+		return _editableProperty;
 	}
 	
 	public Node getUINode()
