@@ -2,23 +2,23 @@ package regexgolf2.controllers;
 
 import java.io.IOException;
 
-import com.google.java.contract.Requires;
-
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.ReadOnlyBooleanWrapper;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.Node;
+import javafx.stage.Window;
 import regexgolf2.model.SolvableChallenge;
 import regexgolf2.services.challengegenerator.ChallengeGeneratorService;
+import regexgolf2.services.initializing.ServiceContainer;
 import regexgolf2.ui.challengegenerator.ChallengeGeneratorUI;
+
+import com.google.java.contract.Requires;
 
 public class ChallengeGeneratorController implements ChallengeContainer
 {
-	private static final ReadOnlyBooleanProperty _editable = new ReadOnlyBooleanWrapper(false);
+	private static final ReadOnlyBooleanProperty _EDITABLE = new ReadOnlyBooleanWrapper(false);
 	
 	private ChallengeGeneratorUI _ui;
 	
@@ -28,34 +28,29 @@ public class ChallengeGeneratorController implements ChallengeContainer
 	
 	
 	
-	@Requires("service != null")
-	public ChallengeGeneratorController(ChallengeGeneratorService service) throws IOException
+	@Requires("services != null")
+	public ChallengeGeneratorController(ServiceContainer services, Window parent) throws IOException
 	{
-		_generatorService = service;
-		initUI();
-		initGenerateButtonHandler();
+		_generatorService = services.getGeneratorService();
+
+		WordRepositoryController wrc = new WordRepositoryController(services.getWordRepository());
+		
+		_ui = new ChallengeGeneratorUI(parent);
+		_ui.setWordRepositoryPanel(wrc.getUINode());
+		_ui.getGenerateButton().setOnAction(e -> generateButtonClicked());
 	}
 
 	
-	
-	private void initUI() throws IOException
+		
+	private void generateButtonClicked()
 	{
-		_ui = new ChallengeGeneratorUI();
+		SolvableChallenge c = _generatorService.generateChallenge();
+		setChallenge(c);
 	}
 	
-	private void initGenerateButtonHandler()
-	{
-		_ui.getGenerateButton().setOnAction(new EventHandler<ActionEvent>()
-		{
-			@Override
-			public void handle(ActionEvent arg0)
-			{
-				SolvableChallenge c = _generatorService.generateChallenge();
-				setChallenge(c);
-			}
-		});
-	}
-	
+	/**
+	 * Sets the selected Challenge
+	 */
 	private void setChallenge(SolvableChallenge challenge)
 	{
 		_challenge.set(challenge);
@@ -75,6 +70,6 @@ public class ChallengeGeneratorController implements ChallengeContainer
 	@Override
 	public ReadOnlyBooleanProperty editableProperty()
 	{
-		return _editable;
+		return _EDITABLE;
 	}
 }

@@ -2,8 +2,19 @@
 
 <?import java.lang.*?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
 <VBox fx:id="_rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" spacing="8.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
-<children><Button fx:id="_generateButton" mnemonicParsing="false" prefWidth="${_rootPane.width}" text="Generate Challenge" />
+<children><HBox spacing="5.0">
+<children><ChoiceBox fx:id="_generatorChoiceBox" HBox.hgrow="ALWAYS" /><Region prefHeight="0.0" prefWidth="0.0" HBox.hgrow="ALWAYS" /><Button fx:id="_wordPoolButton" contentDisplay="GRAPHIC_ONLY" graphicTextGap="0.0" mnemonicParsing="false">
+<graphic>
+<ImageView fitHeight="16.0" pickOnBounds="true" preserveRatio="true">
+<image>
+<Image url="@../img/config.png" />
+</image>
+</ImageView>
+</graphic>
+</Button>
+</children></HBox><AnchorPane fx:id="_generatorConfigPane" VBox.vgrow="ALWAYS" /><Button fx:id="_generateButton" mnemonicParsing="false" prefWidth="${_rootPane.width}" text="Generate Challenge" />
 </children></VBox>

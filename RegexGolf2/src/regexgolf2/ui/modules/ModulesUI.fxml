@@ -3,7 +3,6 @@
 <?import java.lang.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
@@ -34,23 +33,13 @@
 <content>
 <VBox spacing="8.0">
 <children>
-<HBox alignment="CENTER" spacing="5.0">
+<HBox alignment="CENTER_LEFT" spacing="5.0">
 <children>
 <Label text="Challenge Generator">
 <font>
 <Font size="18.0" />
 </font>
 </Label>
-<Region prefHeight="0.0" prefWidth="0.0" HBox.hgrow="ALWAYS" />
-<Button fx:id="_wordRepoButton" contentDisplay="GRAPHIC_ONLY" graphicTextGap="0.0" mnemonicParsing="false">
-<graphic>
-<ImageView fitHeight="16.0" pickOnBounds="true" preserveRatio="true">
-<image>
-<Image url="@../img/config.png" />
-</image>
-</ImageView>
-</graphic>
-</Button>
 </children>
 </HBox>
 <AnchorPane fx:id="_challengeGeneratorPane" VBox.vgrow="ALWAYS" />
