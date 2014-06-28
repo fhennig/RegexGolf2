@@ -16,8 +16,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Tab;
 import javafx.stage.Window;
 import regexgolf2.model.SolvableChallenge;
-import regexgolf2.services.repositories.ChallengeRepository;
-import regexgolf2.services.repositories.WordRepository;
+import regexgolf2.services.initializing.ServiceContainer;
 import regexgolf2.ui.modules.ModulesUI;
 
 import com.google.java.contract.Requires;
@@ -38,14 +37,13 @@ public class ModulesController
 	
 	
 	@Requires({
-		"challengeRepository != null",
-		"wordRepository != null"
+		"services != null",
 	})
-	public ModulesController(ChallengeRepository challengeRepository, WordRepository wordRepository, Window parent) throws IOException
+	public ModulesController(ServiceContainer services, Window parent) throws IOException
 	{
-		_challengeRepoController = new ChallengeRepositoryController(challengeRepository);
-		_wordRepositoryController = new WordRepositoryController(wordRepository);
-		_challengeGeneratorController = new ChallengeGeneratorController();
+		_challengeRepoController = new ChallengeRepositoryController(services.getChallengeRepository());
+		_wordRepositoryController = new WordRepositoryController(services.getWordRepository());
+		_challengeGeneratorController = new ChallengeGeneratorController(services.getGeneratorService());
 		
 		initUI(parent);
 		initSelectedTabHandler();

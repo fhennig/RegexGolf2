@@ -45,8 +45,7 @@ public class Startup extends Application
 		{
 			//Initialize the MainController with the given ChallengeRepository
 			//and the primaryStage
-			new MainController(_services.getChallengeRepository(),
-							   _services.getWordRepository(),
+			new MainController(_services,
 							   primaryStage);
 		} catch (IOException e)
 		{

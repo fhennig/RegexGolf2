@@ -12,6 +12,7 @@ import com.google.java.contract.Ensures;
 import regexgolf2.model.Challenge;
 import regexgolf2.model.Solution;
 import regexgolf2.model.SolvableChallenge;
+import regexgolf2.services.challengegenerator.ChallengeGeneratorService;
 import regexgolf2.services.persistence.Database;
 import regexgolf2.services.persistence.PersistenceService;
 import regexgolf2.services.persistence.mappers.SolvableChallengeMapper;
@@ -29,6 +30,7 @@ public class InitializingService
 	private PersistenceService _persistenceService;
 	private ChallengeRepository _challengeRepository;
 	private WordRepository _wordRepository;
+	private ChallengeGeneratorService _generator;
 	
 	
 	
@@ -58,6 +60,10 @@ public class InitializingService
 			if (!initWordRepository(_persistenceService.getWordMapper()))
 				return null;
 			_LOG.info("WordRepository initialized");
+			
+			if (!initChallengeGeneratorService())
+				return null;
+			_LOG.info("ChallengeGenerator initialized");
 			
 			return createServiceContainer();
 		}
@@ -166,8 +172,14 @@ public class InitializingService
 		return true;
 	}
 	
+	private boolean initChallengeGeneratorService()
+	{
+		_generator = new ChallengeGeneratorService();
+		return true;
+	}
+	
 	private ServiceContainer createServiceContainer()
 	{
-		return new ServiceContainer(_settingsService, _persistenceService, _challengeRepository, _wordRepository);
+		return new ServiceContainer(_settingsService, _persistenceService, _challengeRepository, _wordRepository, _generator);
 	}
 }

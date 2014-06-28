@@ -4,8 +4,7 @@ import java.io.IOException;
 
 import javafx.scene.Parent;
 import javafx.stage.Stage;
-import regexgolf2.services.repositories.ChallengeRepository;
-import regexgolf2.services.repositories.WordRepository;
+import regexgolf2.services.initializing.ServiceContainer;
 import regexgolf2.ui.main.MainUI;
 
 import com.google.java.contract.Ensures;
@@ -30,14 +29,13 @@ public class MainController
 	 * @throws IOException  if initializing the UI components failed (fxml document failed to load).
 	 */
 	@Requires({
-		"challengeRepo != null",
-		"wordRepo != null",
+		"services != null",
 		"primaryStage != null"
 	})
-	public MainController(ChallengeRepository challengeRepo, WordRepository wordRepo, Stage primaryStage) throws IOException
+	public MainController(ServiceContainer services, Stage primaryStage) throws IOException
 	{
 		_challengeSolvingController = new ChallengeSolvingController();
-		_modulesController = new ModulesController(challengeRepo, wordRepo, primaryStage);
+		_modulesController = new ModulesController(services, primaryStage);
 		
 		_challengeSolvingController.challengeProperty().bind(_modulesController.challengeProperty());
 		_challengeSolvingController.editableProperty().bind(_modulesController.editableProperty());
