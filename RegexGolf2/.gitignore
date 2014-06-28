@@ -2,3 +2,4 @@
 /.apt_generated
 /settings.properties
 /regexgolf.db
+/.classpath
