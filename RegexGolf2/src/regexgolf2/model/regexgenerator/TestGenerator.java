@@ -1,6 +1,9 @@
 package regexgolf2.model.regexgenerator;
 
+import java.util.List;
+
 import regexgolf2.model.Challenge;
+import regexgolf2.model.Word;
 import regexgolf2.startup.ChallengeFactory;
 
 public class TestGenerator extends AbstractGenerator
@@ -17,7 +20,7 @@ public class TestGenerator extends AbstractGenerator
 	
 	
 	@Override
-	public Challenge generateChallenge()
+	public Challenge generateChallenge(List<Word> words)
 	{
 		return ChallengeFactory.getRandomChallenge();
 	}

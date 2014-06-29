@@ -174,7 +174,7 @@ public class InitializingService
 	
 	private boolean initChallengeGeneratorService()
 	{
-		_generator = new ChallengeGeneratorService();
+		_generator = new ChallengeGeneratorService(_wordRepository);
 		return true;
 	}
 	
