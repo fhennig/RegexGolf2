@@ -18,7 +18,7 @@ import regexgolf2.ui.util.JavafxUtil;
 public class ChallengeGeneratorUI
 {
 	@FXML
-	private ChoiceBox<?> _generatorChoiceBox;
+	private ChoiceBox<GeneratorItem> _generatorChoiceBox;
 
 	@FXML
 	private Button _wordPoolButton;
@@ -80,7 +80,10 @@ public class ChallengeGeneratorUI
 		JavafxUtil.centerInParent(_wordRepositoryStage, _parentWindow);
 	}
 
-	// TODO method for choicebox
+	public ChoiceBox<GeneratorItem> getGeneratorChoiceBox()
+	{
+		return _generatorChoiceBox;
+	}
 
 	public Button getWordPoolButton()
 	{

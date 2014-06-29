@@ -1,6 +1,7 @@
 package regexgolf2.services.challengegenerator;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -43,7 +44,17 @@ public class ChallengeGeneratorService
 		_selectedGenerator = g;
 	}
 	
-	@Requires("_generators.contains(generator)")
+	/**
+	 * Returns a Set of available Generators.
+	 * {@link #setSelectedGenerator(Generator)} takes only these Generators
+	 * as valid arguments.
+	 */
+	public Set<Generator> getGenerators()
+	{
+		return Collections.unmodifiableSet(_generators);
+	}
+	
+	@Requires("getGenerators().contains(generator)")
 	public void setSelectedGenerator(Generator generator)
 	{
 		_selectedGenerator = generator;
