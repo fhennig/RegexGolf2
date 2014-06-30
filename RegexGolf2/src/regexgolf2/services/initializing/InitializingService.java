@@ -14,6 +14,7 @@ import regexgolf2.model.Solution;
 import regexgolf2.model.SolvableChallenge;
 import regexgolf2.services.challengegenerator.ChallengeGeneratorService;
 import regexgolf2.services.persistence.Database;
+import regexgolf2.services.persistence.DatabaseInitializer;
 import regexgolf2.services.persistence.PersistenceService;
 import regexgolf2.services.persistence.mappers.SolvableChallengeMapper;
 import regexgolf2.services.persistence.mappers.WordMapper;
@@ -95,10 +96,12 @@ public class InitializingService
 	private boolean initPersistenceService(String dbPath)
 	{
 		File dbFile = new File(dbPath);
+		boolean dbIsNew = false;
 		if (!dbFile.exists())
 			try
 			{
 				dbFile.createNewFile();
+				dbIsNew = true;
 			} catch (IOException e)
 			{
 				JOptionPane.showMessageDialog(null, "Could not find or create a Database File at:\n"+
@@ -117,8 +120,22 @@ public class InitializingService
 		}
 		catch (SQLException e)
 		{
-			JOptionPane.showMessageDialog(null, "Could not initialize the Database!");
+			JOptionPane.showMessageDialog(null, "Could not connect to the Database!");
 			return false;
+		}
+		
+		if (dbIsNew)
+		{
+			DatabaseInitializer dbInit = new DatabaseInitializer(db);
+			try
+			{
+				dbInit.createTablesIfNotExists();
+				dbInit.insertDefaultWords();
+			} catch (SQLException e)
+			{
+				JOptionPane.showMessageDialog(null, "Could not initialize the Database!");
+				return false;
+			}
 		}
 		
 		_persistenceService = new PersistenceService(db);

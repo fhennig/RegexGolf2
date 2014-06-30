@@ -37,8 +37,8 @@ public class MainUI
     	Scene mainScene = new Scene(_rootNode);
     	stage.setScene(mainScene);
     	stage.setTitle("RegexGolf");
-    	stage.setWidth(800);
-    	stage.setHeight(500);
+    	stage.setWidth(900);
+    	stage.setHeight(600);
 
     	stage.show();
     }
