@@ -41,7 +41,6 @@ public class SolutionMapper
 			SolutionDTO solution = new SolutionDTO();
 			Solution solutionObj = new Solution();
 			solution.solution = solutionObj;
-			solutionObj.setId(rs.getInt(1));
 			solution.challengeId = rs.getInt(2);
 			solutionObj.trySetSolution(rs.getString(3));
 			solutions.add(solution);
