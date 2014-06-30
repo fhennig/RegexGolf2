@@ -1,6 +1,5 @@
 package regexgolf2.model;
 
-import java.util.EventObject;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,8 +12,7 @@ public class SolvableChallenge extends ObservableObject
 	private final Solution _solution;
 	private final Challenge _challenge;
 	private final Map<Requirement, Boolean> _complianceResults = new HashMap<>();
-	private ObjectChangedListener _challengeListener;
-	private ObjectChangedListener _solutionListener;
+	private final ScoreCalculator _scoreCalc;
 	
 	
 	
@@ -27,44 +25,17 @@ public class SolvableChallenge extends ObservableObject
 		_solution = solution;
 		_challenge = challenge;
 		refreshComplianceResults();
-		initListeners();
+		_scoreCalc = new ScoreCalculator(this);
+		_challenge.addObjectChangedListener(e -> subobjectChanged());
+		_solution.addObjectChangedListener(e -> subobjectChanged());
 	}
 	
-	
-	
-	private void initListeners()
-	{
-		_challengeListener = new ObjectChangedListener()
-		{
-			@Override
-			public void objectChanged(EventObject event)
-			{
-				if (!_challenge.equals(event.getSource()))
-						throw new IllegalStateException();
-				
-				reactToSubobjectChange();
-			}
-		};
-		_challenge.addObjectChangedListener(_challengeListener);
 		
-		_solutionListener = new ObjectChangedListener()
-		{
-			@Override
-			public void objectChanged(EventObject event)
-			{
-				if (!_solution.equals(event.getSource()))
-						throw new IllegalStateException();
-				
-				reactToSubobjectChange();
-			}
-		};
-		_solution.addObjectChangedListener(_solutionListener);
-	}
 	
 	/**
 	 * Is used as a reaction to SolutionChanged or ChallengeChanged.
 	 */
-	private void reactToSubobjectChange()
+	private void subobjectChanged()
 	{
 		refreshComplianceResults();
 		fireObjectChangedEvent();
@@ -113,6 +84,11 @@ public class SolvableChallenge extends ObservableObject
 		return compliedRequirements;
 	}
 	
+	public int getScore()
+	{
+		return _scoreCalc.getScore();
+	}
+	
 	public boolean isSolved()
 	{
 		for (Requirement r : _challenge.getRequirements())
@@ -123,7 +99,7 @@ public class SolvableChallenge extends ObservableObject
 		return true;
 	}
 
-	@Requires("_challenge.getRequirements().contains(requirement)")
+	@Requires("getChallenge().getRequirements().contains(requirement)")
 	public boolean isComplied(Requirement requirement)
 	{
 		try

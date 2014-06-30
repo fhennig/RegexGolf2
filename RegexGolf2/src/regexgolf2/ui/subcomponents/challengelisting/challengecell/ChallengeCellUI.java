@@ -9,7 +9,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
-import regexgolf2.ui.subcomponents.scoredisplay.ScoreDisplayUI;
+import regexgolf2.ui.subcomponents.scoredisplay.SolvedDisplayUI;
 
 public class ChallengeCellUI extends ListCell<ChallengeItem>
 {
@@ -18,7 +18,7 @@ public class ChallengeCellUI extends ListCell<ChallengeItem>
 	
     @FXML
     private Label _scoreLabel;
-    private final ScoreDisplayUI _scoreUI;
+    private final SolvedDisplayUI _scoreUI;
 
     @FXML
     private Label _changeIndicator;
@@ -39,7 +39,7 @@ public class ChallengeCellUI extends ListCell<ChallengeItem>
 		assert _scoreLabel != null;
 		assert _changeIndicator != null;
 		
-		_scoreUI = new ScoreDisplayUI(_scoreLabel);
+		_scoreUI = new SolvedDisplayUI(_scoreLabel);
 		
 		this.setPrefWidth(0.0);
 		_rootNode.prefWidthProperty().bind(this.widthProperty().subtract(10.0));

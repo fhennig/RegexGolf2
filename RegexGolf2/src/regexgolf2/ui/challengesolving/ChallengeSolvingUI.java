@@ -12,7 +12,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import regexgolf2.ui.subcomponents.challengetitle.ChallengeTitleUI;
-import regexgolf2.ui.subcomponents.scoredisplay.ScoreDisplayUI;
+import regexgolf2.ui.subcomponents.scoredisplay.SolvedDisplayUI;
 import regexgolf2.ui.subcomponents.solutionediting.SolutionEditingUI;
 import regexgolf2.ui.util.JavafxUtil;
 
@@ -26,7 +26,10 @@ public class ChallengeSolvingUI
     
     @FXML
     private Label _scoreLabel;
-    private ScoreDisplayUI _scoreDisplayUI;
+    
+    @FXML
+    private Label _solvedLabel;
+    private SolvedDisplayUI _solvedDisplayUI;
 
     @FXML
     private TextField _solutionTextField;
@@ -49,7 +52,7 @@ public class ChallengeSolvingUI
     	_rootNode = loader.load();
     	
     	assert _titlePane != null;
-    	assert _scoreLabel != null;
+    	assert _solvedLabel != null;
     	assert _solutionTextField != null;
     	assert _doMatchPane != null;
     	assert _dontMatchPane != null;
@@ -58,15 +61,20 @@ public class ChallengeSolvingUI
     	JavafxUtil.setAsContent(doMatchUI, _doMatchPane);
     	JavafxUtil.setAsContent(dontMatchUI, _dontMatchPane);
     	
-    	_scoreDisplayUI = new ScoreDisplayUI(_scoreLabel);
+    	_solvedDisplayUI = new SolvedDisplayUI(_solvedLabel);
     	_solutionEditingUI = new SolutionEditingUI(_solutionTextField);    	
     	
     	_challengeTitleUI.editableProperty().bind(_editable);
     }
     
-    public ScoreDisplayUI getScoreDisplayUI()
+    public Label getScoreLabel()
     {
-    	return _scoreDisplayUI;
+    	return _scoreLabel;
+    }
+    
+    public SolvedDisplayUI getSolvedDisplayUI()
+    {
+    	return _solvedDisplayUI;
     }
     
     public SolutionEditingUI getSolutionEditingUI()

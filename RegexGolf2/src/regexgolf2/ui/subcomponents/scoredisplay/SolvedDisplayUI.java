@@ -12,7 +12,7 @@ import javafx.scene.paint.Color;
 import com.google.java.contract.Ensures;
 import com.google.java.contract.Requires;
 
-public class ScoreDisplayUI
+public class SolvedDisplayUI
 {
 	private final Label _label;
 	
@@ -23,7 +23,7 @@ public class ScoreDisplayUI
 		
 	
 	@Requires("label != null")
-	public ScoreDisplayUI(Label label)
+	public SolvedDisplayUI(Label label)
 	{
 		_label = label;
 		initPropertyChangeReaction();

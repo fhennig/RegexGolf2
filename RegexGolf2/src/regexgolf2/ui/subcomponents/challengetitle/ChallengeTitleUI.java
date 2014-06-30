@@ -44,7 +44,7 @@ public class ChallengeTitleUI
 	
 	public ChallengeTitleUI()
 	{
-		setFont(new Font(18));
+		setFont(new Font(20));
 		setEditable(true);
 		initLayout();
 		initHandlers();

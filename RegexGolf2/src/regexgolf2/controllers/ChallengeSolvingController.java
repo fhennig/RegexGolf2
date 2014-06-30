@@ -138,15 +138,20 @@ public class ChallengeSolvingController
 	{
 		if (getChallenge() == null)
 		{
-			_ui.getScoreDisplayUI().setAmountCompliedRequirements(0);
-			_ui.getScoreDisplayUI().setAmountRequirements(0);
-			_ui.getScoreDisplayUI().setHighlighted(false);
+			_ui.getSolvedDisplayUI().setAmountCompliedRequirements(0);
+			_ui.getSolvedDisplayUI().setAmountRequirements(0);
+			_ui.getSolvedDisplayUI().setHighlighted(false);
+			
+			_ui.getScoreLabel().setText("0");
 		}
 		else
 		{
-			_ui.getScoreDisplayUI().setAmountCompliedRequirements(getChallenge().getAmountCompliedRequirements());
-			_ui.getScoreDisplayUI().setAmountRequirements(getChallenge().getAmountRequirements());
-			_ui.getScoreDisplayUI().setHighlighted(getChallenge().isSolved());
+			_ui.getSolvedDisplayUI().setAmountCompliedRequirements(getChallenge().getAmountCompliedRequirements());
+			_ui.getSolvedDisplayUI().setAmountRequirements(getChallenge().getAmountRequirements());
+			_ui.getSolvedDisplayUI().setHighlighted(getChallenge().isSolved());
+			
+			String score = Integer.toString(getChallenge().getScore());
+			_ui.getScoreLabel().setText(score);
 		}
 	}
 	
