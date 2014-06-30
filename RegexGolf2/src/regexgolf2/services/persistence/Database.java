@@ -3,6 +3,7 @@ package regexgolf2.services.persistence;
 import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 import com.google.java.contract.Ensures;
@@ -22,9 +23,19 @@ public class Database
 	{
 		Class.forName("org.sqlite.JDBC");
 		_connection = DriverManager.getConnection("jdbc:sqlite:" + file.getPath());
+		enableForeignKeySupport();
 	}
 	
 	
+	
+	private void enableForeignKeySupport() throws SQLException
+	{
+		String enableForeignKeySupportSQL = "pragma foreign_keys = on;";
+
+		PreparedStatement stmt = getConnection().prepareStatement(enableForeignKeySupportSQL);
+		stmt.execute();
+		stmt.close();
+	}
 	
 	/**
 	 * Connection should not be closed!

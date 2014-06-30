@@ -46,15 +46,12 @@ public class DatabaseInitializer
 		String createWordTableSQL = "create table if not exists words ("
 				+ "id integer primary key autoincrement," + "text text not null unique); ";
 
-		String enableForeignKeySupportSQL = "pragma foreign_keys = on;";
-
 		Statement stmt;
 		stmt = _db.getConnection().createStatement();
 		stmt.execute(createChallengesTableSQL);
 		stmt.execute(createSolutionsTableSQL);
 		stmt.execute(createRequirementsTableSQL);
 		stmt.execute(createWordTableSQL);
-		stmt.execute(enableForeignKeySupportSQL);
 		stmt.close();
 	}
 
