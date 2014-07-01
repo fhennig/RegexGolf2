@@ -2,18 +2,19 @@ package regexgolf2.ui.challengegenerator;
 
 import java.io.IOException;
 
-import com.google.java.contract.Requires;
-
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import regexgolf2.ui.util.JavafxUtil;
+
+import com.google.java.contract.Requires;
 
 public class ChallengeGeneratorUI
 {
@@ -28,6 +29,12 @@ public class ChallengeGeneratorUI
 
 	@FXML
 	private AnchorPane _generatorConfigPane;
+	
+    @FXML
+    private Button _saveButton;
+
+    @FXML
+    private TextField _challengeNameTextField;
 
 	private final AnchorPane _wordRepositoryPane = new AnchorPane();
 	private Stage _wordRepositoryStage;
@@ -49,6 +56,8 @@ public class ChallengeGeneratorUI
 		assert _wordPoolButton != null;
 		assert _generatorConfigPane != null;
 		assert _generateButton != null;
+		assert _challengeNameTextField != null;
+		assert _saveButton != null;
 
 		_parentWindow = parent;
 		_wordPoolButton.setOnAction(e -> wordPoolButtonClicked());
@@ -93,6 +102,16 @@ public class ChallengeGeneratorUI
 	public Button getGenerateButton()
 	{
 		return _generateButton;
+	}
+	
+	public TextField getChallengeNameTextField()
+	{
+		return _challengeNameTextField;
+	}
+	
+	public Button getSaveButton()
+	{
+		return _saveButton;
 	}
 
 	public void setGeneratorConfigPaneContent(Node content)
