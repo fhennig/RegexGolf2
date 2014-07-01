@@ -78,10 +78,20 @@ public class ChallengeRepository extends ObservableService
 	public SolvableChallenge createNew()
 	{
 		SolvableChallenge c = new SolvableChallenge(new Solution(), new Challenge());
-		_idMap.put(c, 0);
-		addPersistenceState(c, true);
-		fireServiceChangedEvent();
+		insert(c);
 		return c;
+	}
+	
+	@Requires({
+		"challenge != null",
+		"!contains(challenge)"
+	})
+	@Ensures("contains(challenge)")
+	private void insert(SolvableChallenge challenge)
+	{
+		_idMap.put(challenge, 0);
+		addPersistenceState(challenge, true);
+		fireServiceChangedEvent();
 	}
 
 	/**
@@ -100,12 +110,17 @@ public class ChallengeRepository extends ObservableService
 	}
 	
 	@Requires({
-		"c != null",
+		"c != null"
+	})
+	@Ensures({
+		"getPersistenceState(c).isNew() == false",
 		"contains(c)"
 	})
-	@Ensures("getPersistenceState(c).isNew() == false")
 	public void save(SolvableChallenge c) throws SQLException
 	{
+		if (!contains(c))
+			insert(c);
+		
 		boolean isNew = getPersistenceState(c).isNew();
 		
 		if (isNew)
