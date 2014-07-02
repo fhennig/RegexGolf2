@@ -18,6 +18,7 @@ import regexgolf2.model.regexgenerator.Generator;
 import regexgolf2.services.challengegenerator.ChallengeGeneratorService;
 import regexgolf2.services.initializing.ServiceContainer;
 import regexgolf2.services.repositories.ChallengeRepository;
+import regexgolf2.services.repositories.PersistenceState;
 import regexgolf2.ui.challengegenerator.ChallengeGeneratorUI;
 import regexgolf2.ui.challengegenerator.GeneratorItem;
 
@@ -94,7 +95,9 @@ public class ChallengeGeneratorController implements ChallengeContainer
 		if (oldValue != null)
 		{
 			oldValue.removeObjectChangedListener(_challengeListener);
-			_challengeRepository.getPersistenceState(oldValue).removeObjectChangedListener(_persStateListener);
+			PersistenceState ps = _challengeRepository.getPersistenceState(oldValue);
+			if (ps != null)
+				ps.removeObjectChangedListener(_persStateListener);
 		}
 		if (newValue != null)
 		{
@@ -110,7 +113,7 @@ public class ChallengeGeneratorController implements ChallengeContainer
 
 	private void persistenceStateChanged()
 	{
-		boolean isChanged = _challengeRepository.getPersistenceState(getChallenge()).isNew();
+		boolean isChanged = _challengeRepository.getPersistenceState(getChallenge()).isChanged();
 		_ui.getSaveButton().setDisable(!isChanged);
 	}
 
