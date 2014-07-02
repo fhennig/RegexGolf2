@@ -39,11 +39,10 @@ public class ChallengeGeneratorController implements ChallengeContainer
 	private final ObjectChangedListener _persStateListener;
 	private boolean _isSaved = false;
 
-
-
+	
+	
 	@Requires("services != null")
-	public ChallengeGeneratorController(ServiceContainer services, Window parent)
-			throws IOException
+	public ChallengeGeneratorController(ServiceContainer services, Window parent) throws IOException
 	{
 		_generatorService = services.getGeneratorService();
 		_challengeRepository = services.getChallengeRepository();
@@ -58,8 +57,7 @@ public class ChallengeGeneratorController implements ChallengeContainer
 		_ui.getGeneratorChoiceBox().getSelectionModel().selectedItemProperty()
 				.addListener((o, oV, nV) -> choiceBoxSelectionChanged(nV));
 		// ChallengeNameTextField
-		_ui.getChallengeNameTextField().textProperty()
-				.addListener((o, oV, nV) -> challengeNameTextFieldChanged(nV));
+		_ui.getChallengeNameTextField().textProperty().addListener((o, oV, nV) -> challengeNameTextFieldChanged(nV));
 		// Save Button
 		_ui.getSaveButton().setOnAction(e -> saveButtonClicked());
 
@@ -71,8 +69,8 @@ public class ChallengeGeneratorController implements ChallengeContainer
 		_persStateListener = e -> persistenceStateChanged();
 	}
 
-
-
+	
+	
 	private void initChoiceBoxItems()
 	{
 		for (Generator g : _generatorService.getGenerators())
@@ -90,18 +88,20 @@ public class ChallengeGeneratorController implements ChallengeContainer
 		setChallenge(c);
 	}
 
-	private void challengePropertyChanged(SolvableChallenge oldValue, SolvableChallenge newValue)
+	private void challengePropertyChanged(SolvableChallenge oldChallenge, SolvableChallenge newChallenge)
 	{
-		if (oldValue != null)
+		if (oldChallenge != null)
 		{
-			oldValue.removeObjectChangedListener(_challengeListener);
-			PersistenceState ps = _challengeRepository.getPersistenceState(oldValue);
+			oldChallenge.removeObjectChangedListener(_challengeListener);
+			PersistenceState ps = _challengeRepository.getPersistenceState(oldChallenge);
 			if (ps != null)
 				ps.removeObjectChangedListener(_persStateListener);
+			_isSaved = false;
+			persistenceStateChanged();
 		}
-		if (newValue != null)
+		if (newChallenge != null)
 		{
-			newValue.addObjectChangedListener(_challengeListener);
+			newChallenge.addObjectChangedListener(_challengeListener);
 			_ui.getChallengeNameTextField().setText(getChallenge().getChallenge().getName());
 		}
 	}
@@ -113,7 +113,12 @@ public class ChallengeGeneratorController implements ChallengeContainer
 
 	private void persistenceStateChanged()
 	{
-		boolean isChanged = _challengeRepository.getPersistenceState(getChallenge()).isChanged();
+		boolean isChanged;
+		if (_isSaved)
+			// If it is saved to the DB, get ChangeState from Repository
+			isChanged = _challengeRepository.getPersistenceState(getChallenge()).isChanged();
+		else
+			isChanged = true;
 		_ui.getSaveButton().setDisable(!isChanged);
 	}
 
