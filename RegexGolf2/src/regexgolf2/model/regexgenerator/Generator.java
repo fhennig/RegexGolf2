@@ -9,6 +9,8 @@ import com.google.java.contract.Ensures;
 
 public interface Generator
 {
+	static GeneratorConfig EMPTY_CONFIG = new EmptyConfig();
+	
 	/**
 	 * This method should return a displayable String that
 	 * describes and identifies the Generator.
@@ -25,6 +27,25 @@ public interface Generator
 	
 	/**
 	 * Should return a configuration object for this Generator.
+	 * If the Generator is not configurable,
+	 * {@link #EMPTY_CONFIG} is returned.
 	 */
-	GeneratorConfig getConfig();
+	@Ensures("result != null")
+	default GeneratorConfig getConfig()
+	{
+		return EMPTY_CONFIG;
+	}
+	
+	/**
+	 * An empty configuration class, that serves as a default
+	 * "null-object".
+	 */
+	public static class EmptyConfig implements GeneratorConfig
+	{
+		@Override
+		public void accept(GeneratorConfigVisitor visitor)
+		{
+			visitor.visit(this);
+		}
+	}
 }
