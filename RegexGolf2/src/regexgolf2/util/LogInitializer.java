@@ -14,7 +14,6 @@ public class LogInitializer
 		
 		Logger rootLogger = Logger.getLogger("");
 		rootLogger.setLevel(Level.FINE);
-		//Use Level INFO as a default.
 		
 		for (Handler h : rootLogger.getHandlers())
 		{

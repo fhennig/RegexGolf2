@@ -29,6 +29,7 @@ public class ChallengeGeneratorController implements ChallengeContainer
 	private static final ReadOnlyBooleanProperty _EDITABLE = new ReadOnlyBooleanWrapper(false);
 
 	private ChallengeGeneratorUI _ui;
+	private final GeneratorConfigUICreator _configUICreator = new GeneratorConfigUICreator();
 
 	private final ObjectProperty<SolvableChallenge> _challenge = new SimpleObjectProperty<SolvableChallenge>();
 
@@ -53,9 +54,9 @@ public class ChallengeGeneratorController implements ChallengeContainer
 		_ui.setWordRepositoryPanel(wrc.getUINode());
 		_ui.getGenerateButton().setOnAction(e -> generateButtonClicked());
 		// ChoiceBox
-		initChoiceBoxItems();
 		_ui.getGeneratorChoiceBox().getSelectionModel().selectedItemProperty()
 				.addListener((o, oV, nV) -> choiceBoxSelectionChanged(nV));
+		initChoiceBoxItems();
 		// ChallengeNameTextField
 		_ui.getChallengeNameTextField().textProperty().addListener((o, oV, nV) -> challengeNameTextFieldChanged(nV));
 		// Save Button
@@ -150,7 +151,9 @@ public class ChallengeGeneratorController implements ChallengeContainer
 
 	private void choiceBoxSelectionChanged(GeneratorItem selectedItem)
 	{
-		_generatorService.setSelectedGenerator(selectedItem.getGenerator());
+		Generator gen = selectedItem.getGenerator();
+		_generatorService.setSelectedGenerator(gen);
+		_ui.setGeneratorConfigPaneContent(_configUICreator.getUIFor(gen.getConfig()));
 	}
 
 	/**

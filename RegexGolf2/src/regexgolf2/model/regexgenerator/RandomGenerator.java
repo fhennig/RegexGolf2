@@ -71,7 +71,6 @@ public class RandomGenerator implements Generator
 		return result;
 	}
 	
-
 	@Override
 	public String getName()
 	{
