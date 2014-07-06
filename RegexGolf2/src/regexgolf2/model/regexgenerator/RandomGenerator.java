@@ -7,12 +7,11 @@ import java.util.logging.Logger;
 import regexgolf2.model.Challenge;
 import regexgolf2.model.Requirement;
 import regexgolf2.model.Word;
-import regexgolf2.services.initializing.InitializingService;
 import regexgolf2.util.Util;
 
 public class RandomGenerator implements Generator
 {
-	private static final Logger _LOG = Logger.getLogger(InitializingService.class.getName());
+	private static final Logger _LOG = Logger.getLogger(RandomGenerator.class.getName());
 	private static final String _NAME = "Random Generator";
 	private final RandomGeneratorConfig _config = new RandomGeneratorConfig();
 

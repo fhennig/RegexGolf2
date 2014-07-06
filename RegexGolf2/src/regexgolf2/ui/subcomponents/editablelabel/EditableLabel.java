@@ -1,5 +1,7 @@
 package regexgolf2.ui.subcomponents.editablelabel;
 
+import java.util.logging.Logger;
+
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -29,6 +31,7 @@ import com.google.java.contract.Requires;
  */
 public class EditableLabel
 {
+	private static final Logger _LOG = Logger.getLogger(EditableLabel.class.getName());
 	//UI properties
 	private final AnchorPane _root = new AnchorPane();
 	private final TextField _textField = new TextField();
@@ -190,6 +193,7 @@ public class EditableLabel
 	public void exitEditMode()
 	{
 		_editMode.set(false);
+		_LOG.info("exit edit mode");
 	}
 	
 	/**
@@ -202,8 +206,10 @@ public class EditableLabel
 		if (isEditable())
 		{
 			_editMode.set(true);
+			_LOG.info("ented edit mode");
 			return true;
 		}
+		_LOG.info("could not enter edit mode");
 		return false;
 	}
 	

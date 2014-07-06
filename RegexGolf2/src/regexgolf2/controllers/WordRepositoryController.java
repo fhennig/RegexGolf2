@@ -61,22 +61,6 @@ public class WordRepositoryController
 					amountOutOfSynch--;
 				
 				_ui.getSaveButton().setDisable(amountOutOfSynch != 0);
-					
-				
-//				if (newValue)
-//					_ui.getSaveButton().setDisable(true);
-//				else
-//				{
-//					for (WordItem item : _ui.getListView().getItems())
-//					{
-//						if (item.isOutOfSynch())
-//						{
-//							_ui.getSaveButton().setDisable(true);
-//							return;
-//						}
-//					}
-//					_ui.getSaveButton().setDisable(false);
-//				}
 			}
 		};
 	}
@@ -90,6 +74,7 @@ public class WordRepositoryController
 			{
 				Word newWord = _repository.createNew();
 				WordItem item = getItem(newWord);
+				_ui.getListView().scrollTo(item);
 				_ui.getListView().edit(_ui.getListView().getItems().indexOf(item));
 			}
 		});
