@@ -3,138 +3,118 @@ package regexgolf2.controllers;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.EventObject;
 import java.util.List;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.Parent;
+import javafx.util.Duration;
 
 import javax.swing.JOptionPane;
 
-import com.google.java.contract.Ensures;
-import com.google.java.contract.Requires;
-
 import regexgolf2.model.Word;
-import regexgolf2.services.ServiceChangedListener;
 import regexgolf2.services.repositories.WordRepository;
 import regexgolf2.ui.wordrepository.WordRepositoryUI;
 import regexgolf2.ui.wordrepository.wordcell.WordItem;
+
+import com.google.java.contract.Ensures;
+import com.google.java.contract.Requires;
 
 public class WordRepositoryController
 {
 	private final WordRepositoryUI _ui;
 	private final WordRepository _repository;
-	private ChangeListener<Boolean> _outOfSynchListener;
-	
-	
-	
+	private final ChangeListener<Boolean> _outOfSynchListener;
+
+
+
 	public WordRepositoryController(WordRepository repository) throws IOException
 	{
 		_ui = new WordRepositoryUI();
 		_repository = repository;
-		initBindings();
-		initButtonHandlers();
-		initRepositoryListener();
-		initOutOfSynchListener();
-		
+		_outOfSynchListener = createOutOfSynchListener();
+
+		// Disable Remove Button if no Item is selected
+		_ui.getRemoveButton().disableProperty()
+				.bind(_ui.getListView().getSelectionModel().selectedItemProperty().isNull());
+
+		// Initialize Button Handlers
+		_ui.getAddButton().setOnAction(e -> onAddButtonClicked());
+		_ui.getRemoveButton().setOnAction(e -> onRemoveButtonClicked());
+		_ui.getSaveButton().setOnAction(e -> onSaveButtonClicked());
+
+		// Refresh UI-ItemList if repository changes
+		_repository.addServiceChangedListener(e -> refreshListViewItemList());
+
+		// Load Items
 		refreshListViewItemList();
 	}
-	
-	
-	
-	private void initOutOfSynchListener()
+
+
+
+	private ChangeListener<Boolean> createOutOfSynchListener()
 	{
-		_outOfSynchListener = new ChangeListener<Boolean>()
+		return new ChangeListener<Boolean>()
 		{
 			private int amountOutOfSynch = 0;
-			
+
 			@Override
-			public void changed(ObservableValue<? extends Boolean> observable,
-					Boolean oldValue, Boolean newValue)
+			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue,
+					Boolean newValue)
 			{
 				if (newValue)
 					amountOutOfSynch++;
 				else
 					amountOutOfSynch--;
-				
+
 				_ui.getSaveButton().setDisable(amountOutOfSynch != 0);
 			}
 		};
 	}
-	
-	private void initButtonHandlers()
+
+	private void onAddButtonClicked()
 	{
-		_ui.getAddButton().setOnAction(new EventHandler<ActionEvent>()
-		{
-			@Override
-			public void handle(ActionEvent arg0)
-			{
-				Word newWord = _repository.createNew();
-				WordItem item = getItem(newWord);
-				_ui.getListView().scrollTo(item);
-				_ui.getListView().edit(_ui.getListView().getItems().indexOf(item));
-			}
-		});
-		
-		_ui.getRemoveButton().setOnAction(new EventHandler<ActionEvent>()
-		{
-			@Override
-			public void handle(ActionEvent arg0)
-			{
-				Word selectedWord = _ui.getListView().getSelectionModel().getSelectedItem().getWord();
-				try
-				{
-					_repository.delete(selectedWord);
-				} catch (SQLException e)
-				{
-					//TODO use fancy dialog here
-					JOptionPane.showMessageDialog(null, "Error with the Database, could not delete.");
-				}
-			}
-		});
-		
-		_ui.getSaveButton().setOnAction(new EventHandler<ActionEvent>()
-		{
-			@Override
-			public void handle(ActionEvent arg0)
-			{
-				try
-				{
-					_repository.saveAll();
-				} catch (SQLException e)
-				{
-					//TODO use fancy dialog here
-					JOptionPane.showMessageDialog(null, "DB Error");
-				}
-			}
-		});
+		Word newWord = _repository.createNew();
+		final WordItem item = getItem(newWord);
+		_ui.getListView().scrollTo(item);
+		/*
+		 * Evil hack because edit mode wouldn't start without it if the item
+		 * that should be edited is not scrolled into view already. see:
+		 * https://stackoverflow
+		 * .com/questions/11997041/listview-edit-is-not-switching
+		 * -cell-to-input-state
+		 */
+		new Timeline(new KeyFrame(Duration.seconds(0.01), e -> _ui.getListView().edit(
+				_ui.getListView().getItems().indexOf(item)))).play();
 	}
-	
-	private void initBindings()
+
+	private void onRemoveButtonClicked()
 	{
-		_ui.getRemoveButton().disableProperty().bind(
-				_ui.getListView().getSelectionModel().selectedItemProperty().isNull());
-	}
-	
-	/**
-	 * Initializes a Listener on the Repository,
-	 * that updates the UI List if the Repository changes.
-	 */
-	private void initRepositoryListener()
-	{
-		_repository.addServiceChangedListener(new ServiceChangedListener()
+		Word selectedWord = _ui.getListView().getSelectionModel().getSelectedItem().getWord();
+		try
 		{
-			@Override
-			public void serviceChanged(EventObject event)
-			{
-				refreshListViewItemList();
-			}
-		});
+			_repository.delete(selectedWord);
+		} catch (SQLException e)
+		{
+			// TODO use fancy dialog here
+			JOptionPane.showMessageDialog(null, "Error with the Database, could not delete.");
+		}
 	}
-	
+
+	private void onSaveButtonClicked()
+	{
+		try
+		{
+			_repository.saveAll();
+		} catch (SQLException e)
+		{
+			// TODO use fancy dialog here
+			JOptionPane.showMessageDialog(null, "DB Error");
+		}
+	}
+
 	private void refreshListViewItemList()
 	{
 		List<WordItem> toRemove = new ArrayList<>();
@@ -145,7 +125,7 @@ public class WordRepositoryController
 		}
 		for (WordItem item : toRemove)
 			removeItem(item);
-		
+
 		for (Word w : _repository.getAll())
 		{
 			boolean itemExists = false;
@@ -161,10 +141,10 @@ public class WordRepositoryController
 				addItem(w);
 		}
 	}
-	
+
 	/**
-	 * Creates a new Item with the given word and adds it to the UI.
-	 * The created Item is returned.
+	 * Creates a new Item with the given word and adds it to the UI. The created
+	 * Item is returned.
 	 */
 	private WordItem addItem(Word word)
 	{
@@ -173,18 +153,16 @@ public class WordRepositoryController
 		_ui.getListView().getItems().add(item);
 		return item;
 	}
-	
+
 	private void removeItem(WordItem item)
 	{
 		_ui.getListView().getItems().remove(item);
 		item.isOutOfSynchPropery().removeListener(_outOfSynchListener);
 		item.discard();
 	}
-	
-	@Requires({
-		"word != null",
-		"_repository.contains(word)"
-	})
+
+	@Requires(
+	{ "word != null", "_repository.contains(word)" })
 	@Ensures("result != null")
 	private WordItem getItem(Word word)
 	{
@@ -198,7 +176,7 @@ public class WordRepositoryController
 		}
 		throw new IllegalArgumentException("An item for '" + word + "' could not be found.");
 	}
-	
+
 	public Parent getUINode()
 	{
 		return _ui.getUINode();
