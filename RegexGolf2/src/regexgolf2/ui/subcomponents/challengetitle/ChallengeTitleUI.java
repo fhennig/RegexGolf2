@@ -23,6 +23,7 @@ import javafx.scene.text.Font;
 
 import org.controlsfx.control.PopOver;
 import org.controlsfx.control.PopOver.ArrowLocation;
+import org.controlsfx.dialog.DialogStyle;
 import org.controlsfx.dialog.Dialogs;
 
 import com.google.java.contract.Ensures;
@@ -91,7 +92,7 @@ public class ChallengeTitleUI
 					Optional<String> result = Dialogs.create()
 								.title("Enter Challenge Name")
 								.message("Challenge Name: ")
-								//.style(DialogStyle.UNDECORATED)
+								.style(DialogStyle.NATIVE)
 								.showTextInput(getText());
 					if (result.isPresent())
 						setText(result.get());
