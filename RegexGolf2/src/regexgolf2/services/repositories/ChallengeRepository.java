@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import regexgolf2.model.Challenge;
-import regexgolf2.model.Solution;
 import regexgolf2.model.SolvableChallenge;
 import regexgolf2.services.ObservableService;
 import regexgolf2.services.persistence.mappers.SolvableChallengeMapper;
@@ -77,7 +75,7 @@ public class ChallengeRepository extends ObservableService
 	@Ensures("result != null")
 	public SolvableChallenge createNew()
 	{
-		SolvableChallenge c = new SolvableChallenge(new Solution(), new Challenge());
+		SolvableChallenge c = new SolvableChallenge();
 		insert(c);
 		return c;
 	}

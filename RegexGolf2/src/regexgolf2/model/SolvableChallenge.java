@@ -16,6 +16,11 @@ public class SolvableChallenge extends ObservableObject
 	
 	
 	
+	public SolvableChallenge()
+	{
+		this(new Solution(), new Challenge());
+	}
+	
 	@Requires({
 		"solution != null",
 		"challenge != null"

@@ -1,0 +1,26 @@
+Problematik
+===========
+
+ - WordRepository ist einerseits der Container für die Word-Objekte, andererseits der Service, der sich um die Persistenz der selbigen kümmert.
+ - WordRepository und ChallengeRepository teilen sich viel Code. Besonders bzgl. PersistenceState
+ - Mehrere WordPools lassen sich nicht einfach einbauen, da diese eine Änderung im Modell darstellen. Modell und Service sind aber im Repository vermischt.
+ - Außerdem: WordPool und Word müssen einzeln überwacht werden und auch einzeln gespeichert werden. In der aktuellen Architektur würde das zu vielen Repository-Klassen führen.
+
+ - Solution und Word kennen als Objekte ihre Parents nicht ... Was tun?
+ 	- Interface Savable nur von WordPool / ChallengePool und SolvableChallenge / Challenge implementieren lassen?
+ 		- Jedes Objekt, das in der DB keine Foreign Keys enthält, kann Savable sein.
+
+
+
+Lösung
+======
+
+Aufspaltung der Repositories in Pools (Container) und Rest.
+Ein Pool ist ein Modell Objekt. Operationen wie add and remove (delete) werden am Modell aufgerufen.
+Das Löschen aus der DB erfolgt über einen Listener, der bei der erstellung des Pools angefügt wird.
+Hinzugefügte Objekte werden über einen Listener in eine Tracker-Liste aufgenommen.
+Der Persistenzstatus wird dann nicht mehr am Repository abgerufen, sondern an einem zentralen Objekt, welches die Status verwaltet.
+Dies bietet sich an, da das Status-Objekt sowieso unabhängig von der genauen Klasse ist, sondern nur ein Event braucht an dem es listenen kann.
+
+Speicherbare Objekte müssen eine Art Marker-Interface implementieren, welches sie als speicherbar kennzeichnet. Durch dieses Interface müssen sie eine accept methode implementieren, womit man dann den SaveVisitor anpassen müsste.
+Somit lassen sich save-operationen für beliebige Objekte einfach realisieren, anstatt dass man immer ein Repository benötigt.
