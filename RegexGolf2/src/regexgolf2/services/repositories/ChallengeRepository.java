@@ -1,6 +1,7 @@
 package regexgolf2.services.repositories;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -8,6 +9,7 @@ import java.util.Map;
 import java.util.Set;
 
 import regexgolf2.model.SolvableChallenge;
+import regexgolf2.services.ChangeTrackingService;
 import regexgolf2.services.ObservableService;
 import regexgolf2.services.persistence.mappers.SolvableChallengeMapper;
 import regexgolf2.services.persistence.mappers.SolvableChallengeMapper.SolvableChallengeDTO;
@@ -23,6 +25,8 @@ public class ChallengeRepository extends ObservableService
 {
 	private final SolvableChallengeMapper _mapper;
 	private final Map<SolvableChallenge, Integer> _idMap = new HashMap<>();
+	private final List<SolvableChallenge> _challenges = new ArrayList<SolvableChallenge>();
+	private final ChangeTrackingService _changeTrackingService = new ChangeTrackingService();
 	private final Map<SolvableChallenge, PersistenceStateImpl> _persistenceStates = new HashMap<>();
 	
 	
@@ -38,8 +42,10 @@ public class ChallengeRepository extends ObservableService
 	
 	private void reloadAll() throws SQLException
 	{
-		_idMap.clear();
-		_persistenceStates.clear();
+//		_idMap.clear();
+//		_persistenceStates.clear();
+		clearAll();
+			
 		
 		List<SolvableChallengeDTO> dtos = _mapper.getAll();
 		
@@ -47,10 +53,11 @@ public class ChallengeRepository extends ObservableService
 		{
 			//XXX because the dto is just public fields, we can not be sure that the values are != null;
 			//				/ contract model ist harder to apply
-			_idMap.put(dto.challenge, dto.challengeId);
-			addPersistenceState(dto.challenge, false);
+//			_idMap.put(dto.challenge, dto.challengeId);
+			insert(dto.challenge, dto.challengeId, false);
 		}
-		fireServiceChangedEvent();
+		//event is fired in insert
+//		fireServiceChangedEvent();
 	}
 	
 	/**
@@ -61,6 +68,12 @@ public class ChallengeRepository extends ObservableService
 	{
 		return Collections.unmodifiableSet(_idMap.keySet());
 	}
+	
+	private void clearAll()
+	{
+		for (SolvableChallenge challenge : getAll())
+			_changeTrackingService.untrack(challenge);
+	}
 
 	@Requires({
 		"c != null",
@@ -69,7 +82,8 @@ public class ChallengeRepository extends ObservableService
 	@Ensures("result != null")
 	public PersistenceState getPersistenceState(SolvableChallenge c)
 	{
-		return _persistenceStates.get(c);
+		return _changeTrackingService.getPersistenceState(c);
+		//return _persistenceStates.get(c);
 	}
 	
 	@Ensures("result != null")
@@ -87,8 +101,13 @@ public class ChallengeRepository extends ObservableService
 	@Ensures("contains(challenge)")
 	private void insert(SolvableChallenge challenge)
 	{
-		_idMap.put(challenge, 0);
-		addPersistenceState(challenge, true);
+		insert(challenge, 0, true);
+	}
+	
+	private void insert(SolvableChallenge challenge, int id, boolean isNew)
+	{
+		_idMap.put(challenge, id);
+		_changeTrackingService.track(challenge, isNew);
 		fireServiceChangedEvent();
 	}
 

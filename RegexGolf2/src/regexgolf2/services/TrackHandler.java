@@ -23,7 +23,8 @@ public class TrackHandler implements ContainerChangedListener<ObservableObject>
 	@Override
 	public void containerChanged(ContainerChangedEvent<? extends ObservableObject> event)
 	{
-		if (event.getAddedItem() != null)
+		ObservableObject addedObject = event.getAddedItem();
+		if (addedObject != null)
 			_cts.track(event.getAddedItem());
 		if (event.getRemovedItem() != null)
 			_cts.untrack(event.getRemovedItem());

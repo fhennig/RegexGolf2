@@ -1,17 +1,16 @@
 package regexgolf2.services.repositories;
 
-import java.util.EventObject;
-
-import com.google.java.contract.Requires;
-
 import regexgolf2.model.ObjectChangedListener;
 import regexgolf2.model.ObservableObject;
+
+import com.google.java.contract.Requires;
 
 public class PersistenceStateImpl extends ObservableObject implements PersistenceState
 {
 	private final ObservableObject _object;
 	private boolean _isNew = false;
 	private boolean _isChanged = false;
+	private final ObjectChangedListener _listener;
 	
 		
 	
@@ -21,25 +20,11 @@ public class PersistenceStateImpl extends ObservableObject implements Persistenc
 		if (isNew)
 			setNew();
 		_object = object;
-		initListener();
+		_listener = e -> reactToObjectChanged();
+		_object.addObjectChangedListener(_listener);
 	}
 	
 	
-	
-	private void initListener()
-	{
-		_object.addObjectChangedListener(new ObjectChangedListener()
-		{
-			@Override
-			public void objectChanged(EventObject event)
-			{
-				if (!_object.equals(event.getSource()))
-					throw new IllegalArgumentException();
-				
-				reactToObjectChanged();
-			}
-		});
-	}
 	
 	private void reactToObjectChanged()
 	{
@@ -92,5 +77,10 @@ public class PersistenceStateImpl extends ObservableObject implements Persistenc
 	public Object getObservedItem()
 	{
 		return _object;
+	}
+	
+	public void dispose()
+	{
+		_object.removeObjectChangedListener(_listener);
 	}
 }

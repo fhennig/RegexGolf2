@@ -24,25 +24,24 @@ public class ChangeTrackingService
 		track(object, true);
 	}
 
-	@Requires(
-	{ "!isTracked(object)", "object != null" })
+	@Requires("object != null")
 	@Ensures("isTracked(object)")
 	public void track(ObservableObject object, boolean isNew)
 	{
+		if (isTracked(object))
+			return;
 		PersistenceStateImpl ps = new PersistenceStateImpl(object, isNew);
 		_persistenceStates.put(object, ps);
 	}
 
 	@Requires(
-	{ "isTracked(object)", "object != null" })
+	{ "object != null" })
 	@Ensures("!isTracked(object)")
 	public void untrack(ObservableObject object)
 	{
-		_persistenceStates.remove(object);
-		// TODO: call something like PersistenceState.dispose to unbind
-		// Currently, this is not done, because persistencestates are only
-		// disposed, if their object gets disposed. With newly introduced
-		// uncoupling, this is may not always be the case
+		PersistenceStateImpl ps = _persistenceStates.remove(object);
+		if (ps != null)
+			ps.dispose();
 	}
 
 	@Requires("object != null")
