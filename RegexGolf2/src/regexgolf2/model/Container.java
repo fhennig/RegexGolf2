@@ -18,7 +18,7 @@ public class Container<T> implements Iterable<T>
 
 	@Requires("item != null")
 	@Ensures("contains(item)")
-	public void add(T item)
+	public final void add(T item)
 	{
 		boolean added = _items.add(item);
 		if (added)
@@ -26,20 +26,20 @@ public class Container<T> implements Iterable<T>
 	}
 	
 	@Ensures("!contains(item)")
-	public void remove(T item)
+	public final void remove(T item)
 	{
 		boolean removed = _items.remove(item);
 		if (removed)
 			fireContainerChangedEvent(new ContainerChangedEvent<T>(this, null, item));
 	}
 	
-	public boolean contains(T item)
+	public final boolean contains(T item)
 	{
 		return _items.contains(item);
 	}
 
 	@Override
-	public Iterator<T> iterator()
+	public final Iterator<T> iterator()
 	{
 		final Iterator<T> iterator = _items.iterator();
 		return new Iterator<T>()
@@ -64,19 +64,19 @@ public class Container<T> implements Iterable<T>
 		};
 	}
 
-	private void fireContainerChangedEvent(ContainerChangedEvent<T> event)
+	protected final void fireContainerChangedEvent(ContainerChangedEvent<T> event)
 	{
 		for (ContainerChangedListener<? super T> listener : _listeners)
 			listener.containerChanged(event);
 	}
 
 	@Requires("listener != null")
-	public void addListener(ContainerChangedListener<? super T> listener)
+	public final void addListener(ContainerChangedListener<? super T> listener)
 	{
 		_listeners.add(listener);
 	}
 
-	public void removeListener(ContainerChangedListener<? super T> listener)
+	public final void removeListener(ContainerChangedListener<? super T> listener)
 	{
 		_listeners.remove(listener);
 	}

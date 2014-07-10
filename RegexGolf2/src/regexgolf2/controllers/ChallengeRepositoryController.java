@@ -2,13 +2,8 @@ package regexgolf2.controllers;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.EventObject;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-
-import javax.swing.JOptionPane;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
@@ -17,13 +12,13 @@ import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.Node;
+
+import javax.swing.JOptionPane;
+
+import regexgolf2.model.ContainerChangedEvent;
 import regexgolf2.model.SolvableChallenge;
 import regexgolf2.services.ChangeTrackingService;
-import regexgolf2.services.ServiceChangedListener;
 import regexgolf2.services.repositories.ChallengeRepository;
 import regexgolf2.ui.challengerepositoryview.ChallengeRepositoryUI;
 import regexgolf2.ui.subcomponents.challengelisting.challengecell.ChallengeItem;
@@ -39,11 +34,12 @@ public class ChallengeRepositoryController implements ChallengeContainer
 	private final Map<ChallengeItem, ChallengeItemController> _itemControllers = new HashMap<>();
 	private final ObjectProperty<SolvableChallenge> _selectedChObjectProperty = new SimpleObjectProperty<>();
 	private final BooleanProperty _editmodeProperty = new SimpleBooleanProperty();
-	
-	
-	
+
+
+
 	@Requires("challengeRepo != null")
-	public ChallengeRepositoryController(ChallengeRepository challengeRepo, ChangeTrackingService changeTrackingService) throws IOException
+	public ChallengeRepositoryController(ChallengeRepository challengeRepo,
+			ChangeTrackingService changeTrackingService) throws IOException
 	{
 		_challengeRepo = challengeRepo;
 		_changeTrackingService = changeTrackingService;
@@ -54,166 +50,138 @@ public class ChallengeRepositoryController implements ChallengeContainer
 		initAddButtonHandler();
 		initRemoveButtonHandler();
 		initSaveButtonHandler();
-		refreshListViewItemList();
+		_challengeRepo.forEach(challenge -> addItem(challenge));
 	}
-	
-	
-	
+
+
+
 	private void initButtonBindings()
 	{
 		_ui.getRemoveButton().disableProperty().bind(_selectedChObjectProperty.isNull());
 		_ui.getEditButton().disableProperty().bind(_selectedChObjectProperty.isNull());
-		
+
 		_ui.getEditButton().selectedProperty().bindBidirectional(_editmodeProperty);
 	}
-	
+
 	private void initListeners()
 	{
-		_ui.selectedChallengeProperty().addListener(new ChangeListener<ChallengeItem>()
-		{
-			@Override
-			public void changed(ObservableValue<? extends ChallengeItem> observable,
-					ChallengeItem oldValue, ChallengeItem newValue)
-			{
-				if (newValue != null)
-					//Get the Challenge that corresponds to the Item
-					_selectedChObjectProperty.set(_itemControllers.get(newValue).getChallenge());
-				else
-					_selectedChObjectProperty.set(null);
-				
-				//If the selected challenge changed, the edit mode is resetted to false
-				setEditmode(false);
-			}
-			
-		});
-		
-		_challengeRepo.addServiceChangedListener(new ServiceChangedListener()
-		{
-			@Override
-			public void serviceChanged(EventObject event)
-			{
-				refreshListViewItemList();
-			}
-		});
+		_ui.selectedChallengeProperty().addListener(
+				(ChangeListener<ChallengeItem>) (observable, oldValue, newValue) ->
+				{
+					if (newValue != null)
+						// Get the Challenge that corresponds to the Item
+						_selectedChObjectProperty
+								.set(_itemControllers.get(newValue).getChallenge());
+					else
+						_selectedChObjectProperty.set(null);
+
+					// If the selected challenge changed, the edit mode is
+					// resetted
+					// to false
+					setEditmode(false);
+				});
+
+		_challengeRepo.addListener(event -> refreshListViewItemList(event));
 	}
-	
+
 	private void initAddButtonHandler()
 	{
-		_ui.getAddButton().setOnAction(new EventHandler<ActionEvent>()
+		_ui.getAddButton().setOnAction(arg0 ->
 		{
-			@Override
-			public void handle(ActionEvent arg0)
-			{
-				SolvableChallenge newChallenge = _challengeRepo.createNew();
-				selectChallenge(newChallenge);
-				setEditmode(true);
-			}
+			SolvableChallenge newChallenge = _challengeRepo.createNew();
+			selectChallenge(newChallenge);
+			setEditmode(true);
 		});
 	}
-	
+
 	private void initRemoveButtonHandler()
 	{
-		_ui.getRemoveButton().setOnAction(new EventHandler<ActionEvent>()
-		{
-			@Override
-			public void handle(ActionEvent arg0)
-			{
-				ChallengeItem item = _ui.getSelectedChallengeItem();
-				assert item != null : "Remove Button was clicked by no challenge was selected.";
-				
-				SolvableChallenge challenge = _itemControllers.get(item).getChallenge();
-				assert _challengeRepo.contains(challenge) : "The challenge to remove is not contained in the ChallengeRepo."; 
-				try
-				{
-					_challengeRepo.delete(challenge);
-				} catch (SQLException e)
-				{
-					//TODO use fancy dialog here
-					JOptionPane.showMessageDialog(null, "Error while accessing the database!\n" +
-												"Challenge was not deleted.");
-				}
-			}
-		});
+		_ui.getRemoveButton()
+				.setOnAction(
+						evt ->
+						{
+							ChallengeItem item = _ui.getSelectedChallengeItem();
+							assert item != null : "Remove Button was clicked by no challenge was selected.";
+
+							SolvableChallenge challenge = _itemControllers.get(item).getChallenge();
+							assert _challengeRepo.contains(challenge) : "The challenge to remove is not contained in the ChallengeRepo.";
+							try
+							{
+								_challengeRepo.delete(challenge);
+							} catch (SQLException e)
+							{
+								// TODO use fancy dialog here
+								JOptionPane.showMessageDialog(null,
+										"Error while accessing the database!\n"
+												+ "Challenge was not deleted.");
+							}
+						});
 	}
-	
+
 	private void initSaveButtonHandler()
 	{
-		_ui.getSaveButton().setOnAction(new EventHandler<ActionEvent>()
+		_ui.getSaveButton().setOnAction(arg0 ->
 		{
-			@Override
-			public void handle(ActionEvent arg0)
+			try
 			{
-				try
-				{
-					_challengeRepo.saveAll();
-				} catch (SQLException e)
-				{
-					//TODO use fancy error dialog here
-					JOptionPane.showMessageDialog(null, "Error in DB");
-				}
+				_challengeRepo.saveAll();
+			} catch (SQLException e)
+			{
+				// TODO use fancy error dialog here
+				JOptionPane.showMessageDialog(null, "Error in DB");
 			}
 		});
 	}
-	
+
 	/**
 	 * Synchronizes the List of Challenges in the UI with the List of Challenges
-	 * in the Repository.
-	 * This method ensures, that for every Challenge in the Repository, there exists an
-	 * item in the UI.
-	 * This method is called from the ServiceChangedListener that listens to the Repository.
+	 * in the Repository. This method ensures, that for every Challenge in the
+	 * Repository, there exists an item in the UI. This method is called from
+	 * the ServiceChangedListener that listens to the Repository.
 	 */
-	private void refreshListViewItemList()
+	private void refreshListViewItemList(ContainerChangedEvent<? extends SolvableChallenge> event)
 	{
-		List<ChallengeItem> toRemove = new ArrayList<>();
-		for (ChallengeItem item : _ui.getChallengeItemList())
-		{
-			if (!_challengeRepo.contains(_itemControllers.get(item).getChallenge()))
-				toRemove.add(item);
-		}
-		for (ChallengeItem item : toRemove)
-			removeItem(item);
-		
-		for (SolvableChallenge c : _challengeRepo.getAll())
-		{
-			boolean itemExists = false;
-			for (ChallengeItem item : _ui.getChallengeItemList())
-			{
-				if (_itemControllers.get(item).getChallenge() == c)
-				{
-					itemExists = true;
-					break;
-				}
-			}
-			if (!itemExists)
-				addItem(c);
-		}
+		if (event.getRemovedItem() != null)
+			removeItemFor(event.getRemovedItem());
+
+		if (event.getAddedItem() != null)
+			addItem(event.getAddedItem());
 	}
-	
-	private void removeItem(ChallengeItem item)
+
+	private void removeItemFor(SolvableChallenge challenge)
 	{
-		_ui.getChallengeItemList().remove(item);
-		_itemControllers.get(item).discard();
-		_itemControllers.remove(item);
+		_ui.getChallengeItemList().stream()
+			.filter(item -> _itemControllers.get(item).getChallenge().equals(challenge))
+			.findFirst()
+			.ifPresent(item -> {
+				_ui.getChallengeItemList().remove(item);
+				_itemControllers.get(item).discard();
+				_itemControllers.remove(item);
+			});
 	}
-	
+
 	/**
-	 * Initializes a new Controller with the given Challenge and
-	 * puts the Controller in the map.
-	 * The Item controlled by the Controller is added to the UI list.
-	 * @return  The item that was added to the UI.
+	 * Initializes a new Controller with the given Challenge and puts the
+	 * Controller in the map. The Item controlled by the Controller is added to
+	 * the UI list.
+	 * 
+	 * @return The item that was added to the UI.
 	 */
 	private ChallengeItem addItem(SolvableChallenge challenge)
 	{
-		ChallengeItemController controller = new ChallengeItemController(challenge, _changeTrackingService.getPersistenceState(challenge));
+		ChallengeItemController controller = new ChallengeItemController(challenge,
+				_changeTrackingService.getPersistenceState(challenge));
 		_ui.getChallengeItemList().add(controller.getItem());
 		_itemControllers.put(controller.getItem(), controller);
 		return controller.getItem();
 	}
-	
+
 	/**
-	 * Selects the ChallengeItem in the UI for a given SolvableChallenge.
-	 * This is used to immediately select a newly created Challenge.
-	 * @param challenge  the 
+	 * Selects the ChallengeItem in the UI for a given SolvableChallenge. This
+	 * is used to immediately select a newly created Challenge.
+	 * 
+	 * @param challenge
+	 *            the
 	 */
 	private void selectChallenge(SolvableChallenge challenge)
 	{
@@ -226,18 +194,22 @@ public class ChallengeRepositoryController implements ChallengeContainer
 				return;
 			}
 		}
-		throw new IllegalArgumentException("Challenge " + challenge + " does not have an Item in the UI.");
+		throw new IllegalArgumentException("Challenge " + challenge
+				+ " does not have an Item in the UI.");
 	}
-	
+
 	/**
-	 * Helper method to get the Challenge that corresponds to an Item.
-	 * The ItemController holds the Challenge reference.
-	 * @param item  The item for which the challenge should be returned 
+	 * Helper method to get the Challenge that corresponds to an Item. The
+	 * ItemController holds the Challenge reference.
+	 * 
+	 * @param item
+	 *            The item for which the challenge should be returned
 	 * @return The SolvableChallenge, or null if none could be found
 	 */
 	private SolvableChallenge getChallengeFor(ChallengeItem item)
 	{
-		//XXX this could possibly refactored. maybe the SolvableChallenge belongs inside the Item?
+		// XXX this could possibly refactored. maybe the SolvableChallenge
+		// belongs inside the Item?
 		if (item == null)
 			return null;
 		ChallengeItemController controller = _itemControllers.get(item);
@@ -246,7 +218,7 @@ public class ChallengeRepositoryController implements ChallengeContainer
 		else
 			return null;
 	}
-	
+
 	@Override
 	public ReadOnlyObjectProperty<SolvableChallenge> challengeProperty()
 	{
@@ -257,7 +229,7 @@ public class ChallengeRepositoryController implements ChallengeContainer
 	{
 		_editmodeProperty.set(edit);
 	}
-	
+
 	@Override
 	public ReadOnlyBooleanProperty editableProperty()
 	{
