@@ -4,8 +4,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import regexgolf2.model.Challenge;
 import regexgolf2.model.SolvableChallenge;
-import regexgolf2.services.persistence.mappers.ChallengeMapper.ChallengeDTO;
 import regexgolf2.services.persistence.mappers.SolutionMapper.SolutionDTO;
 
 import com.google.java.contract.Ensures;
@@ -27,30 +27,29 @@ public class SolvableChallengeMapper
 	
 	
 	@Ensures("result != null")
-	public List<SolvableChallengeDTO> getAll() throws SQLException
+	public List<SolvableChallenge> getAll() throws SQLException
 	{
-		List<SolvableChallengeDTO> dtos = new ArrayList<>();
+		List<SolvableChallenge> solvChallenges = new ArrayList<>();
 		
-		List<ChallengeDTO> challenges = _challenges.getAll();
+		List<Challenge> challenges = _challenges.getAll();
 		List<SolutionDTO> solutions = _solutions.getAll();
 		
-		for (ChallengeDTO c : challenges)
+		for (Challenge c : challenges)
 		{
-			SolvableChallengeDTO dto = new SolvableChallengeDTO();
-			dto.challengeId = c.id;
+			SolvableChallenge sc = null;
 			for (SolutionDTO s : solutions)
 			{
-				if (s.challengeId == dto.challengeId)
+				if (s.challengeId == c.getId())
 				{
-					dto.challenge = new SolvableChallenge(s.solution, c.challenge);
+					sc = new SolvableChallenge(s.solution, c);
 				}
 			}
-			if (dto.challenge == null)
-				throw new IllegalStateException("It is missing a Solution for the challengeId=" + dto.challengeId);
-			dtos.add(dto);
+			if (sc == null)
+				throw new IllegalStateException("It is missing a Solution for the challengeId=" + c.getId());
+			solvChallenges.add(sc);
 		}
 		
-		return dtos;
+		return solvChallenges;
 	}
 	
 	/**
@@ -59,30 +58,21 @@ public class SolvableChallengeMapper
 	 * @throws SQLException 
 	 */
 	@Requires("challenge != null")
-	public int insert(SolvableChallenge challenge) throws SQLException
+	public void insert(SolvableChallenge challenge) throws SQLException
 	{
-		int id = _challenges.insert(challenge.getChallenge());
-		_solutions.insert(challenge.getSolution(), id);
-		return id;
+		_challenges.insert(challenge.getChallenge());
+		_solutions.insert(challenge.getSolution(), challenge.getChallenge().getId());
 	}
 	
-	public void update(SolvableChallenge challenge, int challengeId) throws SQLException
+	public void update(SolvableChallenge challenge) throws SQLException
 	{
-		_challenges.update(challenge.getChallenge(), challengeId);
-		_solutions.update(challenge.getSolution(), challengeId);
+		_challenges.update(challenge.getChallenge());
+		_solutions.update(challenge.getSolution(), challenge.getChallenge().getId());
 	}
 	
-	public void delete(int challengeId) throws SQLException
+	public void delete(SolvableChallenge challenge) throws SQLException
 	{
-		_challenges.delete(challengeId);
+		_challenges.delete(challenge.getChallenge());
 		//deleting the solution is done via cascade by the database itself
-	}
-	
-	
-	
-	public class SolvableChallengeDTO
-	{
-		public int challengeId;
-		public SolvableChallenge challenge;
 	}
 }

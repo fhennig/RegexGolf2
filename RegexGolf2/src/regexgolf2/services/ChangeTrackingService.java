@@ -16,8 +16,7 @@ public class ChangeTrackingService
 
 
 
-	@Requires(
-	{ "!isTracked(object)", "object != null" })
+	@Requires("object != null")
 	@Ensures("isTracked(object)")
 	public void track(ObservableObject object)
 	{

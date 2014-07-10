@@ -28,8 +28,6 @@ public class TrackHandler implements ContainerChangedListener<ObservableObject>
 			_cts.track(event.getAddedItem());
 		if (event.getRemovedItem() != null)
 			_cts.untrack(event.getRemovedItem());
-		//TODO what happens when the added item is already tracked?
-		//this should be prevented
 	}
 
 }

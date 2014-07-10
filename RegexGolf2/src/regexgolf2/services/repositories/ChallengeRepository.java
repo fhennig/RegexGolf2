@@ -1,8 +1,6 @@
 package regexgolf2.services.repositories;
 
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
 
 import regexgolf2.model.Container;
 import regexgolf2.model.SolvableChallenge;
@@ -19,20 +17,17 @@ import com.google.java.contract.Requires;
 public class ChallengeRepository extends Container<SolvableChallenge>
 {
 	private final SolvableChallengeMapper _dbMapper;
-	private final Map<SolvableChallenge, Integer> _idMap = new HashMap<>();
 	private final ChangeTrackingService _changeTrackingService;
 
 
 
-	@Requires({
-		"mapper != null",
-		"cts != null"
-	})
+	@Requires(
+	{ "mapper != null", "cts != null" })
 	public ChallengeRepository(SolvableChallengeMapper mapper, ChangeTrackingService cts) throws SQLException
 	{
 		_changeTrackingService = cts;
 		_dbMapper = mapper;
-		_dbMapper.getAll().forEach(dto -> insert(dto.challenge, dto.challengeId, false));
+		_dbMapper.getAll().forEach(sc -> add(sc));
 	}
 
 	@Requires(
@@ -47,26 +42,8 @@ public class ChallengeRepository extends Container<SolvableChallenge>
 	public SolvableChallenge createNew()
 	{
 		SolvableChallenge c = new SolvableChallenge();
-		insert(c);
+		add(c);
 		return c;
-	}
-
-	@Requires(
-	{ "challenge != null", "!contains(challenge)" })
-	@Ensures("contains(challenge)")
-	private void insert(SolvableChallenge challenge)
-	{
-		insert(challenge, 0, true);
-	}
-
-	@Requires(
-	{ "challenge != null", "!contains(challenge)" })
-	@Ensures("contains(challenge)")
-	private void insert(SolvableChallenge challenge, int id, boolean isNew)
-	{
-		_idMap.put(challenge, id);
-		_changeTrackingService.track(challenge, isNew);		
-		super.add(challenge);
 	}
 
 	/**
@@ -76,7 +53,7 @@ public class ChallengeRepository extends Container<SolvableChallenge>
 	 */
 	public void saveAll() throws SQLException
 	{
-		for (SolvableChallenge challenge : _idMap.keySet())
+		for (SolvableChallenge challenge : this)
 		{
 			if (getPersistenceState(challenge).isChanged())
 			{
@@ -92,17 +69,16 @@ public class ChallengeRepository extends Container<SolvableChallenge>
 	public void save(SolvableChallenge c) throws SQLException
 	{
 		if (!contains(c))
-			insert(c);
+			add(c);
 
 		boolean isNew = getPersistenceState(c).isNew();
 
 		if (isNew)
 		{
-			int id = _dbMapper.insert(c);
-			_idMap.put(c, id);
+			_dbMapper.insert(c);
 		} else
 		{
-			_dbMapper.update(c, _idMap.get(c));
+			_dbMapper.update(c);
 		}
 		// TODO remove cast
 		((PersistenceStateImpl) getPersistenceState(c)).objectWasPersisted();
@@ -114,9 +90,7 @@ public class ChallengeRepository extends Container<SolvableChallenge>
 	public void delete(SolvableChallenge c) throws SQLException
 	{
 		if (!getPersistenceState(c).isNew())
-			_dbMapper.delete(_idMap.get(c));
-		_idMap.remove(c);
-		_changeTrackingService.untrack(c);
+			_dbMapper.delete(c);
 		super.remove(c);
 	}
 }

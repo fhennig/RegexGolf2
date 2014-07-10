@@ -11,6 +11,7 @@ import regexgolf2.model.Challenge;
 import regexgolf2.model.Solution;
 import regexgolf2.model.SolvableChallenge;
 import regexgolf2.services.ChangeTrackingService;
+import regexgolf2.services.TrackHandler;
 import regexgolf2.services.challengegenerator.ChallengeGeneratorService;
 import regexgolf2.services.persistence.Database;
 import regexgolf2.services.persistence.DatabaseInitializer;
@@ -169,10 +170,10 @@ public class Services
 		SolvableChallenge sc = new SolvableChallenge(s, c);
 		try
 		{
-			int cID = ps.getSolvableChallengeMapper().insert(sc);
+			ps.getSolvableChallengeMapper().insert(sc);
 			ps.getSolvableChallengeMapper().getAll();
-			ps.getSolvableChallengeMapper().update(sc, cID);
-			ps.getSolvableChallengeMapper().delete(cID);
+			ps.getSolvableChallengeMapper().update(sc);
+			ps.getSolvableChallengeMapper().delete(sc);
 		} catch (SQLException e)
 		{
 			JOptionPane.showMessageDialog(null, "Accessing the Database failed!\n"
@@ -187,6 +188,8 @@ public class Services
 		try
 		{
 			_challengeRepository = new ChallengeRepository(mapper, _changeTrackingService);
+			_challengeRepository.addListener(new TrackHandler(_changeTrackingService));
+			_challengeRepository.forEach(challenge -> _changeTrackingService.track(challenge, false));
 		} catch (SQLException e)
 		{
 			JOptionPane

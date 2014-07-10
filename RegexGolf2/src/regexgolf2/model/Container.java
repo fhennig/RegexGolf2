@@ -44,6 +44,8 @@ public class Container<T> implements Iterable<T>
 		final Iterator<T> iterator = _items.iterator();
 		return new Iterator<T>()
 		{
+			private T _currentItem;
+			
 			@Override
 			public boolean hasNext()
 			{
@@ -53,7 +55,8 @@ public class Container<T> implements Iterable<T>
 			@Override
 			public T next()
 			{
-				return iterator.next();
+				_currentItem = iterator.next();
+				return _currentItem;
 			}
 
 			@Override
