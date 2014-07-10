@@ -6,8 +6,8 @@ import java.util.List;
 
 import regexgolf2.model.Challenge;
 import regexgolf2.model.SolvableChallenge;
-import regexgolf2.services.DeleteHandler.DeleteStrategy;
-import regexgolf2.services.PersistenceException;
+import regexgolf2.services.persistence.PersistenceException;
+import regexgolf2.services.persistence.DeleteHandler.DeleteStrategy;
 import regexgolf2.services.persistence.mappers.SolutionMapper.SolutionDTO;
 
 import com.google.java.contract.Ensures;

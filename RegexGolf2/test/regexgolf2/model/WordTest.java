@@ -5,8 +5,8 @@ import org.junit.Test;
 
 import com.google.java.contract.Ensures;
 
-import regexgolf2.services.repositories.PersistenceState;
-import regexgolf2.services.repositories.PersistenceStateImpl;
+import regexgolf2.services.persistence.changetracking.PersistenceState;
+import regexgolf2.services.persistence.changetracking.PersistenceStateImpl;
 import regexgolf2.util.LogInitializer;
 import regexgolf2.util.Validator;
 

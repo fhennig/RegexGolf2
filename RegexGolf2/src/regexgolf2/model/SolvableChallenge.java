@@ -4,27 +4,29 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import regexgolf2.services.persistence.PersistenceException;
+import regexgolf2.services.persistence.saving.Savable;
+import regexgolf2.services.persistence.saving.SaveVisitor;
+
 import com.google.java.contract.Ensures;
 import com.google.java.contract.Requires;
 
-public class SolvableChallenge extends ObservableObject
+public class SolvableChallenge extends ObservableObject implements Savable
 {
 	private final Solution _solution;
 	private final Challenge _challenge;
 	private final Map<Requirement, Boolean> _complianceResults = new HashMap<>();
 	private final ScoreCalculator _scoreCalc;
-	
-	
-	
+
+
+
 	public SolvableChallenge()
 	{
 		this(new Solution(), new Challenge());
 	}
-	
-	@Requires({
-		"solution != null",
-		"challenge != null"
-	})
+
+	@Requires(
+	{ "solution != null", "challenge != null" })
 	public SolvableChallenge(Solution solution, Challenge challenge)
 	{
 		_solution = solution;
@@ -34,9 +36,9 @@ public class SolvableChallenge extends ObservableObject
 		_challenge.addObjectChangedListener(e -> subobjectChanged());
 		_solution.addObjectChangedListener(e -> subobjectChanged());
 	}
-	
-		
-	
+
+
+
 	/**
 	 * Is used as a reaction to SolutionChanged or ChallengeChanged.
 	 */
@@ -45,34 +47,34 @@ public class SolvableChallenge extends ObservableObject
 		refreshComplianceResults();
 		fireObjectChangedEvent();
 	}
-	
+
 	private void refreshComplianceResults()
 	{
 		_complianceResults.clear();
 		for (Requirement r : _challenge.getRequirements())
 		{
-			boolean rIsComplied = r.applySolution(getSolution());			
+			boolean rIsComplied = r.applySolution(getSolution());
 			_complianceResults.put(r, rIsComplied);
 		}
 	}
-	
+
 	@Ensures("result != null")
 	public Solution getSolution()
 	{
 		return _solution;
 	}
-	
+
 	@Ensures("result != null")
 	public Challenge getChallenge()
 	{
 		return _challenge;
 	}
-	
+
 	public List<Requirement> getRequirements(boolean expectedMatchResult)
 	{
 		return _challenge.getRequirements(expectedMatchResult);
 	}
-	
+
 	public int getAmountRequirements()
 	{
 		return _challenge.getAmountRequirements();
@@ -88,12 +90,12 @@ public class SolvableChallenge extends ObservableObject
 		}
 		return compliedRequirements;
 	}
-	
+
 	public int getScore()
 	{
 		return _scoreCalc.getScore();
 	}
-	
+
 	public boolean isSolved()
 	{
 		for (Requirement r : _challenge.getRequirements())
@@ -110,17 +112,22 @@ public class SolvableChallenge extends ObservableObject
 		try
 		{
 			return _complianceResults.get(requirement);
-		}
-		catch (NullPointerException npe)
+		} catch (NullPointerException npe)
 		{
-			throw new IllegalArgumentException("Requirement: " + requirement +
-					" is not a Requirement of this challenge (" + this + ")");
+			throw new IllegalArgumentException("Requirement: " + requirement
+					+ " is not a Requirement of this challenge (" + this + ")");
 		}
 	}
-	
+
 	@Override
 	public String toString()
 	{
 		return _challenge.getName();
+	}
+
+	@Override
+	public void accept(SaveVisitor visitor) throws PersistenceException
+	{
+		visitor.visit(this);
 	}
 }

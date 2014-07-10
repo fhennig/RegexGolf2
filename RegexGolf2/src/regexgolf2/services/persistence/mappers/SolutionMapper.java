@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import regexgolf2.model.Solution;
-import regexgolf2.services.persistence.Database;
+import regexgolf2.services.persistence.database.Database;
 
 import com.google.java.contract.Ensures;
 import com.google.java.contract.Requires;

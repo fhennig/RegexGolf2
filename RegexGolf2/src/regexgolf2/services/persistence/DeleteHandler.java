@@ -1,10 +1,11 @@
-package regexgolf2.services;
+package regexgolf2.services.persistence;
 
 import javax.swing.JOptionPane;
 
 import regexgolf2.model.ContainerChangedEvent;
 import regexgolf2.model.ContainerChangedListener;
 import regexgolf2.model.ObservableObject;
+import regexgolf2.services.persistence.changetracking.PersistenceStateSupplier;
 
 import com.google.java.contract.Requires;
 
@@ -17,16 +18,16 @@ public class DeleteHandler<T extends ObservableObject> implements ContainerChang
 
 
 
-	private final ChangeTrackingService _cts;
+	private final PersistenceStateSupplier _pss;
 	private final DeleteStrategy<T> _deleteStrategy;
 
 
 
 	@Requires(
 	{ "cts != null", "deleteStrategy != null" })
-	public DeleteHandler(ChangeTrackingService cts, DeleteStrategy<T> deleteStrategy)
+	public DeleteHandler(PersistenceStateSupplier pss, DeleteStrategy<T> deleteStrategy)
 	{
-		_cts = cts;
+		_pss = pss;
 		_deleteStrategy = deleteStrategy;
 	}
 
@@ -38,9 +39,9 @@ public class DeleteHandler<T extends ObservableObject> implements ContainerChang
 		T item = event.getRemovedItem();
 		if (item == null)
 			return;
-		if (_cts.isTracked(item))
+		if (_pss.isTracked(item))
 		{
-			boolean needsDBDelete = !_cts.getPersistenceState(item).isNew();
+			boolean needsDBDelete = !_pss.getFor(item).isNew();
 			if (needsDBDelete)
 				performDBDelete(item);
 		}

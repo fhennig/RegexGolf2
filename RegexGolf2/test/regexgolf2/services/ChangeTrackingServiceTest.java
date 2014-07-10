@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 import regexgolf2.model.ObservableObject;
+import regexgolf2.services.persistence.changetracking.ChangeTrackingService;
 
 public class ChangeTrackingServiceTest
 {

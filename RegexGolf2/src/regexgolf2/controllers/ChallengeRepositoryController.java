@@ -1,7 +1,6 @@
 package regexgolf2.controllers;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,10 +15,11 @@ import javafx.scene.Node;
 
 import javax.swing.JOptionPane;
 
+import regexgolf2.model.ChallengePool;
 import regexgolf2.model.ContainerChangedEvent;
 import regexgolf2.model.SolvableChallenge;
-import regexgolf2.services.ChangeTrackingService;
-import regexgolf2.services.repositories.ChallengeRepository;
+import regexgolf2.services.persistence.PersistenceException;
+import regexgolf2.services.persistence.PersistenceService;
 import regexgolf2.ui.challengerepositoryview.ChallengeRepositoryUI;
 import regexgolf2.ui.subcomponents.challengelisting.challengecell.ChallengeItem;
 
@@ -28,8 +28,8 @@ import com.google.java.contract.Requires;
 
 public class ChallengeRepositoryController implements ChallengeContainer
 {
-	private final ChallengeRepository _challengeRepo;
-	private final ChangeTrackingService _changeTrackingService;
+	private final ChallengePool _challengePool;
+	private final PersistenceService _persistenceService;
 	private final ChallengeRepositoryUI _ui;
 	private final Map<ChallengeItem, ChallengeItemController> _itemControllers = new HashMap<>();
 	private final ObjectProperty<SolvableChallenge> _selectedChObjectProperty = new SimpleObjectProperty<>();
@@ -37,12 +37,11 @@ public class ChallengeRepositoryController implements ChallengeContainer
 
 
 
-	@Requires("challengeRepo != null")
-	public ChallengeRepositoryController(ChallengeRepository challengeRepo,
-			ChangeTrackingService changeTrackingService) throws IOException
+	@Requires("persistenceService != null")
+	public ChallengeRepositoryController(PersistenceService persistenceService) throws IOException
 	{
-		_challengeRepo = challengeRepo;
-		_changeTrackingService = changeTrackingService;
+		_challengePool = persistenceService.getChallengePool();
+		_persistenceService = persistenceService;
 		_ui = new ChallengeRepositoryUI();
 
 		initButtonBindings();
@@ -50,7 +49,7 @@ public class ChallengeRepositoryController implements ChallengeContainer
 		initAddButtonHandler();
 		initRemoveButtonHandler();
 		initSaveButtonHandler();
-		_challengeRepo.forEach(challenge -> addItem(challenge));
+		_challengePool.forEach(challenge -> addItem(challenge));
 	}
 
 
@@ -81,14 +80,14 @@ public class ChallengeRepositoryController implements ChallengeContainer
 					setEditmode(false);
 				});
 
-		_challengeRepo.addListener(event -> refreshListViewItemList(event));
+		_challengePool.addListener(event -> refreshListViewItemList(event));
 	}
 
 	private void initAddButtonHandler()
 	{
 		_ui.getAddButton().setOnAction(arg0 ->
 		{
-			SolvableChallenge newChallenge = _challengeRepo.createNew();
+			SolvableChallenge newChallenge = _challengePool.createNew();
 			selectChallenge(newChallenge);
 			setEditmode(true);
 		});
@@ -104,8 +103,8 @@ public class ChallengeRepositoryController implements ChallengeContainer
 							assert item != null : "Remove Button was clicked by no challenge was selected.";
 
 							SolvableChallenge challenge = _itemControllers.get(item).getChallenge();
-							assert _challengeRepo.contains(challenge) : "The challenge to remove is not contained in the ChallengeRepo.";
-							_challengeRepo.remove(challenge);
+							assert _challengePool.contains(challenge) : "The challenge to remove is not contained in the ChallengeRepo.";
+							_challengePool.remove(challenge);
 						});
 	}
 
@@ -115,11 +114,10 @@ public class ChallengeRepositoryController implements ChallengeContainer
 		{
 			try
 			{
-				_challengeRepo.saveAll();
-			} catch (SQLException e)
+				_persistenceService.save(_challengePool);
+			} catch (PersistenceException e)
 			{
-				// TODO use fancy error dialog here
-				JOptionPane.showMessageDialog(null, "Error in DB");
+				JOptionPane.showMessageDialog(null, "Something fucked up");
 			}
 		});
 	}
@@ -161,7 +159,7 @@ public class ChallengeRepositoryController implements ChallengeContainer
 	private ChallengeItem addItem(SolvableChallenge challenge)
 	{
 		ChallengeItemController controller = new ChallengeItemController(challenge,
-				_changeTrackingService.getPersistenceState(challenge));
+				_persistenceService.getPersistenceState(challenge));
 		_ui.getChallengeItemList().add(controller.getItem());
 		_itemControllers.put(controller.getItem(), controller);
 		return controller.getItem();

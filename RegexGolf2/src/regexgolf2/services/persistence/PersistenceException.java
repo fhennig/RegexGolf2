@@ -1,5 +1,9 @@
-package regexgolf2.services;
+package regexgolf2.services.persistence;
 
+/**
+ * This class is thrown if an error with persistance occurs.
+ * For example, if an SQLException occurs, it should be wrapped in this class. 
+ */
 @SuppressWarnings("serial")
 public class PersistenceException extends Exception
 {

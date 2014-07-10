@@ -9,6 +9,9 @@ import java.util.Set;
 
 import regexgolf2.model.Word;
 import regexgolf2.services.ObservableService;
+import regexgolf2.services.persistence.PersistenceException;
+import regexgolf2.services.persistence.changetracking.PersistenceState;
+import regexgolf2.services.persistence.changetracking.PersistenceStateImpl;
 import regexgolf2.services.persistence.mappers.WordMapper;
 import regexgolf2.util.Validator;
 
@@ -33,7 +36,7 @@ public class WordRepository extends ObservableService
 	
 	
 	@Requires("mapper != null")
-	public WordRepository(WordMapper mapper) throws SQLException
+	public WordRepository(WordMapper mapper) throws PersistenceException
 	{
 		_mapper = mapper;
 		initWordValidator();
@@ -63,7 +66,7 @@ public class WordRepository extends ObservableService
 		};
 	}
 	
-	private void reloadAll() throws SQLException
+	private void reloadAll() throws PersistenceException
 	{
 		_persistenceStates.clear();
 		

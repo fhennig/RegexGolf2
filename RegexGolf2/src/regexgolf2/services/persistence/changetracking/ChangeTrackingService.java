@@ -1,17 +1,15 @@
-package regexgolf2.services;
+package regexgolf2.services.persistence.changetracking;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
 import regexgolf2.model.ObservableObject;
-import regexgolf2.services.repositories.PersistenceState;
-import regexgolf2.services.repositories.PersistenceStateImpl;
 
 import com.google.java.contract.Ensures;
 import com.google.java.contract.Requires;
 
-public class ChangeTrackingService
+public class ChangeTrackingService implements PersistenceStateSupplier
 {
 	private static final Logger _LOG = Logger.getLogger(ChangeTrackingService.class.getName());
 	private final Map<ObservableObject, PersistenceStateImpl> _persistenceStates = new HashMap<>();
@@ -57,8 +55,14 @@ public class ChangeTrackingService
 	@Requires(
 	{ "isTracked(object)", "object != null" })
 	@Ensures("result != null")
-	public PersistenceState getPersistenceState(ObservableObject object)
+	public PersistenceStateImpl getPersistenceState(ObservableObject object)
 	{
 		return _persistenceStates.get(object);
+	}
+
+	@Override
+	public PersistenceState getFor(ObservableObject object)
+	{
+		return getPersistenceState(object);
 	}
 }

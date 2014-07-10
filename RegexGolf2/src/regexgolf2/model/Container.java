@@ -1,15 +1,21 @@
 package regexgolf2.model;
 
+import java.util.AbstractCollection;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import com.google.java.contract.Ensures;
 import com.google.java.contract.Requires;
 
-public class Container<T> implements Iterable<T>
+/**
+ * A collection that is observable.
+ * An Event is fired if an Item is added or removed.
+ *
+ * @param <T> The Type of the Elements
+ */
+public class Container<T> extends AbstractCollection<T>
 {
 	private final List<ContainerChangedListener<? super T>> _listeners = new ArrayList<>();
 	private final Set<T> _items = new HashSet<>();
@@ -17,29 +23,23 @@ public class Container<T> implements Iterable<T>
 
 
 	@Requires("item != null")
-	@Ensures("contains(item)")
-	public final void add(T item)
+	@Override
+	public boolean add(T item)
 	{
 		boolean added = _items.add(item);
 		if (added)
 			fireContainerChangedEvent(new ContainerChangedEvent<T>(this, item, null));
-	}
-	
-	@Ensures("!contains(item)")
-	public final void remove(T item)
-	{
-		boolean removed = _items.remove(item);
-		if (removed)
-			fireContainerChangedEvent(new ContainerChangedEvent<T>(this, null, item));
-	}
-	
-	public final boolean contains(T item)
-	{
-		return _items.contains(item);
+		return added;
 	}
 
 	@Override
-	public final Iterator<T> iterator()
+	public int size()
+	{
+		return _items.size();
+	}
+
+	@Override
+	public Iterator<T> iterator()
 	{
 		final Iterator<T> iterator = _items.iterator();
 		return new Iterator<T>()
@@ -62,12 +62,13 @@ public class Container<T> implements Iterable<T>
 			@Override
 			public void remove()
 			{
-				throw new UnsupportedOperationException();
+				iterator.remove();
+				fireContainerChangedEvent(new ContainerChangedEvent<>(Container.this, null, _currentItem));
 			}
 		};
 	}
 
-	protected final void fireContainerChangedEvent(ContainerChangedEvent<T> event)
+	private final void fireContainerChangedEvent(ContainerChangedEvent<T> event)
 	{
 		for (ContainerChangedListener<? super T> listener : _listeners)
 			listener.containerChanged(event);

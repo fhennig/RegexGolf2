@@ -1,4 +1,4 @@
-package regexgolf2.services.persistence;
+package regexgolf2.services.persistence.database;
 
 import java.io.File;
 import java.sql.Connection;

@@ -11,7 +11,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import regexgolf2.model.ObjectChangedListener;
 import regexgolf2.model.Word;
-import regexgolf2.services.repositories.PersistenceState;
+import regexgolf2.services.persistence.changetracking.PersistenceState;
 
 import com.google.java.contract.Ensures;
 import com.google.java.contract.Requires;

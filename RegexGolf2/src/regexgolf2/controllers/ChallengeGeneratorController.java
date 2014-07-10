@@ -1,7 +1,6 @@
 package regexgolf2.controllers;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.Optional;
 
 import javafx.beans.property.ObjectProperty;
@@ -15,11 +14,13 @@ import javafx.stage.Window;
 import javax.swing.JOptionPane;
 
 import regexgolf2.model.ObjectChangedListener;
+import regexgolf2.model.ObservableObject;
 import regexgolf2.model.SolvableChallenge;
 import regexgolf2.model.regexgenerator.Generator;
-import regexgolf2.services.ChangeTrackingService;
 import regexgolf2.services.challengegenerator.ChallengeGeneratorService;
-import regexgolf2.services.repositories.ChallengeRepository;
+import regexgolf2.services.persistence.PersistenceException;
+import regexgolf2.services.persistence.PersistenceService;
+import regexgolf2.services.persistence.changetracking.PersistenceState;
 import regexgolf2.services.services.Services;
 import regexgolf2.ui.challengegenerator.ChallengeGeneratorUI;
 import regexgolf2.ui.challengegenerator.GeneratorItem;
@@ -36,8 +37,7 @@ public class ChallengeGeneratorController implements ChallengeContainer
 	private final ObjectProperty<SolvableChallenge> _challenge = new SimpleObjectProperty<SolvableChallenge>();
 
 	private final ChallengeGeneratorService _generatorService;
-	private final ChangeTrackingService _changeTrackingService;
-	private final ChallengeRepository _challengeRepository;
+	private final PersistenceService _persistenceService;
 
 	private final ObjectChangedListener _challengeListener;
 	private final ObjectChangedListener _persStateListener;
@@ -50,10 +50,9 @@ public class ChallengeGeneratorController implements ChallengeContainer
 			throws IOException
 	{
 		_generatorService = services.getGeneratorService();
-		_changeTrackingService = services.getChangeTrackingService();
-		_challengeRepository = services.getChallengeRepository();
+		_persistenceService = services.getPersistenceService();
 
-		WordRepositoryController wrc = new WordRepositoryController(services.getWordRepository());
+		WordRepositoryController wrc = new WordRepositoryController(services.getPersistenceService().getWordRepository());
 
 		_ui = new ChallengeGeneratorUI(parent);
 		_ui.setWordRepositoryPanel(wrc.getUINode());
@@ -101,7 +100,7 @@ public class ChallengeGeneratorController implements ChallengeContainer
 		if (oldChallenge != null)
 		{
 			oldChallenge.removeObjectChangedListener(_challengeListener);
-			Optional.ofNullable(_changeTrackingService.getPersistenceState(oldChallenge))
+			Optional.ofNullable(getPersistenceState(oldChallenge))
 					.ifPresent(ps -> ps.removeObjectChangedListener(_persStateListener));
 			_isSaved = false;
 			persistenceStateChanged();
@@ -123,7 +122,7 @@ public class ChallengeGeneratorController implements ChallengeContainer
 		boolean isChanged;
 		if (_isSaved)
 			// If it is saved to the DB, get ChangeState from Repository
-			isChanged = _changeTrackingService.getPersistenceState(getChallenge()).isChanged();
+			isChanged = getPersistenceState(getChallenge()).isChanged();
 		else
 			isChanged = true;
 		_ui.getSaveButton().setDisable(!isChanged);
@@ -135,15 +134,14 @@ public class ChallengeGeneratorController implements ChallengeContainer
 			return;
 		try
 		{
-			_challengeRepository.save(getChallenge());
+			_persistenceService.save(getChallenge());
 			if (!_isSaved)
 			{
 				_isSaved = true;
-				_changeTrackingService.getPersistenceState(getChallenge())
-						.addObjectChangedListener(_persStateListener);
+				getPersistenceState(getChallenge()).addObjectChangedListener(_persStateListener);
 				persistenceStateChanged();
 			}
-		} catch (SQLException e)
+		} catch (PersistenceException e)
 		{
 			JOptionPane.showMessageDialog(null, "Error with Database");
 		}
@@ -186,6 +184,11 @@ public class ChallengeGeneratorController implements ChallengeContainer
 	public ReadOnlyBooleanProperty editableProperty()
 	{
 		return _EDITABLE;
+	}
+	
+	private PersistenceState getPersistenceState(ObservableObject object)
+	{
+		return _persistenceService.getPersistenceState(object);
 	}
 
 	public Node getUINode()

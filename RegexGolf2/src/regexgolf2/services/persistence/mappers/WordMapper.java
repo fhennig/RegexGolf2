@@ -7,7 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import regexgolf2.model.Word;
-import regexgolf2.services.persistence.Database;
+import regexgolf2.services.persistence.PersistenceException;
+import regexgolf2.services.persistence.database.Database;
 
 import com.google.java.contract.Ensures;
 import com.google.java.contract.Requires;
@@ -27,26 +28,33 @@ public class WordMapper
 	
 	
 	@Ensures("result != null")
-	public List<Word> getAll() throws SQLException
+	public List<Word> getAll() throws PersistenceException
 	{
-		List<Word> result = new ArrayList<>();
-		
-		String sql = "SELECT id, text FROM words; ";
-		
-		PreparedStatement ps = _db.getConnection().prepareStatement(sql);
-		ResultSet rs = ps.executeQuery();
-		
-		while (rs.next())
+		try
 		{
-			Word word = new Word();
-			word.setId(rs.getInt(1));
-			word.trySetText(rs.getString(2));
+			List<Word> result = new ArrayList<>();
 			
-			result.add(word);
+			String sql = "SELECT id, text FROM words; ";
+			
+			PreparedStatement ps;
+				ps = _db.getConnection().prepareStatement(sql);
+			ResultSet rs = ps.executeQuery();
+			
+			while (rs.next())
+			{
+				Word word = new Word();
+				word.setId(rs.getInt(1));
+				word.trySetText(rs.getString(2));
+				
+				result.add(word);
+			}
+			ps.close();
+			
+			return result;
+		} catch (SQLException e)
+		{
+			throw new PersistenceException();
 		}
-		ps.close();
-		
-		return result;
 	}
 
 	@Requires("word != null")
