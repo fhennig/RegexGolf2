@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import javafx.scene.Parent;
 import javafx.stage.Stage;
-import regexgolf2.services.initializing.ServiceContainer;
+import regexgolf2.services.services.Services;
 import regexgolf2.ui.main.MainUI;
 
 import com.google.java.contract.Ensures;
@@ -32,7 +32,7 @@ public class MainController
 		"services != null",
 		"primaryStage != null"
 	})
-	public MainController(ServiceContainer services, Stage primaryStage) throws IOException
+	public MainController(Services services, Stage primaryStage) throws IOException
 	{
 		_challengeSolvingController = new ChallengeSolvingController();
 		_modulesController = new ModulesController(services, primaryStage);

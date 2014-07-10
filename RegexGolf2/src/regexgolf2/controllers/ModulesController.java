@@ -14,7 +14,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Tab;
 import javafx.stage.Window;
 import regexgolf2.model.SolvableChallenge;
-import regexgolf2.services.initializing.ServiceContainer;
+import regexgolf2.services.services.Services;
 import regexgolf2.ui.modules.ModulesUI;
 
 import com.google.java.contract.Requires;
@@ -36,7 +36,7 @@ public class ModulesController
 
 
 	@Requires("services != null")
-	public ModulesController(ServiceContainer services, Window parent) throws IOException
+	public ModulesController(Services services, Window parent) throws IOException
 	{
 		// Init child Controllers
 		ChallengeRepositoryController challengeRepoController = new ChallengeRepositoryController(

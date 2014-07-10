@@ -1,4 +1,4 @@
-package regexgolf2.services.initializing;
+package regexgolf2.services.services;
 
 import java.io.File;
 import java.io.IOException;
@@ -6,8 +6,6 @@ import java.sql.SQLException;
 import java.util.logging.Logger;
 
 import javax.swing.JOptionPane;
-
-import com.google.java.contract.Ensures;
 
 import regexgolf2.model.Challenge;
 import regexgolf2.model.Solution;
@@ -24,80 +22,91 @@ import regexgolf2.services.repositories.WordRepository;
 import regexgolf2.services.settingsservice.SettingsService;
 import regexgolf2.startup.ChallengeFactory;
 
-public class InitializingService
+import com.google.java.contract.Ensures;
+
+public class Services
 {
-	private static final Logger _LOG = Logger.getLogger(InitializingService.class.getName());
-	
+	private static final Logger _LOG = Logger.getLogger(Services.class.getName());
+
 	private SettingsService _settingsService;
 	private ChangeTrackingService _changeTrackingService;
 	private PersistenceService _persistenceService;
 	private ChallengeRepository _challengeRepository;
 	private WordRepository _wordRepository;
 	private ChallengeGeneratorService _generator;
-	
-	
-	
+
+
+
+	public Services() throws InitializingException
+	{
+		load();
+	}
+
+
+
 	/**
-	 * @return  a ServiceContainer containing all the initialized Services; null if init failed
+	 * @throws InitializingException
+	 *             if some module could not be initialized
 	 */
-	public ServiceContainer start()
+	private void load() throws InitializingException
 	{
 		try
 		{
 			if (!initSettingsService())
-				return null;
+				throw new InitializingException();
 			_LOG.info("SettingsService initialized");
-			
+
 			if (!initChangeTrackingService())
-				return null;
+				throw new InitializingException();
 			_LOG.info("ChangeTrackingService initialized");
-			
+
 			if (!initPersistenceService(_settingsService.getSettings().getSQLiteDBPath()))
-				return null;
+				throw new InitializingException();
 			_LOG.info("PersistenceService initialized");
-			
+
 			if (!testDB(_persistenceService))
-				return null;
+				throw new InitializingException();
 			_LOG.info("Database Test successful");
-			
+
 			if (!initChallengeRepository(_persistenceService.getSolvableChallengeMapper()))
-				return null;
+				throw new InitializingException();
 			_LOG.info("ChallengeRepository initialized");
-			
+
 			if (!initWordRepository(_persistenceService.getWordMapper()))
-				return null;
+				throw new InitializingException();
 			_LOG.info("WordRepository initialized");
-			
+
 			if (!initChallengeGeneratorService())
-				return null;
+				throw new InitializingException();
 			_LOG.info("ChallengeGenerator initialized");
-			
-			return createServiceContainer();
-		}
-		catch (Exception ex)
+		} catch (InitializingException e)
+		{
+			throw e;
+		} catch (Exception ex)
 		{
 			_LOG.severe(ex.toString());
+			// TODO use error handler here
 			JOptionPane.showMessageDialog(null, "Unexpected fatal Error!\n\n" + ex.toString());
 			ex.printStackTrace();
-			return null;
+			throw new InitializingException();
 		}
 	}
-	
+
 	private boolean initSettingsService()
 	{
 		_settingsService = new SettingsService(SettingsService.DEFAULT_FILE);
 		boolean settingsLoaded = _settingsService.tryLoad();
 		if (settingsLoaded)
 			return true;
-		
+
 		boolean settingsCreated = _settingsService.tryCreateDefaultFile();
 		if (settingsCreated)
 			return true;
-		
+
 		JOptionPane.showMessageDialog(null, "Could not find or create a settings.properties File!");
 		return false;
 	}
-	
+
 	private boolean initChangeTrackingService()
 	{
 		_changeTrackingService = new ChangeTrackingService();
@@ -116,26 +125,25 @@ public class InitializingService
 				dbIsNew = true;
 			} catch (IOException e)
 			{
-				JOptionPane.showMessageDialog(null, "Could not find or create a Database File at:\n"+
-						dbPath);
+				JOptionPane.showMessageDialog(null,
+						"Could not find or create a Database File at:\n" + dbPath);
 				return false;
-			};
+			}
+		;
 		Database db = null;
 		try
 		{
 			db = new Database(dbFile);
-		}
-		catch (ClassNotFoundException e)
+		} catch (ClassNotFoundException e)
 		{
 			JOptionPane.showMessageDialog(null, "Could not load the Database driver!");
 			return false;
-		}
-		catch (SQLException e)
+		} catch (SQLException e)
 		{
 			JOptionPane.showMessageDialog(null, "Could not connect to the Database!");
 			return false;
 		}
-		
+
 		if (dbIsNew)
 		{
 			DatabaseInitializer dbInit = new DatabaseInitializer(db);
@@ -149,11 +157,11 @@ public class InitializingService
 				return false;
 			}
 		}
-		
+
 		_persistenceService = new PersistenceService(db);
 		return true;
 	}
-	
+
 	private boolean testDB(PersistenceService ps)
 	{
 		Challenge c = ChallengeFactory.getIPChallenge();
@@ -167,13 +175,13 @@ public class InitializingService
 			ps.getSolvableChallengeMapper().delete(cID);
 		} catch (SQLException e)
 		{
-			JOptionPane.showMessageDialog(null, "Accessing the Database failed!\n" + 
-							"Maybe the Database is outdated?");
+			JOptionPane.showMessageDialog(null, "Accessing the Database failed!\n"
+					+ "Maybe the Database is outdated?");
 			return false;
 		}
 		return true;
 	}
-	
+
 	private boolean initChallengeRepository(SolvableChallengeMapper mapper)
 	{
 		try
@@ -181,34 +189,65 @@ public class InitializingService
 			_challengeRepository = new ChallengeRepository(mapper, _changeTrackingService);
 		} catch (SQLException e)
 		{
-			JOptionPane.showMessageDialog(null, "Error while loading challenges from the Database!");
+			JOptionPane
+					.showMessageDialog(null, "Error while loading challenges from the Database!");
 			return false;
 		}
 		return true;
 	}
-	
+
 	private boolean initWordRepository(WordMapper mapper)
 	{
 		try
 		{
 			_wordRepository = new WordRepository(mapper);
-		}
-		catch (SQLException e)
+		} catch (SQLException e)
 		{
 			JOptionPane.showMessageDialog(null, "Error while loading words from the Database!");
 			return false;
 		}
 		return true;
 	}
-	
+
 	private boolean initChallengeGeneratorService()
 	{
 		_generator = new ChallengeGeneratorService(_wordRepository);
 		return true;
 	}
-	
-	private ServiceContainer createServiceContainer()
+
+	@Ensures("result != null")
+	public SettingsService getSettingsService()
 	{
-		return new ServiceContainer(_settingsService, _changeTrackingService, _persistenceService, _challengeRepository, _wordRepository, _generator);
+		return _settingsService;
+	}
+
+	@Ensures("result != null")
+	public ChangeTrackingService getChangeTrackingService()
+	{
+		return _changeTrackingService;
+	}
+
+	@Ensures("result != null")
+	public PersistenceService getPersistenceService()
+	{
+		return _persistenceService;
+	}
+
+	@Ensures("result != null")
+	public ChallengeRepository getChallengeRepository()
+	{
+		return _challengeRepository;
+	}
+
+	@Ensures("result != null")
+	public WordRepository getWordRepository()
+	{
+		return _wordRepository;
+	}
+
+	@Ensures("result != null")
+	public ChallengeGeneratorService getGeneratorService()
+	{
+		return _generator;
 	}
 }

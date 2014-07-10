@@ -19,8 +19,8 @@ import regexgolf2.model.SolvableChallenge;
 import regexgolf2.model.regexgenerator.Generator;
 import regexgolf2.services.ChangeTrackingService;
 import regexgolf2.services.challengegenerator.ChallengeGeneratorService;
-import regexgolf2.services.initializing.ServiceContainer;
 import regexgolf2.services.repositories.ChallengeRepository;
+import regexgolf2.services.services.Services;
 import regexgolf2.ui.challengegenerator.ChallengeGeneratorUI;
 import regexgolf2.ui.challengegenerator.GeneratorItem;
 
@@ -46,7 +46,7 @@ public class ChallengeGeneratorController implements ChallengeContainer
 
 
 	@Requires("services != null")
-	public ChallengeGeneratorController(ServiceContainer services, Window parent)
+	public ChallengeGeneratorController(Services services, Window parent)
 			throws IOException
 	{
 		_generatorService = services.getGeneratorService();
