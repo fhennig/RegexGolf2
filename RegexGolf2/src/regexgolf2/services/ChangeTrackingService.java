@@ -2,6 +2,7 @@ package regexgolf2.services;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import regexgolf2.model.ObservableObject;
 import regexgolf2.services.repositories.PersistenceState;
@@ -12,6 +13,7 @@ import com.google.java.contract.Requires;
 
 public class ChangeTrackingService
 {
+	private static final Logger _LOG = Logger.getLogger(ChangeTrackingService.class.getName());
 	private final Map<ObservableObject, PersistenceStateImpl> _persistenceStates = new HashMap<>();
 
 
@@ -31,6 +33,7 @@ public class ChangeTrackingService
 			return;
 		PersistenceStateImpl ps = new PersistenceStateImpl(object, isNew);
 		_persistenceStates.put(object, ps);
+		_LOG.info(object + " is new being tracked. isNew=" + isNew);
 	}
 
 	@Requires(
@@ -38,9 +41,11 @@ public class ChangeTrackingService
 	@Ensures("!isTracked(object)")
 	public void untrack(ObservableObject object)
 	{
+		if (!_persistenceStates.containsKey(object))
+			return;
 		PersistenceStateImpl ps = _persistenceStates.remove(object);
-		if (ps != null)
-			ps.dispose();
+		ps.dispose();
+		_LOG.info(object + " is now untracked.");
 	}
 
 	@Requires("object != null")

@@ -8,9 +8,13 @@ import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 import regexgolf2.model.Challenge;
+import regexgolf2.model.ContainerChangedListener;
+import regexgolf2.model.ObservableObject;
 import regexgolf2.model.Solution;
 import regexgolf2.model.SolvableChallenge;
 import regexgolf2.services.ChangeTrackingService;
+import regexgolf2.services.DeleteHandler;
+import regexgolf2.services.PersistenceException;
 import regexgolf2.services.TrackHandler;
 import regexgolf2.services.challengegenerator.ChallengeGeneratorService;
 import regexgolf2.services.persistence.Database;
@@ -174,7 +178,7 @@ public class Services
 			ps.getSolvableChallengeMapper().getAll();
 			ps.getSolvableChallengeMapper().update(sc);
 			ps.getSolvableChallengeMapper().delete(sc);
-		} catch (SQLException e)
+		} catch (SQLException | PersistenceException e)
 		{
 			JOptionPane.showMessageDialog(null, "Accessing the Database failed!\n"
 					+ "Maybe the Database is outdated?");
@@ -188,9 +192,19 @@ public class Services
 		try
 		{
 			_challengeRepository = new ChallengeRepository(mapper, _changeTrackingService);
-			_challengeRepository.addListener(new TrackHandler(_changeTrackingService));
-			_challengeRepository.forEach(challenge -> _changeTrackingService.track(challenge, false));
-		} catch (SQLException e)
+			_challengeRepository.forEach(challenge -> _changeTrackingService
+					.track(challenge, false));
+			
+			
+			ContainerChangedListener<ObservableObject> trackHandler = new TrackHandler(_changeTrackingService);
+			ContainerChangedListener<SolvableChallenge> deleteHandler = new DeleteHandler<>(_changeTrackingService, mapper);
+			//Because the deleteHandler needs to access PersistenceStates for removed items,
+			//the trackHandler needs to untrack the item after the deleteHandler was called.
+			_challengeRepository.addListener(event -> {
+				deleteHandler.containerChanged(event);
+				trackHandler.containerChanged(event);
+			});
+			} catch (SQLException e)
 		{
 			JOptionPane
 					.showMessageDialog(null, "Error while loading challenges from the Database!");

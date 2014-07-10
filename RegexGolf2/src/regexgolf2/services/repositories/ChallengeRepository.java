@@ -83,14 +83,4 @@ public class ChallengeRepository extends Container<SolvableChallenge>
 		// TODO remove cast
 		((PersistenceStateImpl) getPersistenceState(c)).objectWasPersisted();
 	}
-
-	@Requires(
-	{ "c != null", "contains(c)" })
-	@Ensures("!contains(c)")
-	public void delete(SolvableChallenge c) throws SQLException
-	{
-		if (!getPersistenceState(c).isNew())
-			_dbMapper.delete(c);
-		super.remove(c);
-	}
 }

@@ -105,16 +105,7 @@ public class ChallengeRepositoryController implements ChallengeContainer
 
 							SolvableChallenge challenge = _itemControllers.get(item).getChallenge();
 							assert _challengeRepo.contains(challenge) : "The challenge to remove is not contained in the ChallengeRepo.";
-							try
-							{
-								_challengeRepo.delete(challenge);
-							} catch (SQLException e)
-							{
-								// TODO use fancy dialog here
-								JOptionPane.showMessageDialog(null,
-										"Error while accessing the database!\n"
-												+ "Challenge was not deleted.");
-							}
+							_challengeRepo.remove(challenge);
 						});
 	}
 

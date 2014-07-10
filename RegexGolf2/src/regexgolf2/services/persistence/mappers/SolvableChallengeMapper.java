@@ -6,34 +6,36 @@ import java.util.List;
 
 import regexgolf2.model.Challenge;
 import regexgolf2.model.SolvableChallenge;
+import regexgolf2.services.DeleteHandler.DeleteStrategy;
+import regexgolf2.services.PersistenceException;
 import regexgolf2.services.persistence.mappers.SolutionMapper.SolutionDTO;
 
 import com.google.java.contract.Ensures;
 import com.google.java.contract.Requires;
 
-public class SolvableChallengeMapper
+public class SolvableChallengeMapper implements DeleteStrategy<SolvableChallenge>
 {
 	private final ChallengeMapper _challenges;
 	private final SolutionMapper _solutions;
-	
-	
-	
+
+
+
 	public SolvableChallengeMapper(ChallengeMapper cMapper, SolutionMapper sMapper)
 	{
 		_challenges = cMapper;
 		_solutions = sMapper;
 	}
-	
-	
-	
+
+
+
 	@Ensures("result != null")
 	public List<SolvableChallenge> getAll() throws SQLException
 	{
 		List<SolvableChallenge> solvChallenges = new ArrayList<>();
-		
+
 		List<Challenge> challenges = _challenges.getAll();
 		List<SolutionDTO> solutions = _solutions.getAll();
-		
+
 		for (Challenge c : challenges)
 		{
 			SolvableChallenge sc = null;
@@ -45,17 +47,19 @@ public class SolvableChallengeMapper
 				}
 			}
 			if (sc == null)
-				throw new IllegalStateException("It is missing a Solution for the challengeId=" + c.getId());
+				throw new IllegalStateException("It is missing a Solution for the challengeId="
+						+ c.getId());
 			solvChallenges.add(sc);
 		}
-		
+
 		return solvChallenges;
 	}
-	
+
 	/**
 	 * Inserts the containing Solution and Challenge into the database.
+	 * 
 	 * @return the id that was assigned to the challenge on inserting it
-	 * @throws SQLException 
+	 * @throws SQLException
 	 */
 	@Requires("challenge != null")
 	public void insert(SolvableChallenge challenge) throws SQLException
@@ -63,16 +67,23 @@ public class SolvableChallengeMapper
 		_challenges.insert(challenge.getChallenge());
 		_solutions.insert(challenge.getSolution(), challenge.getChallenge().getId());
 	}
-	
+
 	public void update(SolvableChallenge challenge) throws SQLException
 	{
 		_challenges.update(challenge.getChallenge());
 		_solutions.update(challenge.getSolution(), challenge.getChallenge().getId());
 	}
-	
-	public void delete(SolvableChallenge challenge) throws SQLException
+
+	@Override
+	public void delete(SolvableChallenge challenge) throws PersistenceException
 	{
-		_challenges.delete(challenge.getChallenge());
-		//deleting the solution is done via cascade by the database itself
+		try
+		{
+			_challenges.delete(challenge.getChallenge());
+			// deleting the solution is done via cascade by the database itself
+		} catch (SQLException e)
+		{
+			throw new PersistenceException(e);
+		}
 	}
 }
