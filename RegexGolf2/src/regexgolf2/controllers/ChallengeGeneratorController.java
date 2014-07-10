@@ -2,8 +2,7 @@ package regexgolf2.controllers;
 
 import java.io.IOException;
 import java.sql.SQLException;
-
-import javax.swing.JOptionPane;
+import java.util.Optional;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyBooleanProperty;
@@ -12,13 +11,16 @@ import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.Node;
 import javafx.stage.Window;
+
+import javax.swing.JOptionPane;
+
 import regexgolf2.model.ObjectChangedListener;
 import regexgolf2.model.SolvableChallenge;
 import regexgolf2.model.regexgenerator.Generator;
+import regexgolf2.services.ChangeTrackingService;
 import regexgolf2.services.challengegenerator.ChallengeGeneratorService;
 import regexgolf2.services.initializing.ServiceContainer;
 import regexgolf2.services.repositories.ChallengeRepository;
-import regexgolf2.services.repositories.PersistenceState;
 import regexgolf2.ui.challengegenerator.ChallengeGeneratorUI;
 import regexgolf2.ui.challengegenerator.GeneratorItem;
 
@@ -34,18 +36,21 @@ public class ChallengeGeneratorController implements ChallengeContainer
 	private final ObjectProperty<SolvableChallenge> _challenge = new SimpleObjectProperty<SolvableChallenge>();
 
 	private final ChallengeGeneratorService _generatorService;
+	private final ChangeTrackingService _changeTrackingService;
 	private final ChallengeRepository _challengeRepository;
 
 	private final ObjectChangedListener _challengeListener;
 	private final ObjectChangedListener _persStateListener;
 	private boolean _isSaved = false;
 
-	
-	
+
+
 	@Requires("services != null")
-	public ChallengeGeneratorController(ServiceContainer services, Window parent) throws IOException
+	public ChallengeGeneratorController(ServiceContainer services, Window parent)
+			throws IOException
 	{
 		_generatorService = services.getGeneratorService();
+		_changeTrackingService = services.getChangeTrackingService();
 		_challengeRepository = services.getChallengeRepository();
 
 		WordRepositoryController wrc = new WordRepositoryController(services.getWordRepository());
@@ -58,7 +63,8 @@ public class ChallengeGeneratorController implements ChallengeContainer
 				.addListener((o, oV, nV) -> choiceBoxSelectionChanged(nV));
 		initChoiceBoxItems();
 		// ChallengeNameTextField
-		_ui.getChallengeNameTextField().textProperty().addListener((o, oV, nV) -> challengeNameTextFieldChanged(nV));
+		_ui.getChallengeNameTextField().textProperty()
+				.addListener((o, oV, nV) -> challengeNameTextFieldChanged(nV));
 		// Save Button
 		_ui.getSaveButton().setOnAction(e -> saveButtonClicked());
 
@@ -70,8 +76,8 @@ public class ChallengeGeneratorController implements ChallengeContainer
 		_persStateListener = e -> persistenceStateChanged();
 	}
 
-	
-	
+
+
 	private void initChoiceBoxItems()
 	{
 		for (Generator g : _generatorService.getGenerators())
@@ -89,14 +95,14 @@ public class ChallengeGeneratorController implements ChallengeContainer
 		setChallenge(c);
 	}
 
-	private void challengePropertyChanged(SolvableChallenge oldChallenge, SolvableChallenge newChallenge)
+	private void challengePropertyChanged(SolvableChallenge oldChallenge,
+			SolvableChallenge newChallenge)
 	{
 		if (oldChallenge != null)
 		{
 			oldChallenge.removeObjectChangedListener(_challengeListener);
-			PersistenceState ps = _challengeRepository.getPersistenceState(oldChallenge);
-			if (ps != null)
-				ps.removeObjectChangedListener(_persStateListener);
+			Optional.ofNullable(_changeTrackingService.getPersistenceState(oldChallenge))
+					.ifPresent(ps -> ps.removeObjectChangedListener(_persStateListener));
 			_isSaved = false;
 			persistenceStateChanged();
 		}
@@ -117,7 +123,7 @@ public class ChallengeGeneratorController implements ChallengeContainer
 		boolean isChanged;
 		if (_isSaved)
 			// If it is saved to the DB, get ChangeState from Repository
-			isChanged = _challengeRepository.getPersistenceState(getChallenge()).isChanged();
+			isChanged = _changeTrackingService.getPersistenceState(getChallenge()).isChanged();
 		else
 			isChanged = true;
 		_ui.getSaveButton().setDisable(!isChanged);
@@ -133,7 +139,8 @@ public class ChallengeGeneratorController implements ChallengeContainer
 			if (!_isSaved)
 			{
 				_isSaved = true;
-				_challengeRepository.getPersistenceState(getChallenge()).addObjectChangedListener(_persStateListener);
+				_changeTrackingService.getPersistenceState(getChallenge())
+						.addObjectChangedListener(_persStateListener);
 				persistenceStateChanged();
 			}
 		} catch (SQLException e)

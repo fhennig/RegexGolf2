@@ -22,6 +22,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
 import regexgolf2.model.SolvableChallenge;
+import regexgolf2.services.ChangeTrackingService;
 import regexgolf2.services.ServiceChangedListener;
 import regexgolf2.services.repositories.ChallengeRepository;
 import regexgolf2.ui.challengerepositoryview.ChallengeRepositoryUI;
@@ -33,6 +34,7 @@ import com.google.java.contract.Requires;
 public class ChallengeRepositoryController implements ChallengeContainer
 {
 	private final ChallengeRepository _challengeRepo;
+	private final ChangeTrackingService _changeTrackingService;
 	private final ChallengeRepositoryUI _ui;
 	private final Map<ChallengeItem, ChallengeItemController> _itemControllers = new HashMap<>();
 	private final ObjectProperty<SolvableChallenge> _selectedChObjectProperty = new SimpleObjectProperty<>();
@@ -41,9 +43,10 @@ public class ChallengeRepositoryController implements ChallengeContainer
 	
 	
 	@Requires("challengeRepo != null")
-	public ChallengeRepositoryController(ChallengeRepository challengeRepo) throws IOException
+	public ChallengeRepositoryController(ChallengeRepository challengeRepo, ChangeTrackingService changeTrackingService) throws IOException
 	{
 		_challengeRepo = challengeRepo;
+		_changeTrackingService = changeTrackingService;
 		_ui = new ChallengeRepositoryUI();
 
 		initButtonBindings();
@@ -201,7 +204,7 @@ public class ChallengeRepositoryController implements ChallengeContainer
 	 */
 	private ChallengeItem addItem(SolvableChallenge challenge)
 	{
-		ChallengeItemController controller = new ChallengeItemController(challenge, _challengeRepo.getPersistenceState(challenge));
+		ChallengeItemController controller = new ChallengeItemController(challenge, _changeTrackingService.getPersistenceState(challenge));
 		_ui.getChallengeItemList().add(controller.getItem());
 		_itemControllers.put(controller.getItem(), controller);
 		return controller.getItem();

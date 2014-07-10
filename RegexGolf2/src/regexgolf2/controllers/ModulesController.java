@@ -40,7 +40,7 @@ public class ModulesController
 	{
 		// Init child Controllers
 		ChallengeRepositoryController challengeRepoController = new ChallengeRepositoryController(
-				services.getChallengeRepository());
+				services.getChallengeRepository(), services.getChangeTrackingService());
 		ChallengeGeneratorController challengeGeneratorController = new ChallengeGeneratorController(
 				services, parent);
 

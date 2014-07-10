@@ -12,6 +12,7 @@ import com.google.java.contract.Ensures;
 import regexgolf2.model.Challenge;
 import regexgolf2.model.Solution;
 import regexgolf2.model.SolvableChallenge;
+import regexgolf2.services.ChangeTrackingService;
 import regexgolf2.services.challengegenerator.ChallengeGeneratorService;
 import regexgolf2.services.persistence.Database;
 import regexgolf2.services.persistence.DatabaseInitializer;
@@ -28,6 +29,7 @@ public class InitializingService
 	private static final Logger _LOG = Logger.getLogger(InitializingService.class.getName());
 	
 	private SettingsService _settingsService;
+	private ChangeTrackingService _changeTrackingService;
 	private PersistenceService _persistenceService;
 	private ChallengeRepository _challengeRepository;
 	private WordRepository _wordRepository;
@@ -45,6 +47,10 @@ public class InitializingService
 			if (!initSettingsService())
 				return null;
 			_LOG.info("SettingsService initialized");
+			
+			if (!initChangeTrackingService())
+				return null;
+			_LOG.info("ChangeTrackingService initialized");
 			
 			if (!initPersistenceService(_settingsService.getSettings().getSQLiteDBPath()))
 				return null;
@@ -92,6 +98,12 @@ public class InitializingService
 		return false;
 	}
 	
+	private boolean initChangeTrackingService()
+	{
+		_changeTrackingService = new ChangeTrackingService();
+		return true;
+	}
+
 	@Ensures("result == (_persistenceService != null)")
 	private boolean initPersistenceService(String dbPath)
 	{
@@ -166,7 +178,7 @@ public class InitializingService
 	{
 		try
 		{
-			_challengeRepository = new ChallengeRepository(mapper);
+			_challengeRepository = new ChallengeRepository(mapper, _changeTrackingService);
 		} catch (SQLException e)
 		{
 			JOptionPane.showMessageDialog(null, "Error while loading challenges from the Database!");
@@ -197,6 +209,6 @@ public class InitializingService
 	
 	private ServiceContainer createServiceContainer()
 	{
-		return new ServiceContainer(_settingsService, _persistenceService, _challengeRepository, _wordRepository, _generator);
+		return new ServiceContainer(_settingsService, _changeTrackingService, _persistenceService, _challengeRepository, _wordRepository, _generator);
 	}
 }
