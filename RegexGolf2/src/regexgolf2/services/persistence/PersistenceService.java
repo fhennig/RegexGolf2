@@ -1,7 +1,5 @@
 package regexgolf2.services.persistence;
 
-import java.sql.SQLException;
-
 import regexgolf2.model.ChallengePool;
 import regexgolf2.model.ContainerChangedListener;
 import regexgolf2.model.SolvableChallenge;
@@ -49,16 +47,10 @@ public class PersistenceService
 	private ChallengePool createChallengePool() throws PersistenceException
 	{
 		ChallengePool pool = new ChallengePool();
-		try
+		for (SolvableChallenge challenge : _mappers.getSolvableChallengeMapper().getAll())
 		{
-			for (SolvableChallenge challenge : _mappers.getSolvableChallengeMapper().getAll())
-			{
-				pool.add(challenge);
-				_changeTrackingService.track(challenge, false);
-			}
-		} catch (SQLException e)
-		{
-			throw new PersistenceException();
+			pool.add(challenge);
+			_changeTrackingService.track(challenge, false);
 		}
 		ContainerChangedListener<SolvableChallenge> deleteHandler = new DeleteHandler<>(getPersistenceInformation(),
 				challenge -> _mappers.getSolvableChallengeMapper().delete(challenge));

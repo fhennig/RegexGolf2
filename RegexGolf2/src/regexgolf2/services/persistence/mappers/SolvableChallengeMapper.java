@@ -28,7 +28,7 @@ public class SolvableChallengeMapper
 
 
 	@Ensures("result != null")
-	public List<SolvableChallenge> getAll() throws SQLException
+	public List<SolvableChallenge> getAll() throws PersistenceException
 	{
 		List<SolvableChallenge> solvChallenges = new ArrayList<>();
 
@@ -63,37 +63,19 @@ public class SolvableChallengeMapper
 	@Requires("challenge != null")
 	public void insert(SolvableChallenge challenge) throws PersistenceException
 	{
-		try
-		{
-			_challenges.insert(challenge.getChallenge());
-			_solutions.insert(challenge.getSolution(), challenge.getChallenge().getId());
-		} catch (SQLException e)
-		{
-			throw new PersistenceException(e);
-		}
+		_challenges.insert(challenge.getChallenge());
+		_solutions.insert(challenge.getSolution(), challenge.getChallenge().getId());
 	}
 
 	public void update(SolvableChallenge challenge) throws PersistenceException
 	{
-		try
-		{
-			_challenges.update(challenge.getChallenge());
-			_solutions.update(challenge.getSolution(), challenge.getChallenge().getId());
-		} catch (SQLException e)
-		{
-			throw new PersistenceException(e);
-		}
+		_challenges.update(challenge.getChallenge());
+		_solutions.update(challenge.getSolution(), challenge.getChallenge().getId());
 	}
 
 	public void delete(SolvableChallenge challenge) throws PersistenceException
 	{
-		try
-		{
-			_challenges.delete(challenge.getChallenge());
-			// deleting the solution is done via cascade by the database itself
-		} catch (SQLException e)
-		{
-			throw new PersistenceException(e);
-		}
+		_challenges.delete(challenge.getChallenge());
+		// deleting the solution is done via cascade by the database itself
 	}
 }
