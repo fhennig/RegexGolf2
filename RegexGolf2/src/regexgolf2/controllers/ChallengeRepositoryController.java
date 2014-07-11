@@ -159,7 +159,7 @@ public class ChallengeRepositoryController implements ChallengeContainer
 	private ChallengeItem addItem(SolvableChallenge challenge)
 	{
 		ChallengeItemController controller = new ChallengeItemController(challenge,
-				_persistenceService.getPersistenceState(challenge));
+				_persistenceService.getPersistenceInformation().getPersistenceState(challenge));
 		_ui.getChallengeItemList().add(controller.getItem());
 		_itemControllers.put(controller.getItem(), controller);
 		return controller.getItem();

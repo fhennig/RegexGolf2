@@ -122,7 +122,7 @@ public class ChallengeGeneratorController implements ChallengeContainer
 		boolean isChanged;
 		if (_isSaved)
 			// If it is saved to the DB, get ChangeState from Repository
-			isChanged = getPersistenceState(getChallenge()).isChanged();
+			isChanged = _persistenceService.getPersistenceInformation().isChanged(getChallenge());
 		else
 			isChanged = true;
 		_ui.getSaveButton().setDisable(!isChanged);
@@ -188,7 +188,7 @@ public class ChallengeGeneratorController implements ChallengeContainer
 	
 	private PersistenceState getPersistenceState(ObservableObject object)
 	{
-		return _persistenceService.getPersistenceState(object);
+		return _persistenceService.getPersistenceInformation().getPersistenceState(object);
 	}
 
 	public Node getUINode()

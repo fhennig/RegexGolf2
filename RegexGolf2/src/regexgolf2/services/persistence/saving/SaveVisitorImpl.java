@@ -3,7 +3,6 @@ package regexgolf2.services.persistence.saving;
 import java.sql.SQLException;
 
 import regexgolf2.model.ChallengePool;
-import regexgolf2.model.ObservableObject;
 import regexgolf2.model.SolvableChallenge;
 import regexgolf2.services.persistence.PersistenceException;
 import regexgolf2.services.persistence.changetracking.ChangeTrackingService;
@@ -34,32 +33,21 @@ public class SaveVisitorImpl implements SaveVisitor
 	@Override
 	public void visit(SolvableChallenge solvableChallenge) throws PersistenceException
 	{
-		if (!isChanged(solvableChallenge))
+		if (!_changeTrackingService.isChanged(solvableChallenge))
 			return;
 		
 		try
 		{
-			if (isNew(solvableChallenge))
+			if (_changeTrackingService.isNew(solvableChallenge))
 				_mappers.getSolvableChallengeMapper().insert(solvableChallenge);
 			else
 				_mappers.getSolvableChallengeMapper().update(solvableChallenge);
 			
-			_changeTrackingService.getPersistenceState(solvableChallenge).objectWasPersisted();
+			_changeTrackingService.objectWasPersisted(solvableChallenge);
 		}
 		catch (SQLException ex)
 		{
 			throw new PersistenceException(ex);
 		}
-	}
-	
-	// --------------------------- helper methods ----------------------
-	private boolean isChanged(ObservableObject object)
-	{
-		return _changeTrackingService.getFor(object).isChanged();
-	}
-	
-	private boolean isNew(ObservableObject object)
-	{
-		return _changeTrackingService.getFor(object).isNew();
 	}
 }

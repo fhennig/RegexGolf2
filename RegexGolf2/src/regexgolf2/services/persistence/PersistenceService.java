@@ -4,14 +4,10 @@ import java.sql.SQLException;
 
 import regexgolf2.model.ChallengePool;
 import regexgolf2.model.ContainerChangedListener;
-import regexgolf2.model.ObservableObject;
 import regexgolf2.model.SolvableChallenge;
 import regexgolf2.services.persistence.changetracking.ChangeTrackingService;
-import regexgolf2.services.persistence.changetracking.PersistenceState;
-import regexgolf2.services.persistence.changetracking.PersistenceStateSupplier;
+import regexgolf2.services.persistence.changetracking.PersistenceInformation;
 import regexgolf2.services.persistence.mappers.Mappers;
-import regexgolf2.services.persistence.mappers.SolvableChallengeMapper;
-import regexgolf2.services.persistence.mappers.WordMapper;
 import regexgolf2.services.persistence.saving.Savable;
 import regexgolf2.services.persistence.saving.SaveVisitorImpl;
 import regexgolf2.services.repositories.WordRepository;
@@ -19,7 +15,7 @@ import regexgolf2.services.repositories.WordRepository;
 import com.google.java.contract.Ensures;
 import com.google.java.contract.Requires;
 
-public class PersistenceService implements PersistenceStateSupplier
+public class PersistenceService
 {
 	private final Mappers _mappers;
 
@@ -28,7 +24,7 @@ public class PersistenceService implements PersistenceStateSupplier
 
 	private final SaveVisitorImpl _saveVisitor;
 
-	private final ChallengePool _challengeRepository;
+	private final ChallengePool _challengePool;
 	private final WordRepository _wordRepository;
 
 
@@ -45,7 +41,7 @@ public class PersistenceService implements PersistenceStateSupplier
 		// interface and pass it in
 		_saveVisitor = new SaveVisitorImpl(_changeTrackingService, _mappers);
 
-		_challengeRepository = createChallengePool();
+		_challengePool = createChallengePool();
 		_wordRepository = new WordRepository(_mappers.getWordMapper());
 	}
 
@@ -89,7 +85,7 @@ public class PersistenceService implements PersistenceStateSupplier
 	@Ensures("result != null")
 	public ChallengePool getChallengePool()
 	{
-		return _challengeRepository;
+		return _challengePool;
 	}
 
 	@Ensures("result != null")
@@ -98,40 +94,9 @@ public class PersistenceService implements PersistenceStateSupplier
 		return _wordRepository;
 	}
 
-	@Requires(
-	{ "isTracked(object)", "object != null" })
 	@Ensures("result != null")
-	public PersistenceState getPersistenceState(ObservableObject object)
+	public PersistenceInformation getPersistenceInformation()
 	{
-		return _changeTrackingService.getPersistenceState(object);
-	}
-
-	@Override
-	@Requires("object != null")
-	public boolean isTracked(ObservableObject object)
-	{
-		return _changeTrackingService.isTracked(object);
-	}
-
-	@Ensures("result != null")
-	public SolvableChallengeMapper getSolvableChallengeMapper()
-	{
-		return _mappers.getSolvableChallengeMapper();
-	}
-
-	@Ensures("result != null")
-	public WordMapper getWordMapper()
-	{
-		return _mappers.getWordMapper();
-	}
-
-
-
-	// TODO this is not a good name. this is also not a good place for this
-	// method
-	@Override
-	public PersistenceState getFor(ObservableObject object)
-	{
-		return getPersistenceState(object);
+		return _changeTrackingService;
 	}
 }
