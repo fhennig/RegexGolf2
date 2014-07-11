@@ -34,8 +34,7 @@ public class ChangeTrackingService implements PersistenceInformation
 		_LOG.info(object + " is new being tracked. isNew=" + isNew);
 	}
 
-	@Requires(
-	{ "object != null" })
+	@Requires("object != null")
 	@Ensures("!isTracked(object)")
 	public void untrack(ObservableObject object)
 	{
@@ -45,7 +44,7 @@ public class ChangeTrackingService implements PersistenceInformation
 		ps.dispose();
 		_LOG.info(object + " is now untracked.");
 	}
-	
+
 	@Requires("isTracked(object)")
 	public void objectWasPersisted(ObservableObject object)
 	{

@@ -9,8 +9,15 @@ import regexgolf2.services.persistence.changetracking.PersistenceInformation;
 
 import com.google.java.contract.Requires;
 
+/**
+ * An instance of this class can be attached to a {@link Container}.
+ * It will delete any Item from the database that is removed from the container.
+ */
 public class DeleteHandler<T extends ObservableObject> implements ContainerChangedListener<T>
 {
+	/**
+	 * The actual strategy to delete an item from the database
+	 */
 	public static interface DeleteStrategy<T>
 	{
 		void delete(T item) throws PersistenceException;
@@ -24,7 +31,7 @@ public class DeleteHandler<T extends ObservableObject> implements ContainerChang
 
 
 	@Requires(
-	{ "cts != null", "deleteStrategy != null" })
+	{ "pss != null", "deleteStrategy != null" })
 	public DeleteHandler(PersistenceInformation pss, DeleteStrategy<T> deleteStrategy)
 	{
 		_pss = pss;
@@ -41,7 +48,7 @@ public class DeleteHandler<T extends ObservableObject> implements ContainerChang
 			return;
 		if (_pss.isTracked(item))
 		{
-			boolean needsDBDelete = !_pss.getPersistenceState(item).isNew();
+			boolean needsDBDelete = !_pss.isNew(item);
 			if (needsDBDelete)
 				performDBDelete(item);
 		}
@@ -54,6 +61,7 @@ public class DeleteHandler<T extends ObservableObject> implements ContainerChang
 			_deleteStrategy.delete(item);
 		} catch (PersistenceException e)
 		{
+			//TODO use proper error handler
 			JOptionPane.showMessageDialog(null, "DB Error while deleting");
 		}
 	}

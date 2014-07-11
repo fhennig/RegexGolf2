@@ -37,11 +37,10 @@ public class PersistenceService
 		_changeTrackingService = new ChangeTrackingService();
 		_trackHandler = new TrackHandler(_changeTrackingService);
 
-		// TODO dont use this reference, let cts implement the required
-		// interface and pass it in
 		_saveVisitor = new SaveVisitorImpl(_changeTrackingService, _mappers);
 
 		_challengePool = createChallengePool();
+		// TODO refactor wordrepository
 		_wordRepository = new WordRepository(_mappers.getWordMapper());
 	}
 
@@ -61,14 +60,13 @@ public class PersistenceService
 		{
 			throw new PersistenceException();
 		}
-		ContainerChangedListener<SolvableChallenge> deleteHandler = new DeleteHandler<>(
-				_changeTrackingService, _mappers.getSolvableChallengeMapper());
+		ContainerChangedListener<SolvableChallenge> deleteHandler = new DeleteHandler<>(getPersistenceInformation(),
+				challenge -> _mappers.getSolvableChallengeMapper().delete(challenge));
 		// Because the deleteHandler needs to access PersistenceStates for
 		// removed items,
 		// the trackHandler needs to untrack the item after the
 		// deleteHandler was called.
-		pool.addListener(event ->
-		{
+		pool.addListener(event -> {
 			deleteHandler.containerChanged(event);
 			_trackHandler.containerChanged(event);
 		});

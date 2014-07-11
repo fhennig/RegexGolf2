@@ -7,13 +7,12 @@ import java.util.List;
 import regexgolf2.model.Challenge;
 import regexgolf2.model.SolvableChallenge;
 import regexgolf2.services.persistence.PersistenceException;
-import regexgolf2.services.persistence.DeleteHandler.DeleteStrategy;
 import regexgolf2.services.persistence.mappers.SolutionMapper.SolutionDTO;
 
 import com.google.java.contract.Ensures;
 import com.google.java.contract.Requires;
 
-public class SolvableChallengeMapper implements DeleteStrategy<SolvableChallenge>
+public class SolvableChallengeMapper
 {
 	private final ChallengeMapper _challenges;
 	private final SolutionMapper _solutions;
@@ -74,7 +73,6 @@ public class SolvableChallengeMapper implements DeleteStrategy<SolvableChallenge
 		_solutions.update(challenge.getSolution(), challenge.getChallenge().getId());
 	}
 
-	@Override
 	public void delete(SolvableChallenge challenge) throws PersistenceException
 	{
 		try
