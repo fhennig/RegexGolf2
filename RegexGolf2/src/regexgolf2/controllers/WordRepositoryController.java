@@ -1,7 +1,6 @@
 package regexgolf2.controllers;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,6 +14,7 @@ import javafx.util.Duration;
 import javax.swing.JOptionPane;
 
 import regexgolf2.model.Word;
+import regexgolf2.services.persistence.PersistenceException;
 import regexgolf2.services.repositories.WordRepository;
 import regexgolf2.ui.wordrepository.WordRepositoryUI;
 import regexgolf2.ui.wordrepository.wordcell.WordItem;
@@ -96,7 +96,7 @@ public class WordRepositoryController
 		try
 		{
 			_repository.delete(selectedWord);
-		} catch (SQLException e)
+		} catch (PersistenceException e)
 		{
 			// TODO use fancy dialog here
 			JOptionPane.showMessageDialog(null, "Error with the Database, could not delete.");
@@ -108,7 +108,7 @@ public class WordRepositoryController
 		try
 		{
 			_repository.saveAll();
-		} catch (SQLException e)
+		} catch (PersistenceException e)
 		{
 			// TODO use fancy dialog here
 			JOptionPane.showMessageDialog(null, "DB Error");

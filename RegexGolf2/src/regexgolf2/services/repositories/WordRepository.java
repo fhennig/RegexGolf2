@@ -1,6 +1,5 @@
 package regexgolf2.services.repositories;
 
-import java.sql.SQLException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -135,7 +134,7 @@ public class WordRepository extends ObservableService
 		return w;
 	}
 	
-	public void saveAll() throws SQLException
+	public void saveAll() throws PersistenceException
 	{
 		for (Word word : getAll())
 		{
@@ -149,7 +148,7 @@ public class WordRepository extends ObservableService
 		"contains(word)"
 	})
 	@Ensures("getPersistenceState(word).isNew() == false")
-	public void save(Word word) throws SQLException
+	public void save(Word word) throws PersistenceException
 	{
 		boolean isNew = getPersistenceState(word).isNew();
 		
@@ -166,7 +165,7 @@ public class WordRepository extends ObservableService
 		"contains(word)"
 	})
 	@Ensures("!contains(word)")
-	public void delete(Word word) throws SQLException
+	public void delete(Word word) throws PersistenceException
 	{
 		if (!getPersistenceState(word).isNew())
 			_mapper.delete(word.getId());

@@ -58,52 +58,75 @@ public class WordMapper
 	}
 
 	@Requires("word != null")
-	public void insert(Word word) throws SQLException
+	public void insert(Word word) throws PersistenceException
 	{
 		int id = getNextWordId(); //Cache id in field first, only set to word if insert was successful
 		
 		String sql = "INSERT INTO words (id, text) VALUES (?, ?); "; 
-		
-		PreparedStatement ps = _db.getConnection().prepareStatement(sql);
-		ps.setInt(1, id);
-		ps.setString(2, word.getText());
-		ps.execute();
-		ps.close();
+		try
+		{
+			PreparedStatement ps = _db.getConnection().prepareStatement(sql);
+			ps.setInt(1, id);
+			ps.setString(2, word.getText());
+			ps.execute();
+			ps.close();
+		} catch (SQLException ex)
+		{
+			throw new PersistenceException(ex);
+		}
 		
 		//everything was successful; set ID in word-object
 		word.setId(id);
 	}
 	
-	private int getNextWordId() throws SQLException
+	private int getNextWordId() throws PersistenceException
 	{
 		String sql = "SELECT CASE WHEN count(*) = 0 THEN 1 ELSE max(id) + 1 END FROM words; ";
 		
-		PreparedStatement ps = _db.getConnection().prepareStatement(sql);
-		ResultSet rs = ps.executeQuery();
-		int nextId = rs.getInt(1);
-		ps.close();
-		return nextId;
+		try
+		{
+			PreparedStatement ps = _db.getConnection().prepareStatement(sql);
+			ResultSet rs = ps.executeQuery();
+			int nextId = rs.getInt(1);
+			ps.close();
+			return nextId;
+		} catch (SQLException ex)
+		{
+			throw new PersistenceException(ex);
+		}
 	}
 	
 	@Requires("word != null")
-	public void update(Word word) throws SQLException
+	public void update(Word word) throws PersistenceException
 	{
 		String sql = "UPDATE words SET text = ? WHERE id = ?; ";
 		
-		PreparedStatement ps = _db.getConnection().prepareStatement(sql);
-		ps.setString(1, word.getText());
-		ps.setInt(2, word.getId());
-		ps.execute();
-		ps.close();
+		try
+		{
+			PreparedStatement ps = _db.getConnection().prepareStatement(sql);
+			ps.setString(1, word.getText());
+			ps.setInt(2, word.getId());
+			ps.execute();
+			ps.close();
+		} catch (SQLException ex)
+		{
+			throw new PersistenceException(ex);
+		}
 	}
 	
-	public void delete(int id) throws SQLException
+	public void delete(int id) throws PersistenceException
 	{
 		String sql = "DELETE FROM words WHERE id = ?; ";
 		
-		PreparedStatement ps = _db.getConnection().prepareStatement(sql);
-		ps.setInt(1, id);
-		ps.execute();
-		ps.close();
+		try
+		{
+			PreparedStatement ps = _db.getConnection().prepareStatement(sql);
+			ps.setInt(1, id);
+			ps.execute();
+			ps.close();
+		} catch (SQLException ex)
+		{
+			throw new PersistenceException(ex);
+		}
 	}
 }
