@@ -73,7 +73,6 @@ public class PersistenceService
 		return pool;
 	}
 
-
 	@Requires("savable != null")
 	public void save(Savable savable) throws PersistenceException
 	{

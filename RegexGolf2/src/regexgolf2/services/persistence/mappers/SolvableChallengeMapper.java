@@ -61,16 +61,28 @@ public class SolvableChallengeMapper
 	 * @throws SQLException
 	 */
 	@Requires("challenge != null")
-	public void insert(SolvableChallenge challenge) throws SQLException
+	public void insert(SolvableChallenge challenge) throws PersistenceException
 	{
-		_challenges.insert(challenge.getChallenge());
-		_solutions.insert(challenge.getSolution(), challenge.getChallenge().getId());
+		try
+		{
+			_challenges.insert(challenge.getChallenge());
+			_solutions.insert(challenge.getSolution(), challenge.getChallenge().getId());
+		} catch (SQLException e)
+		{
+			throw new PersistenceException(e);
+		}
 	}
 
-	public void update(SolvableChallenge challenge) throws SQLException
+	public void update(SolvableChallenge challenge) throws PersistenceException
 	{
-		_challenges.update(challenge.getChallenge());
-		_solutions.update(challenge.getSolution(), challenge.getChallenge().getId());
+		try
+		{
+			_challenges.update(challenge.getChallenge());
+			_solutions.update(challenge.getSolution(), challenge.getChallenge().getId());
+		} catch (SQLException e)
+		{
+			throw new PersistenceException(e);
+		}
 	}
 
 	public void delete(SolvableChallenge challenge) throws PersistenceException
