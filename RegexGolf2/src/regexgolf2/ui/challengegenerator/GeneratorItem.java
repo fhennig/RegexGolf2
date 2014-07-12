@@ -3,7 +3,7 @@ package regexgolf2.ui.challengegenerator;
 import com.google.java.contract.Ensures;
 import com.google.java.contract.Requires;
 
-import regexgolf2.model.regexgenerator.Generator;
+import regexgolf2.model.challengegenerator.Generator;
 
 public class GeneratorItem
 {

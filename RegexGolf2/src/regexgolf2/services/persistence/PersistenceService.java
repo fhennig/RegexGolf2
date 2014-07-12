@@ -1,10 +1,10 @@
 package regexgolf2.services.persistence;
 
-import regexgolf2.model.ChallengePool;
-import regexgolf2.model.ContainerChangedListener;
 import regexgolf2.model.SolvableChallenge;
 import regexgolf2.model.Word;
-import regexgolf2.model.WordPool;
+import regexgolf2.model.containers.ChallengePool;
+import regexgolf2.model.containers.ContainerChangedListener;
+import regexgolf2.model.containers.WordPool;
 import regexgolf2.services.persistence.changetracking.ChangeTrackingService;
 import regexgolf2.services.persistence.changetracking.PersistenceInformation;
 import regexgolf2.services.persistence.mappers.Mappers;

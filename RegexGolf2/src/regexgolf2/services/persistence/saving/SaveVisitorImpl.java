@@ -1,9 +1,9 @@
 package regexgolf2.services.persistence.saving;
 
-import regexgolf2.model.ChallengePool;
 import regexgolf2.model.SolvableChallenge;
 import regexgolf2.model.Word;
-import regexgolf2.model.WordPool;
+import regexgolf2.model.containers.ChallengePool;
+import regexgolf2.model.containers.WordPool;
 import regexgolf2.services.persistence.PersistenceException;
 import regexgolf2.services.persistence.changetracking.ChangeTrackingService;
 import regexgolf2.services.persistence.mappers.Mappers;

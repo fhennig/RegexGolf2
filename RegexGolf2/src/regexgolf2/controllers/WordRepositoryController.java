@@ -11,9 +11,9 @@ import javafx.util.Duration;
 
 import javax.swing.JOptionPane;
 
-import regexgolf2.model.ContainerChangedEvent;
 import regexgolf2.model.Word;
-import regexgolf2.model.WordPool;
+import regexgolf2.model.containers.ContainerChangedEvent;
+import regexgolf2.model.containers.WordPool;
 import regexgolf2.services.persistence.PersistenceException;
 import regexgolf2.services.persistence.PersistenceService;
 import regexgolf2.ui.wordrepository.WordRepositoryUI;

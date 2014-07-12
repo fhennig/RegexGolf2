@@ -1,5 +1,6 @@
-package regexgolf2.model;
+package regexgolf2.model.containers;
 
+import regexgolf2.model.SolvableChallenge;
 import regexgolf2.services.persistence.PersistenceException;
 import regexgolf2.services.persistence.saving.Savable;
 import regexgolf2.services.persistence.saving.SaveVisitor;

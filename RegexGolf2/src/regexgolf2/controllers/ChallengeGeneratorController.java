@@ -16,7 +16,7 @@ import javax.swing.JOptionPane;
 import regexgolf2.model.ObjectChangedListener;
 import regexgolf2.model.ObservableObject;
 import regexgolf2.model.SolvableChallenge;
-import regexgolf2.model.regexgenerator.Generator;
+import regexgolf2.model.challengegenerator.Generator;
 import regexgolf2.services.challengegenerator.ChallengeGeneratorService;
 import regexgolf2.services.persistence.PersistenceException;
 import regexgolf2.services.persistence.PersistenceService;

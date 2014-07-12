@@ -2,10 +2,10 @@ package regexgolf2.controllers;
 
 import javafx.scene.Node;
 import javafx.scene.layout.AnchorPane;
-import regexgolf2.model.regexgenerator.Generator.EmptyConfig;
-import regexgolf2.model.regexgenerator.GeneratorConfig;
-import regexgolf2.model.regexgenerator.GeneratorConfigVisitor;
-import regexgolf2.model.regexgenerator.RandomGeneratorConfig;
+import regexgolf2.model.challengegenerator.GeneratorConfig;
+import regexgolf2.model.challengegenerator.GeneratorConfigVisitor;
+import regexgolf2.model.challengegenerator.RandomGeneratorConfig;
+import regexgolf2.model.challengegenerator.Generator.EmptyConfig;
 
 public class GeneratorConfigUICreator implements GeneratorConfigVisitor
 {

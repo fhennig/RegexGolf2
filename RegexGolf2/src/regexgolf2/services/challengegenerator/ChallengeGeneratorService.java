@@ -10,10 +10,10 @@ import regexgolf2.model.Challenge;
 import regexgolf2.model.Solution;
 import regexgolf2.model.SolvableChallenge;
 import regexgolf2.model.Word;
-import regexgolf2.model.WordPool;
-import regexgolf2.model.regexgenerator.Generator;
-import regexgolf2.model.regexgenerator.RandomGenerator;
-import regexgolf2.model.regexgenerator.TestGenerator;
+import regexgolf2.model.challengegenerator.Generator;
+import regexgolf2.model.challengegenerator.RandomGenerator;
+import regexgolf2.model.challengegenerator.TestGenerator;
+import regexgolf2.model.containers.WordPool;
 
 import com.google.java.contract.Ensures;
 import com.google.java.contract.Requires;

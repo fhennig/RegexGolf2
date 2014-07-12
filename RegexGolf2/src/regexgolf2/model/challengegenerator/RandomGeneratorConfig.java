@@ -1,4 +1,4 @@
-package regexgolf2.model.regexgenerator;
+package regexgolf2.model.challengegenerator;
 
 import com.google.java.contract.Ensures;
 import com.google.java.contract.Requires;

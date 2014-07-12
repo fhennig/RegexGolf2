@@ -1,4 +1,4 @@
-package regexgolf2.model;
+package regexgolf2.model.containers;
 
 import java.util.EventObject;
 

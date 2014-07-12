@@ -1,4 +1,4 @@
-package regexgolf2.model.regexgenerator;
+package regexgolf2.model.challengegenerator;
 
 import java.util.Collections;
 import java.util.List;

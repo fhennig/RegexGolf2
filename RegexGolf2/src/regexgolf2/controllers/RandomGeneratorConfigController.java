@@ -1,7 +1,7 @@
 package regexgolf2.controllers;
 
 import javafx.scene.Node;
-import regexgolf2.model.regexgenerator.RandomGeneratorConfig;
+import regexgolf2.model.challengegenerator.RandomGeneratorConfig;
 import regexgolf2.ui.challengegenerator.configui.RandomGeneratorConfigUI;
 
 public class RandomGeneratorConfigController

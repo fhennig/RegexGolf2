@@ -1,6 +1,6 @@
-package regexgolf2.model.regexgenerator;
+package regexgolf2.model.challengegenerator;
 
-import regexgolf2.model.regexgenerator.Generator.EmptyConfig;
+import regexgolf2.model.challengegenerator.Generator.EmptyConfig;
 
 public interface GeneratorConfigVisitor
 {
