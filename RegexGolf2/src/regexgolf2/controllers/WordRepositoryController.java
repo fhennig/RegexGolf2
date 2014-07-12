@@ -1,8 +1,6 @@
 package regexgolf2.controllers;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -13,9 +11,11 @@ import javafx.util.Duration;
 
 import javax.swing.JOptionPane;
 
+import regexgolf2.model.ContainerChangedEvent;
 import regexgolf2.model.Word;
+import regexgolf2.model.WordPool;
 import regexgolf2.services.persistence.PersistenceException;
-import regexgolf2.services.repositories.WordRepository;
+import regexgolf2.services.persistence.PersistenceService;
 import regexgolf2.ui.wordrepository.WordRepositoryUI;
 import regexgolf2.ui.wordrepository.wordcell.WordItem;
 
@@ -25,15 +25,17 @@ import com.google.java.contract.Requires;
 public class WordRepositoryController
 {
 	private final WordRepositoryUI _ui;
-	private final WordRepository _repository;
+	private final WordPool _pool;
+	private final PersistenceService _persistenceService;
 	private final ChangeListener<Boolean> _outOfSynchListener;
 
 
 
-	public WordRepositoryController(WordRepository repository) throws IOException
+	public WordRepositoryController(PersistenceService ps) throws IOException
 	{
 		_ui = new WordRepositoryUI();
-		_repository = repository;
+		_persistenceService = ps;
+		_pool = _persistenceService.getWordPool();
 		_outOfSynchListener = createOutOfSynchListener();
 
 		// Disable Remove Button if no Item is selected
@@ -45,14 +47,12 @@ public class WordRepositoryController
 		_ui.getRemoveButton().setOnAction(e -> onRemoveButtonClicked());
 		_ui.getSaveButton().setOnAction(e -> onSaveButtonClicked());
 
-		// Refresh UI-ItemList if repository changes
-		_repository.addServiceChangedListener(e -> refreshListViewItemList());
+		// Refresh UI-ItemList if pool changes
+		_pool.addListener(e -> refreshListViewItemList(e));
 
 		// Load Items
-		refreshListViewItemList();
+		_pool.forEach(word -> addItem(word));
 	}
-
-
 
 	private ChangeListener<Boolean> createOutOfSynchListener()
 	{
@@ -61,8 +61,7 @@ public class WordRepositoryController
 			private int amountOutOfSynch = 0;
 
 			@Override
-			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue,
-					Boolean newValue)
+			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue)
 			{
 				if (newValue)
 					amountOutOfSynch++;
@@ -76,7 +75,7 @@ public class WordRepositoryController
 
 	private void onAddButtonClicked()
 	{
-		Word newWord = _repository.createNew();
+		Word newWord = _pool.getEmpty();
 		final WordItem item = getItem(newWord);
 		_ui.getListView().scrollTo(item);
 		/*
@@ -93,21 +92,14 @@ public class WordRepositoryController
 	private void onRemoveButtonClicked()
 	{
 		Word selectedWord = _ui.getListView().getSelectionModel().getSelectedItem().getWord();
-		try
-		{
-			_repository.delete(selectedWord);
-		} catch (PersistenceException e)
-		{
-			// TODO use fancy dialog here
-			JOptionPane.showMessageDialog(null, "Error with the Database, could not delete.");
-		}
+		_pool.remove(selectedWord);
 	}
 
 	private void onSaveButtonClicked()
 	{
 		try
 		{
-			_repository.saveAll();
+			_persistenceService.save(_pool);
 		} catch (PersistenceException e)
 		{
 			// TODO use fancy dialog here
@@ -115,31 +107,12 @@ public class WordRepositoryController
 		}
 	}
 
-	private void refreshListViewItemList()
+	private void refreshListViewItemList(ContainerChangedEvent<? extends Word> e)
 	{
-		List<WordItem> toRemove = new ArrayList<>();
-		for (WordItem item : _ui.getListView().getItems())
-		{
-			if (!_repository.contains(item.getWord()))
-				toRemove.add(item);
-		}
-		for (WordItem item : toRemove)
-			removeItem(item);
-
-		for (Word w : _repository.getAll())
-		{
-			boolean itemExists = false;
-			for (WordItem item : _ui.getListView().getItems())
-			{
-				if (item.getWord() == w)
-				{
-					itemExists = true;
-					break;
-				}
-			}
-			if (!itemExists)
-				addItem(w);
-		}
+		if (e.getAddedItem() != null)
+			addItem(e.getAddedItem());
+		if (e.getRemovedItem() != null)
+			removeItemFor(e.getRemovedItem());
 	}
 
 	/**
@@ -148,21 +121,25 @@ public class WordRepositoryController
 	 */
 	private WordItem addItem(Word word)
 	{
-		WordItem item = new WordItem(word, _repository.getPersistenceState(word));
+		WordItem item = new WordItem(word, _persistenceService.getPersistenceInformation().getPersistenceState(word));
 		item.isOutOfSynchPropery().addListener(_outOfSynchListener);
 		_ui.getListView().getItems().add(item);
 		return item;
 	}
 
-	private void removeItem(WordItem item)
+	private void removeItemFor(Word word)
 	{
-		_ui.getListView().getItems().remove(item);
-		item.isOutOfSynchPropery().removeListener(_outOfSynchListener);
-		item.discard();
+		_ui.getListView().getItems().stream()
+				.filter(item -> item.getWord().equals(word)).findFirst()
+				.ifPresent(item -> {
+					_ui.getListView().getItems().remove(item);
+					item.isOutOfSynchPropery().removeListener(_outOfSynchListener);
+					item.discard();
+				});
 	}
 
 	@Requires(
-	{ "word != null", "_repository.contains(word)" })
+	{ "word != null", "_pool.contains(word)" })
 	@Ensures("result != null")
 	private WordItem getItem(Word word)
 	{

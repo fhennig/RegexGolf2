@@ -52,7 +52,7 @@ public class ChallengeGeneratorController implements ChallengeContainer
 		_generatorService = services.getGeneratorService();
 		_persistenceService = services.getPersistenceService();
 
-		WordRepositoryController wrc = new WordRepositoryController(services.getPersistenceService().getWordRepository());
+		WordRepositoryController wrc = new WordRepositoryController(services.getPersistenceService());
 
 		_ui = new ChallengeGeneratorUI(parent);
 		_ui.setWordRepositoryPanel(wrc.getUINode());

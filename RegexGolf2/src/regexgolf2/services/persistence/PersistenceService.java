@@ -3,12 +3,13 @@ package regexgolf2.services.persistence;
 import regexgolf2.model.ChallengePool;
 import regexgolf2.model.ContainerChangedListener;
 import regexgolf2.model.SolvableChallenge;
+import regexgolf2.model.Word;
+import regexgolf2.model.WordPool;
 import regexgolf2.services.persistence.changetracking.ChangeTrackingService;
 import regexgolf2.services.persistence.changetracking.PersistenceInformation;
 import regexgolf2.services.persistence.mappers.Mappers;
 import regexgolf2.services.persistence.saving.Savable;
 import regexgolf2.services.persistence.saving.SaveVisitorImpl;
-import regexgolf2.services.repositories.WordRepository;
 
 import com.google.java.contract.Ensures;
 import com.google.java.contract.Requires;
@@ -23,7 +24,7 @@ public class PersistenceService
 	private final SaveVisitorImpl _saveVisitor;
 
 	private final ChallengePool _challengePool;
-	private final WordRepository _wordRepository;
+	private final WordPool _wordPool;
 
 
 
@@ -38,8 +39,27 @@ public class PersistenceService
 		_saveVisitor = new SaveVisitorImpl(_changeTrackingService, _mappers);
 
 		_challengePool = createChallengePool();
-		// TODO refactor wordrepository
-		_wordRepository = new WordRepository(_mappers.getWordMapper());
+		_wordPool = createWordPool();
+	}
+
+
+
+	private WordPool createWordPool() throws PersistenceException
+	{
+		WordPool pool = new WordPool();
+		for (Word word : _mappers.getWordMapper().getAll())
+		{
+			pool.add(word);
+			_changeTrackingService.track(word, false);
+		}
+		ContainerChangedListener<Word> deleteHandler = new DeleteHandler<>(getPersistenceInformation(),
+				word -> _mappers.getWordMapper().delete(word));
+		
+		pool.addListener(event -> {
+			deleteHandler.containerChanged(event);
+			_trackHandler.containerChanged(event);
+		});
+		return pool;
 	}
 
 
@@ -76,11 +96,10 @@ public class PersistenceService
 	{
 		return _challengePool;
 	}
-
-	@Ensures("result != null")
-	public WordRepository getWordRepository()
+	
+	public WordPool getWordPool()
 	{
-		return _wordRepository;
+		return _wordPool;
 	}
 
 	@Ensures("result != null")

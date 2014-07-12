@@ -2,6 +2,8 @@ package regexgolf2.services.persistence.saving;
 
 import regexgolf2.model.ChallengePool;
 import regexgolf2.model.SolvableChallenge;
+import regexgolf2.model.Word;
+import regexgolf2.model.WordPool;
 import regexgolf2.services.persistence.PersistenceException;
 import regexgolf2.services.persistence.changetracking.ChangeTrackingService;
 import regexgolf2.services.persistence.mappers.Mappers;
@@ -40,5 +42,23 @@ public class SaveVisitorImpl implements SaveVisitor
 			_mappers.getSolvableChallengeMapper().update(solvableChallenge);
 		
 		_changeTrackingService.objectWasPersisted(solvableChallenge);
+	}
+
+	@Override
+	public void visit(WordPool wordPool) throws PersistenceException
+	{
+		for (Word word : wordPool)
+			save(word);
+	}
+	
+	private void save(Word word) throws PersistenceException
+	{
+		assert _changeTrackingService.isTracked(word);
+		if (_changeTrackingService.isNew(word))
+			_mappers.getWordMapper().insert(word);
+		else if (_changeTrackingService.isChanged(word))
+			_mappers.getWordMapper().update(word);
+		
+		_changeTrackingService.objectWasPersisted(word);
 	}
 }

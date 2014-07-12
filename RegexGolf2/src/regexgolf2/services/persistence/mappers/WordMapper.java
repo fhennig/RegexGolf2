@@ -114,6 +114,7 @@ public class WordMapper
 		}
 	}
 	
+	//TODO remove this method
 	public void delete(int id) throws PersistenceException
 	{
 		String sql = "DELETE FROM words WHERE id = ?; ";
@@ -122,6 +123,23 @@ public class WordMapper
 		{
 			PreparedStatement ps = _db.getConnection().prepareStatement(sql);
 			ps.setInt(1, id);
+			ps.execute();
+			ps.close();
+		} catch (SQLException ex)
+		{
+			throw new PersistenceException(ex);
+		}
+	}
+
+	@Requires("word != null")
+	public void delete(Word word) throws PersistenceException
+	{
+		String sql = "DELETE FROM words WHERE id = ?; ";
+		
+		try
+		{
+			PreparedStatement ps = _db.getConnection().prepareStatement(sql);
+			ps.setInt(1, word.getId());
 			ps.execute();
 			ps.close();
 		} catch (SQLException ex)
