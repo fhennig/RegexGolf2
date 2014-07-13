@@ -80,36 +80,6 @@ public class PersistenceService
 		});
 	}
 
-	private WordPool createDummyPool()
-	{
-		WordPool pool = new WordPool();
-		pool.setName("Dummy Pool");
-		pool.addListener(_trackHandler);
-		for (int i = 0; i < 10; i++)
-			pool.add(new Word(Integer.toString(i)));
-		return pool;
-	}
-
-	private WordPool createWordPool() throws PersistenceException
-	{
-		WordPool pool = new WordPool();
-		// pool.setName("Default Pool");
-		// for (Word word : _mappers.getWordMapper().getAll())
-		// {
-		// pool.add(word);
-		// _changeTrackingService.track(word, false);
-		// }
-		// ContainerChangedListener<Word> deleteHandler = new
-		// DeleteHandler<>(getPersistenceInformation(),
-		// word -> _mappers.getWordMapper().delete(word));
-		//
-		// pool.addListener(event -> {
-		// deleteHandler.containerChanged(event);
-		// _trackHandler.containerChanged(event);
-		// });
-		return pool;
-	}
-
 	private ChallengePool createChallengePool() throws PersistenceException
 	{
 		ChallengePool pool = new ChallengePool();
