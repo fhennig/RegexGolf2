@@ -48,12 +48,38 @@ public class PersistenceService
 	private WordPoolContainer createWordPoolContainer() throws PersistenceException
 	{
 		WordPoolContainer wpc = new WordPoolContainer();
-		wpc.addListener(_trackHandler);
-		wpc.add(createWordPool());
-		wpc.add(createDummyPool());
+
+		for (WordPool wp : _mappers.getWordPoolMapper().getAll())
+		{
+			wpc.add(wp);
+			_changeTrackingService.track(wp, false);
+			wp.forEach(word -> _changeTrackingService.track(word, false));
+			addWordPoolListeners(wp);
+		}
+
+		DeleteHandler<WordPool> deleteHandler = new DeleteHandler<WordPool>(
+				getPersistenceInformation(), wp -> _mappers.getWordPoolMapper().delete(wp));
+		
+		wpc.addListener(event -> {
+			deleteHandler.containerChanged(event);
+			_trackHandler.containerChanged(event);
+		});
+
 		return wpc;
 	}
-	
+
+	private void addWordPoolListeners(final WordPool wp)
+	{
+		DeleteHandler<Word> deleteHandler = new DeleteHandler<>(getPersistenceInformation(),
+				word -> _mappers.getWordMapper().delete(word, wp.getId()));
+
+		wp.addListener(event ->
+		{
+			deleteHandler.containerChanged(event);
+			_trackHandler.containerChanged(event);
+		});
+	}
+
 	private WordPool createDummyPool()
 	{
 		WordPool pool = new WordPool();
@@ -63,23 +89,24 @@ public class PersistenceService
 			pool.add(new Word(Integer.toString(i)));
 		return pool;
 	}
-	
+
 	private WordPool createWordPool() throws PersistenceException
 	{
 		WordPool pool = new WordPool();
-		pool.setName("Default Pool");
-		for (Word word : _mappers.getWordMapper().getAll())
-		{
-			pool.add(word);
-			_changeTrackingService.track(word, false);
-		}
-		ContainerChangedListener<Word> deleteHandler = new DeleteHandler<>(getPersistenceInformation(),
-				word -> _mappers.getWordMapper().delete(word));
-		
-		pool.addListener(event -> {
-			deleteHandler.containerChanged(event);
-			_trackHandler.containerChanged(event);
-		});
+		// pool.setName("Default Pool");
+		// for (Word word : _mappers.getWordMapper().getAll())
+		// {
+		// pool.add(word);
+		// _changeTrackingService.track(word, false);
+		// }
+		// ContainerChangedListener<Word> deleteHandler = new
+		// DeleteHandler<>(getPersistenceInformation(),
+		// word -> _mappers.getWordMapper().delete(word));
+		//
+		// pool.addListener(event -> {
+		// deleteHandler.containerChanged(event);
+		// _trackHandler.containerChanged(event);
+		// });
 		return pool;
 	}
 
@@ -91,13 +118,15 @@ public class PersistenceService
 			pool.add(challenge);
 			_changeTrackingService.track(challenge, false);
 		}
-		ContainerChangedListener<SolvableChallenge> deleteHandler = new DeleteHandler<>(getPersistenceInformation(),
+		ContainerChangedListener<SolvableChallenge> deleteHandler = new DeleteHandler<>(
+				getPersistenceInformation(),
 				challenge -> _mappers.getSolvableChallengeMapper().delete(challenge));
 		// Because the deleteHandler needs to access PersistenceStates for
 		// removed items,
 		// the trackHandler needs to untrack the item after the
 		// deleteHandler was called.
-		pool.addListener(event -> {
+		pool.addListener(event ->
+		{
 			deleteHandler.containerChanged(event);
 			_trackHandler.containerChanged(event);
 		});

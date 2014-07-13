@@ -16,6 +16,7 @@ public class Mappers
 	private final ChallengeMapper _challengeMapper;
 	private final SolvableChallengeMapper _solvableChallengeMapper;
 	private final WordMapper _wordMapper;
+	private final WordPoolMapper _wordPoolMapper;
 	
 	
 	
@@ -27,6 +28,7 @@ public class Mappers
 		_challengeMapper = new ChallengeMapper(db, _requirementMapper);
 		_solvableChallengeMapper = new SolvableChallengeMapper(_challengeMapper, _solutionMapper);
 		_wordMapper = new WordMapper(db);
+		_wordPoolMapper = new WordPoolMapper(db, _wordMapper);
 	}
 	
 	
@@ -36,7 +38,13 @@ public class Mappers
 	{
 		return _solvableChallengeMapper;
 	}
-	
+
+	@Ensures("result != null")
+	public WordPoolMapper getWordPoolMapper()
+	{
+		return _wordPoolMapper;
+	}
+
 	@Ensures("result != null")
 	public WordMapper getWordMapper()
 	{

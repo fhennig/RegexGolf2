@@ -22,8 +22,7 @@ public class ChallengeItemController
 	
 	@Requires({
 		"challenge != null",
-		"pState != null",
-		"pState.getObservedItem() == challenge"
+		"pState != null"
 	})
 	public ChallengeItemController(SolvableChallenge challenge, PersistenceState pState)
 	{

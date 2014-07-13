@@ -29,8 +29,7 @@ public class WordItem
 	
 	@Requires({
 		"word != null",
-		"ps != null",
-		"ps.getObservedItem() == word"
+		"ps != null"
 	})
 	public WordItem(Word word, PersistenceState ps)
 	{

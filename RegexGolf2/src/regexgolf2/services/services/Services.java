@@ -111,6 +111,8 @@ public class Services
 			JOptionPane.showMessageDialog(null, "Could not connect to the Database!");
 			return false;
 		}
+		
+		Mappers mappers = new Mappers(db);
 
 		if (dbIsNew)
 		{
@@ -118,17 +120,18 @@ public class Services
 			try
 			{
 				dbInit.createTablesIfNotExists();
-				dbInit.insertDefaultWords();
-			} catch (SQLException e)
+				dbInit.insertDefaultWords(mappers);
+			} catch (SQLException | PersistenceException e)
 			{
 				JOptionPane.showMessageDialog(null, "Could not initialize the Database!");
+				System.out.println(e);
 				return false;
 			}
 		}
 		
 		try
 		{
-			_persistenceService = new PersistenceService(new Mappers(db));
+			_persistenceService = new PersistenceService(mappers);
 		} catch (PersistenceException e)
 		{
 			JOptionPane.showMessageDialog(null, "Could not load data from the Database!");
