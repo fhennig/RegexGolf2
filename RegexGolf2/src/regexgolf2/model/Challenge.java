@@ -10,7 +10,7 @@ import com.google.java.contract.Ensures;
 import com.google.java.contract.Requires;
 
 
-public class Challenge extends ObservableObject
+public class Challenge extends ObservableObjectImpl
 {
 	private final Set<Requirement> _requirements = new HashSet<>();
 	private Solution _sampleSolution;

@@ -19,8 +19,9 @@
 </Button>
 </children>
 <VBox.margin>
-<Insets bottom="10.0" />
+<Insets />
 </VBox.margin></HBox>
+<Separator />
 <Button fx:id="_generateButton" mnemonicParsing="false" prefWidth="${_rootPane.width}" text="Generate Challenge" />
 <AnchorPane fx:id="_generatorConfigPane" VBox.vgrow="ALWAYS" /><HBox spacing="8.0">
 <children><TextField fx:id="_challengeNameTextField" promptText="CHALLENGE NAME" HBox.hgrow="ALWAYS" /><Button fx:id="_saveButton" mnemonicParsing="false">

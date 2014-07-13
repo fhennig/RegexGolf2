@@ -11,7 +11,7 @@ import regexgolf2.services.persistence.saving.SaveVisitor;
 import com.google.java.contract.Ensures;
 import com.google.java.contract.Requires;
 
-public class SolvableChallenge extends ObservableObject implements Savable
+public class SolvableChallenge extends ObservableObjectImpl implements Savable
 {
 	private final Solution _solution;
 	private final Challenge _challenge;

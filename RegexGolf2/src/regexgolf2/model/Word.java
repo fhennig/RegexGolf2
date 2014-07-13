@@ -7,7 +7,7 @@ import regexgolf2.util.Validator;
 import com.google.java.contract.Ensures;
 import com.google.java.contract.Requires;
 
-public class Word extends ObservableObject
+public class Word extends ObservableObjectImpl
 {
 	private static final Logger _LOG = Logger.getLogger(Word.class.getName());
 	
@@ -19,6 +19,19 @@ public class Word extends ObservableObject
 	 */
 	private Validator<String> _textValidator = null;
 		
+	
+	
+	public Word()
+	{
+		this("");
+	}
+	
+	public Word(String text)
+	{
+		if (!trySetText(text))
+			throw new IllegalArgumentException();
+	}
+	
 	
 	
 	@Ensures("result != null")

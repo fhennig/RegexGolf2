@@ -4,6 +4,8 @@ import java.io.IOException;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.Parent;
@@ -13,9 +15,12 @@ import javax.swing.JOptionPane;
 
 import regexgolf2.model.Word;
 import regexgolf2.model.containers.ContainerChangedEvent;
+import regexgolf2.model.containers.ContainerChangedListener;
 import regexgolf2.model.containers.WordPool;
+import regexgolf2.model.containers.WordPoolContainer;
 import regexgolf2.services.persistence.PersistenceException;
 import regexgolf2.services.persistence.PersistenceService;
+import regexgolf2.ui.wordrepository.WordPoolItem;
 import regexgolf2.ui.wordrepository.WordRepositoryUI;
 import regexgolf2.ui.wordrepository.wordcell.WordItem;
 
@@ -25,9 +30,12 @@ import com.google.java.contract.Requires;
 public class WordRepositoryController
 {
 	private final WordRepositoryUI _ui;
-	private final WordPool _pool;
+	private final WordPoolContainer _wpc;
+	// private final WordPool _pool;
 	private final PersistenceService _persistenceService;
 	private final ChangeListener<Boolean> _outOfSynchListener;
+	private final ContainerChangedListener<Word> _poolChangedListener;
+	private final ObjectProperty<WordPool> _selectedPool = new SimpleObjectProperty<>();
 
 
 
@@ -35,7 +43,7 @@ public class WordRepositoryController
 	{
 		_ui = new WordRepositoryUI();
 		_persistenceService = ps;
-		_pool = _persistenceService.getWordPool();
+		_wpc = _persistenceService.getWordPoolContainer();
 		_outOfSynchListener = createOutOfSynchListener();
 
 		// Disable Remove Button if no Item is selected
@@ -46,12 +54,27 @@ public class WordRepositoryController
 		_ui.getAddButton().setOnAction(e -> onAddButtonClicked());
 		_ui.getRemoveButton().setOnAction(e -> onRemoveButtonClicked());
 		_ui.getSaveButton().setOnAction(e -> onSaveButtonClicked());
+		_wpc.forEach(pool -> _ui.getWordPoolComboBox().getItems().add(new WordPoolItem(pool)));
+		_ui.getWordPoolComboBox().getSelectionModel().selectedItemProperty()
+				.addListener((o, oV, nV) -> setSelectedPool(nV.getWordPool()));
+		//TODO ensure that there is always a pool selected!
 
-		// Refresh UI-ItemList if pool changes
-		_pool.addListener(e -> refreshListViewItemList(e));
+		_poolChangedListener = e -> refreshListViewItemList(e);
+		_selectedPool.addListener((o, oV, nV) -> selectedPoolChanged(oV, nV));
 
-		// Load Items
-		_pool.forEach(word -> addItem(word));
+		_ui.getWordPoolComboBox().getSelectionModel().selectFirst();
+	}
+
+	private void selectedPoolChanged(WordPool oV, WordPool nV)
+	{
+		if (oV != null)
+		{
+			oV.removeListener(_poolChangedListener);
+		}
+		
+		nV.addListener(_poolChangedListener);
+		_ui.getListView().getItems().clear();
+		nV.forEach(word -> addItem(word));
 	}
 
 	private ChangeListener<Boolean> createOutOfSynchListener()
@@ -75,7 +98,7 @@ public class WordRepositoryController
 
 	private void onAddButtonClicked()
 	{
-		Word newWord = _pool.getEmpty();
+		Word newWord = getSelectedPool().getEmpty();
 		final WordItem item = getItem(newWord);
 		_ui.getListView().scrollTo(item);
 		/*
@@ -92,14 +115,14 @@ public class WordRepositoryController
 	private void onRemoveButtonClicked()
 	{
 		Word selectedWord = _ui.getListView().getSelectionModel().getSelectedItem().getWord();
-		_pool.remove(selectedWord);
+		getSelectedPool().remove(selectedWord);
 	}
 
 	private void onSaveButtonClicked()
 	{
 		try
 		{
-			_persistenceService.save(_pool);
+			_persistenceService.save(getSelectedPool());
 		} catch (PersistenceException e)
 		{
 			// TODO use fancy dialog here
@@ -139,7 +162,7 @@ public class WordRepositoryController
 	}
 
 	@Requires(
-	{ "word != null", "_pool.contains(word)" })
+	{ "word != null", "getSelectedPool().contains(word)" })
 	@Ensures("result != null")
 	private WordItem getItem(Word word)
 	{
@@ -152,6 +175,18 @@ public class WordRepositoryController
 			}
 		}
 		throw new IllegalArgumentException("An item for '" + word + "' could not be found.");
+	}
+
+	@Ensures("result != null")
+	public WordPool getSelectedPool()
+	{
+		return _selectedPool.get();
+	}
+
+	@Requires("pool != null")
+	private void setSelectedPool(WordPool pool)
+	{
+		_selectedPool.set(pool);
 	}
 
 	public Parent getUINode()

@@ -6,6 +6,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.util.Callback;
@@ -14,6 +15,9 @@ import regexgolf2.ui.wordrepository.wordcell.WordItem;
 
 public class WordRepositoryUI
 {
+    @FXML
+    private ComboBox<WordPoolItem> _wordPoolComboBox;
+    
     @FXML
     private ListView<WordItem> _listView;
 
@@ -54,6 +58,11 @@ public class WordRepositoryUI
     }
     
     
+    
+    public ComboBox<WordPoolItem> getWordPoolComboBox()
+    {
+    	return _wordPoolComboBox;
+    }
     
     public Button getAddButton()
     {

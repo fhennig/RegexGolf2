@@ -5,6 +5,7 @@ import regexgolf2.model.Word;
 import regexgolf2.model.containers.ChallengePool;
 import regexgolf2.model.containers.ContainerChangedListener;
 import regexgolf2.model.containers.WordPool;
+import regexgolf2.model.containers.WordPoolContainer;
 import regexgolf2.services.persistence.changetracking.ChangeTrackingService;
 import regexgolf2.services.persistence.changetracking.PersistenceInformation;
 import regexgolf2.services.persistence.mappers.Mappers;
@@ -24,7 +25,7 @@ public class PersistenceService
 	private final SaveVisitorImpl _saveVisitor;
 
 	private final ChallengePool _challengePool;
-	private final WordPool _wordPool;
+	private final WordPoolContainer _wordPoolContainer;
 
 
 
@@ -39,14 +40,34 @@ public class PersistenceService
 		_saveVisitor = new SaveVisitorImpl(_changeTrackingService, _mappers);
 
 		_challengePool = createChallengePool();
-		_wordPool = createWordPool();
+		_wordPoolContainer = createWordPoolContainer();
 	}
 
 
 
+	private WordPoolContainer createWordPoolContainer() throws PersistenceException
+	{
+		WordPoolContainer wpc = new WordPoolContainer();
+		wpc.addListener(_trackHandler);
+		wpc.add(createWordPool());
+		wpc.add(createDummyPool());
+		return wpc;
+	}
+	
+	private WordPool createDummyPool()
+	{
+		WordPool pool = new WordPool();
+		pool.setName("Dummy Pool");
+		pool.addListener(_trackHandler);
+		for (int i = 0; i < 10; i++)
+			pool.add(new Word(Integer.toString(i)));
+		return pool;
+	}
+	
 	private WordPool createWordPool() throws PersistenceException
 	{
 		WordPool pool = new WordPool();
+		pool.setName("Default Pool");
 		for (Word word : _mappers.getWordMapper().getAll())
 		{
 			pool.add(word);
@@ -61,8 +82,6 @@ public class PersistenceService
 		});
 		return pool;
 	}
-
-
 
 	private ChallengePool createChallengePool() throws PersistenceException
 	{
@@ -96,10 +115,11 @@ public class PersistenceService
 	{
 		return _challengePool;
 	}
-	
-	public WordPool getWordPool()
+
+	@Ensures("result != null")
+	public WordPoolContainer getWordPoolContainer()
 	{
-		return _wordPool;
+		return _wordPoolContainer;
 	}
 
 	@Ensures("result != null")

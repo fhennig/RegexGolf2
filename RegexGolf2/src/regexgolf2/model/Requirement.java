@@ -12,7 +12,7 @@ import com.google.java.contract.Requires;
  * 				The word matches the solution but the expectedMatchResult is false,
  * 				therefore, the Solution does not comply the requirement.
  */
-public class Requirement extends ObservableObject
+public class Requirement extends ObservableObjectImpl
 {
 	private final boolean _expectedMatchResult;
 	private String _word = "";

@@ -17,6 +17,7 @@ import regexgolf2.model.ObjectChangedListener;
 import regexgolf2.model.ObservableObject;
 import regexgolf2.model.SolvableChallenge;
 import regexgolf2.model.challengegenerator.Generator;
+import regexgolf2.model.containers.WordPool;
 import regexgolf2.services.challengegenerator.ChallengeGeneratorService;
 import regexgolf2.services.persistence.PersistenceException;
 import regexgolf2.services.persistence.PersistenceService;
@@ -38,6 +39,8 @@ public class ChallengeGeneratorController implements ChallengeContainer
 
 	private final ChallengeGeneratorService _generatorService;
 	private final PersistenceService _persistenceService;
+	
+	private final WordRepositoryController _wordRepositoryController;
 
 	private final ObjectChangedListener _challengeListener;
 	private final ObjectChangedListener _persStateListener;
@@ -52,10 +55,10 @@ public class ChallengeGeneratorController implements ChallengeContainer
 		_generatorService = services.getGeneratorService();
 		_persistenceService = services.getPersistenceService();
 
-		WordRepositoryController wrc = new WordRepositoryController(services.getPersistenceService());
+		_wordRepositoryController = new WordRepositoryController(services.getPersistenceService());
 
 		_ui = new ChallengeGeneratorUI(parent);
-		_ui.setWordRepositoryPanel(wrc.getUINode());
+		_ui.setWordRepositoryPanel(_wordRepositoryController.getUINode());
 		_ui.getGenerateButton().setOnAction(e -> generateButtonClicked());
 		// ChoiceBox
 		_ui.getGeneratorChoiceBox().getSelectionModel().selectedItemProperty()
@@ -90,7 +93,8 @@ public class ChallengeGeneratorController implements ChallengeContainer
 
 	private void generateButtonClicked()
 	{
-		SolvableChallenge c = _generatorService.generateChallenge();
+		WordPool selectedPool = _wordRepositoryController.getSelectedPool();
+		SolvableChallenge c = _generatorService.generateChallenge(selectedPool);
 		setChallenge(c);
 	}
 

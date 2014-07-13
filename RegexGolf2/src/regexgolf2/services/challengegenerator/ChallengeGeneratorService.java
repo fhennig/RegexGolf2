@@ -20,16 +20,13 @@ import com.google.java.contract.Requires;
 
 public class ChallengeGeneratorService
 {
-	private final WordPool _wordPool;
 	private Set<Generator> _generators = new HashSet<>();
 	private Generator _selectedGenerator;
 	
 	
 	
-	@Requires("wordPool != null")
-	public ChallengeGeneratorService(WordPool wordPool)
+	public ChallengeGeneratorService()
 	{
-		_wordPool = wordPool;
 		initGenerators();
 	}
 	
@@ -66,17 +63,19 @@ public class ChallengeGeneratorService
 		return _selectedGenerator;
 	}
 	
-	public SolvableChallenge generateChallenge()
+	@Requires("words != null")
+	public SolvableChallenge generateChallenge(WordPool words)
 	{
-		Challenge c = getSelectedGenerator().generateChallenge(getFilteredWords());
+		Challenge c = getSelectedGenerator().generateChallenge(getFilteredWords(words));
 		SolvableChallenge sc = new SolvableChallenge(new Solution(), c);
 		
 		return sc;
 	}
 	
-	private List<Word> getFilteredWords()
+	@Requires("wordPool != null")
+	private List<Word> getFilteredWords(WordPool wordPool)
 	{
-		return _wordPool.stream()
+		return wordPool.stream()
 		.filter(word -> true) //TODO filter properly
 		.collect(Collectors.toList());	
 	}

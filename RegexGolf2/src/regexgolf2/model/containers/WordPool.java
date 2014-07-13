@@ -11,10 +11,12 @@ import regexgolf2.services.persistence.saving.SaveVisitor;
 import regexgolf2.util.Validator;
 
 
-public class WordPool extends Container<Word> implements Savable
+public class WordPool extends ObservableContainer<Word> implements Savable
 {
 	private final Validator<String> _textValidator;
-
+	private String _name;
+	private int _id;
+	
 
 
 	public WordPool()
@@ -24,6 +26,26 @@ public class WordPool extends Container<Word> implements Savable
 
 
 
+	public String getName()
+	{
+		return _name;
+	}
+	
+	public void setName(String name)
+	{
+		_name = name;
+	}
+	
+	public int getId()
+	{
+		return _id;
+	}
+	
+	public void setId(int id)
+	{
+		_id = id;
+	}
+	
 	@Override
 	public boolean add(Word item)
 	{

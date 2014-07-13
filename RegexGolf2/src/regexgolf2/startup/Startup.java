@@ -3,6 +3,7 @@ package regexgolf2.startup;
 import java.io.IOException;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.stage.Stage;
 
 import javax.swing.JOptionPane;
@@ -24,6 +25,12 @@ public class Startup extends Application
 	private static Services _services;
 
 	public static void main(String[] args)
+	{		
+		launch(args);
+	}
+	
+	@Override
+	public void init() throws Exception
 	{
 		LogInitializer.initializeLoggingSettings();
 		try
@@ -31,10 +38,8 @@ public class Startup extends Application
 			_services = new Services();
 		} catch (InitializingException e)
 		{
-			System.exit(0);
+			Platform.exit();
 		}
-		
-		launch(args);
 	}
 
 	@Override

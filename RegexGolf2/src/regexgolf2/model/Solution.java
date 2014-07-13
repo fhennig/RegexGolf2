@@ -7,7 +7,7 @@ import com.google.java.contract.Ensures;
 import com.google.java.contract.Requires;
 
 
-public class Solution extends ObservableObject
+public class Solution extends ObservableObjectImpl
 {
 	private Pattern _regex = Pattern.compile("");
 	

@@ -139,7 +139,7 @@ public class Services
 
 	private boolean initChallengeGeneratorService()
 	{
-		_generator = new ChallengeGeneratorService(_persistenceService.getWordPool());
+		_generator = new ChallengeGeneratorService();
 		return true;
 	}
 

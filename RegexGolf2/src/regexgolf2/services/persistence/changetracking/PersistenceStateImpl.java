@@ -2,10 +2,11 @@ package regexgolf2.services.persistence.changetracking;
 
 import regexgolf2.model.ObjectChangedListener;
 import regexgolf2.model.ObservableObject;
+import regexgolf2.model.ObservableObjectImpl;
 
 import com.google.java.contract.Requires;
 
-public class PersistenceStateImpl extends ObservableObject implements PersistenceState
+public class PersistenceStateImpl extends ObservableObjectImpl implements PersistenceState
 {
 	private final ObservableObject _observedObject;
 	private boolean _isNew = false;
