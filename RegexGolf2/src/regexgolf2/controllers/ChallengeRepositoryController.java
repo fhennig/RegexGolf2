@@ -49,7 +49,7 @@ public class ChallengeRepositoryController implements ChallengeContainer
 		initAddButtonHandler();
 		initRemoveButtonHandler();
 		initSaveButtonHandler();
-		_challengePool.forEach(challenge -> addItem(challenge));
+		_challengePool.forEach(challenge -> addItemFor(challenge));
 	}
 
 
@@ -130,11 +130,11 @@ public class ChallengeRepositoryController implements ChallengeContainer
 	 */
 	private void refreshListViewItemList(ContainerChangedEvent<? extends SolvableChallenge> event)
 	{
-		if (event.getRemovedItem() != null)
-			removeItemFor(event.getRemovedItem());
-
-		if (event.getAddedItem() != null)
-			addItem(event.getAddedItem());
+		event.getRemovedItem()
+		 	 .ifPresent(challenge -> removeItemFor(challenge));
+		
+		event.getAddedItem()
+			 .ifPresent(challenge -> addItemFor(challenge));
 	}
 
 	private void removeItemFor(SolvableChallenge challenge)
@@ -156,7 +156,7 @@ public class ChallengeRepositoryController implements ChallengeContainer
 	 * 
 	 * @return The item that was added to the UI.
 	 */
-	private ChallengeItem addItem(SolvableChallenge challenge)
+	private ChallengeItem addItemFor(SolvableChallenge challenge)
 	{
 		ChallengeItemController controller = new ChallengeItemController(challenge,
 				_persistenceService.getPersistenceInformation().getPersistenceState(challenge));

@@ -59,6 +59,7 @@ public class ChallengeGeneratorController implements ChallengeContainer
 
 		_ui = new ChallengeGeneratorUI(parent);
 		_ui.setWordRepositoryPanel(_wordRepositoryController.getUINode());
+		
 		_ui.getGenerateButton().setOnAction(e -> generateButtonClicked());
 		// ChoiceBox
 		_ui.getGeneratorChoiceBox().getSelectionModel().selectedItemProperty()
@@ -70,6 +71,8 @@ public class ChallengeGeneratorController implements ChallengeContainer
 		// Save Button
 		_ui.getSaveButton().setOnAction(e -> saveButtonClicked());
 
+		//_wordRepositoryController.selectedPoolProperty().addListener((o, oV, nV) -> 
+		
 		// ChallengeProperty Listener
 		_challenge.addListener((o, oV, nV) -> challengePropertyChanged(oV, nV));
 		// Listener for the Challenge itself
@@ -93,7 +96,13 @@ public class ChallengeGeneratorController implements ChallengeContainer
 
 	private void generateButtonClicked()
 	{
-		WordPool selectedPool = _wordRepositoryController.getSelectedPool();
+		if (!_wordRepositoryController.getSelectedPool().isPresent())
+		{
+			JOptionPane.showMessageDialog(null, "No Word Pool selected.");
+			return;
+		}
+		
+		WordPool selectedPool = _wordRepositoryController.getSelectedPool().get();
 		SolvableChallenge c = _generatorService.generateChallenge(selectedPool);
 		setChallenge(c);
 	}

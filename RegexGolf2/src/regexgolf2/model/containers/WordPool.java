@@ -3,6 +3,7 @@ package regexgolf2.model.containers;
 import java.util.Optional;
 
 import com.google.java.contract.Ensures;
+import com.google.java.contract.Requires;
 
 import regexgolf2.model.Word;
 import regexgolf2.services.persistence.PersistenceException;
@@ -14,7 +15,7 @@ import regexgolf2.util.Validator;
 public class WordPool extends ObservableContainer<Word> implements Savable
 {
 	private final Validator<String> _textValidator;
-	private String _name;
+	private String _name = "";
 	private int _id;
 	
 
@@ -26,14 +27,19 @@ public class WordPool extends ObservableContainer<Word> implements Savable
 
 
 
+	@Ensures("result != null")
 	public String getName()
 	{
 		return _name;
 	}
 	
+	@Requires("name != null")
 	public void setName(String name)
 	{
+		if (_name.equals(name))
+			return;
 		_name = name;
+		fireObjectChangedEvent();
 	}
 	
 	public int getId()
@@ -43,7 +49,10 @@ public class WordPool extends ObservableContainer<Word> implements Savable
 	
 	public void setId(int id)
 	{
+		if (_id == id)
+			return;
 		_id = id;
+		fireObjectChangedEvent();
 	}
 	
 	@Override

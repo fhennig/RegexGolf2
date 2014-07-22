@@ -6,17 +6,20 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.layout.AnchorPane;
 import javafx.util.Callback;
+import regexgolf2.ui.subcomponents.wordpoolcombobox.WordPoolComboBox;
+import regexgolf2.ui.util.JavafxUtil;
 import regexgolf2.ui.wordrepository.wordcell.WordCellUI;
 import regexgolf2.ui.wordrepository.wordcell.WordItem;
 
 public class WordRepositoryUI
 {
     @FXML
-    private ComboBox<WordPoolItem> _wordPoolComboBox;
+    private AnchorPane _poolComboBoxPane;
+    private WordPoolComboBox _poolComboBox;
     
     @FXML
     private ListView<WordItem> _listView;
@@ -40,9 +43,12 @@ public class WordRepositoryUI
     	loader.setController(this);
     	_rootNode = loader.load();
     	
-    	assert _addButton != null;
+    	assert _poolComboBoxPane != null;
+    	assert _listView != null;
     	assert _removeButton != null;
+    	assert _addButton != null;
     	assert _saveButton != null;
+    	assert _rootNode != null;
     	
     	_listView.setCellFactory(new Callback<ListView<WordItem>, ListCell<WordItem>>()
 		{
@@ -55,13 +61,16 @@ public class WordRepositoryUI
 			}
 		});
     	_listView.setEditable(true);
+    	
+    	_poolComboBox = new WordPoolComboBox();
+    	JavafxUtil.setAsContent(_poolComboBox.getUINode(), _poolComboBoxPane);
     }
     
     
     
-    public ComboBox<WordPoolItem> getWordPoolComboBox()
+    public WordPoolComboBox getWordPoolComboBox()
     {
-    	return _wordPoolComboBox;
+    	return _poolComboBox;
     }
     
     public Button getAddButton()

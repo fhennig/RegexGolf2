@@ -1,4 +1,4 @@
-package regexgolf2.ui.wordrepository;
+package regexgolf2.ui.subcomponents.wordpoolcombobox;
 
 import com.google.java.contract.Ensures;
 import com.google.java.contract.Requires;

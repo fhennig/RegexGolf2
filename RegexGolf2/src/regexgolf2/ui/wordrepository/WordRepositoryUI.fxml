@@ -16,7 +16,7 @@
 <font>
 <Font size="18.0" />
 </font></Label><HBox spacing="5.0">
-<children><ComboBox fx:id="_wordPoolComboBox" HBox.hgrow="ALWAYS" /><Region prefHeight="0.0" prefWidth="0.0" HBox.hgrow="ALWAYS" /><MenuButton graphicTextGap="0.0" mnemonicParsing="false">
+<children><AnchorPane fx:id="_poolComboBoxPane" /><Region prefHeight="0.0" prefWidth="0.0" HBox.hgrow="ALWAYS" /><MenuButton graphicTextGap="0.0" mnemonicParsing="false">
   <items>
     <MenuItem mnemonicParsing="false" text="Action 1" />
     <MenuItem mnemonicParsing="false" text="Action 2" />

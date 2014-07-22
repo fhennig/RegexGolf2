@@ -43,9 +43,9 @@ public class DeleteHandler<T extends ObservableObject> implements ContainerChang
 	@Override
 	public void containerChanged(ContainerChangedEvent<? extends T> event)
 	{
-		T item = event.getRemovedItem();
-		if (item == null)
+		if (!event.getRemovedItem().isPresent())
 			return;
+		T item = event.getRemovedItem().get();
 		if (_pss.isTracked(item))
 		{
 			boolean needsDBDelete = !_pss.isNew(item);
