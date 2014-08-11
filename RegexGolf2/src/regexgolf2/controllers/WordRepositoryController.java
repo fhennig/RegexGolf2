@@ -41,6 +41,7 @@ public class WordRepositoryController
 		_persistenceService = ps;
 		_wpc = _persistenceService.getWordPoolContainer();
 		_outOfSynchListener = createOutOfSynchListener();
+		_poolChangedListener = e -> refreshListViewItemList(e);
 
 		// Disable Remove Button if no Item is selected
 		_ui.getRemoveButton().disableProperty()
@@ -53,9 +54,8 @@ public class WordRepositoryController
 		_ui.getWordPoolComboBox().setItemSource(_wpc);
 		_ui.getWordPoolComboBox().selectedPoolProperty()
 				.addListener((o, oV, nV) -> selectedPoolChanged(oV, nV));
-		_ui.getWordPoolComboBox().getSelectedPool().ifPresent(p -> p.forEach(w -> addItemFor(w)));
+		selectedPoolChanged(Optional.empty(), _ui.getWordPoolComboBox().getSelectedPool());
 
-		_poolChangedListener = e -> refreshListViewItemList(e);
 	}
 
 	private void selectedPoolChanged(Optional<WordPool> oV, Optional<WordPool> nV)

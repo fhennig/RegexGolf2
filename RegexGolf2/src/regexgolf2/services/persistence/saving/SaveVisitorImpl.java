@@ -1,6 +1,7 @@
 package regexgolf2.services.persistence.saving;
 
 import regexgolf2.model.SolvableChallenge;
+import regexgolf2.model.Word;
 import regexgolf2.model.containers.ChallengePool;
 import regexgolf2.model.containers.WordPool;
 import regexgolf2.services.persistence.PersistenceException;
@@ -54,7 +55,18 @@ public class SaveVisitorImpl implements SaveVisitor
 		else
 			_mappers.getWordPoolMapper().update(wordPool);
 
+		for (Word w : wordPool)
+		{
+			if (!_changeTrackingService.isChanged(w))
+				continue;
+			
+			if (_changeTrackingService.isNew(w))
+				_mappers.getWordMapper().insert(w, wordPool.getId());
+			else
+				_mappers.getWordMapper().update(w, wordPool.getId());
+			_changeTrackingService.objectWasPersisted(w);
+		}
+		
 		_changeTrackingService.objectWasPersisted(wordPool);
-		wordPool.forEach(word -> _changeTrackingService.objectWasPersisted(word));
 	}
 }
